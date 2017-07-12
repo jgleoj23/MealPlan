@@ -1,10 +1,10 @@
 package joseph.com.mealplan;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,14 +51,12 @@ public class SearchFragment extends Fragment {
         svQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.i(TAG, "submitted");
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(final String newText) {
                 if (newText.length() == 3) {
-                    Log.i(TAG, "text changed to: " + newText);
                     resultsAdapter.recipes = new ArrayList<>(Arrays.asList(new Recipe("Hotdog"), new Recipe("Pasta"), new Recipe("Ramen"),
                                                                            new Recipe("Pizza"), new Recipe("Sushi"), new Recipe("Chili")));
                     resultsAdapter.notifyDataSetChanged();
@@ -117,6 +115,15 @@ public class SearchFragment extends Fragment {
 
         public void bind(Recipe recipe) {
             tvTitle.setText(recipe.getTitle());
+            
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(itemView.getContext(), RecipeDetailsActivity.class);
+                    // TODO intent.putExtra("recipe", recipe)
+                    startActivity(intent);
+                }
+            });
         }
     }
 }
