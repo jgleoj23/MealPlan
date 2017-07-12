@@ -27,11 +27,19 @@ dependencies {
         exclude group: 'com.google.code.findbugs'
     })
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-
+<<<<<<< HEAD
     // butterknife
+
+    compile 'com.android.support:appcompat-v7:26.+'
+=======
+    compile 'com.android.support:appcompat-v7:25.3.1'
+>>>>>>> ced7c8af7aebf5c3b8308c507819d347e3516728
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.jakewharton:butterknife:8.7.0'
+<<<<<<< HEAD
+    testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'}
+=======
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
 
     // Guava
@@ -40,3 +48,4 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.3.1'
 }
+>>>>>>> ced7c8af7aebf5c3b8308c507819d347e3516728
