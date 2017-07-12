@@ -31,8 +31,23 @@
         android:id="@+id/tvRecipeDirections"
         android:layout_width="wrap_content"
         android:layout_below="@+id/ivRecipeImage"
-        android:layout_height="400dp"
+        android:layout_height="350dp"
         android:scrollbars = "vertical"
         android:text="@string/test_recipe" >
     </TextView>
+
+    <ImageButton
+        android:id="@+id/Add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:layout_alignParentBottom="true" />
+
+    <ImageButton
+        android:id="@+id/Favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/Add"
+        android:layout_toEndOf="@+id/Add"
+        app:srcCompat="@android:drawable/btn_star" />
 </RelativeLayout>
