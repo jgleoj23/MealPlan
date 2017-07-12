@@ -9,9 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import joseph.com.mealplan.model.Recipe;
 
 /**
  * @author Joseph Gardi
@@ -33,7 +44,8 @@ public class SearchFragment extends Fragment {
         svQuery.setSuggestionsAdapter(null);
         svQuery.setIconified(false);
 
-        rvResults.setAdapter(new ResultsAdapter());
+        final ResultsAdapter resultsAdapter = new ResultsAdapter();
+        rvResults.setAdapter(resultsAdapter);
         rvResults.setLayoutManager(new LinearLayoutManager(getContext()));
 
         svQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -44,8 +56,23 @@ public class SearchFragment extends Fragment {
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                Log.i(TAG, "text changed to: " + newText);
+            public boolean onQueryTextChange(final String newText) {
+                if (newText.length() == 3) {
+                    Log.i(TAG, "text changed to: " + newText);
+                    resultsAdapter.recipes = new ArrayList<>(Arrays.asList(new Recipe("Hotdog"), new Recipe("Pasta"), new Recipe("Ramen"),
+                                                                           new Recipe("Pizza"), new Recipe("Sushi"), new Recipe("Chili")));
+                    resultsAdapter.notifyDataSetChanged();
+                } else if (newText.length() > 3) {
+                    Iterables.removeIf(resultsAdapter.recipes, new Predicate<Recipe>() {
+                        @Override
+                        public boolean apply(@Nullable Recipe recipe) {
+                            return !recipe.getTitle().contains(newText);
+                        }
+                    });
+
+                    resultsAdapter.notifyDataSetChanged();
+                }
+
                 return true;
             }
         });
@@ -56,6 +83,9 @@ public class SearchFragment extends Fragment {
 
     public class ResultsAdapter extends RecyclerView.Adapter<ResultView> {
 
+        private List<Recipe> recipes = Arrays.asList(new Recipe("Hotdog"), new Recipe("Pasta"), new Recipe("Ramen"),
+                                                     new Recipe("Pizza"), new Recipe("Sushi"), new Recipe("Chili"));
+
         @Override
         public ResultView onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recipe, parent, false);
@@ -63,19 +93,30 @@ public class SearchFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(ResultView holder, int position) {}
+        public void onBindViewHolder(ResultView holder, int position) {
+            holder.bind(recipes.get(position));
+        }
 
         @Override
         public int getItemCount() {
-            return 20;
+            return recipes.size();
         }
     }
 
 
     public class ResultView extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.tvTitle)
+        TextView tvTitle;
+
         public ResultView(View view) {
             super(view);
+
+            ButterKnife.bind(this, view);
+        }
+
+        public void bind(Recipe recipe) {
+            tvTitle.setText(recipe.getTitle());
         }
     }
 }

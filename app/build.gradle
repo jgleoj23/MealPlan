@@ -24,6 +24,7 @@ dependencies {
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs'
     })
 
     compile 'com.android.support:appcompat-v7:25.3.1'
@@ -32,6 +33,9 @@ dependencies {
     // butterknife
     compile 'com.jakewharton:butterknife:8.7.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+
+    // Guava
+    compile 'com.google.guava:guava:22.0-android'
 
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.3.1'

@@ -1,12 +1,14 @@
 package joseph.com.mealplan.model;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Joseph Gardi
  */
 public class Ingredient {
     private String name;
 
-    public String getName() {
+    public @Nonnull String getName() {
         return name;
     }
 
