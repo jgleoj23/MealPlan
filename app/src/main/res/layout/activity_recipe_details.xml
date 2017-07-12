@@ -26,4 +26,13 @@
         app:srcCompat="@android:color/background_dark"
         android:layout_below="@+id/tvRecipeName"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/tvRecipeDirections"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/ivRecipeImage"
+        android:layout_height="400dp"
+        android:scrollbars = "vertical"
+        android:text="@string/test_recipe" >
+    </TextView>
 </RelativeLayout>
