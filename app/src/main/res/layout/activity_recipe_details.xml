@@ -11,19 +11,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/recipe_name"
-        android:textSize="20dp"
+        android:textSize="18dp"
+        android:layout_marginTop="15dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-
-
     <ImageView
         android:id="@+id/ivRecipeImage"
-        android:layout_width="300dp"
-        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_margin="20dp"
         android:layout_height="150dp"
         android:gravity="center_horizontal"
         app:srcCompat="@drawable/recipe_image"
+        android:scaleType="centerCrop"
         android:layout_below="@+id/tvRecipeName"
         android:layout_centerHorizontal="true" />
 
@@ -34,21 +34,28 @@
         android:scrollbars = "vertical"
         android:text="@string/test_recipe"
         android:layout_below="@+id/ivRecipeImage"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
     </TextView>
 
     <ImageButton
-        android:id="@+id/Add"
+        android:id="@+id/imageButton"
+        android:background="@null"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="17dp"
         app:srcCompat="@android:drawable/ic_input_add"
-        android:layout_alignParentBottom="true" />
+        android:layout_marginStart="135dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/tvRecipeName" />
 
     <ImageButton
-        android:id="@+id/Favorite"
+        android:id="@+id/imageButton2"
+        android:background="@null"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/Add"
-        android:layout_toEndOf="@+id/Add"
-        app:srcCompat="@android:drawable/btn_star" />
+        app:srcCompat="@android:drawable/btn_star"
+        android:layout_alignTop="@+id/imageButton"
+        android:layout_toEndOf="@+id/imageButton" />
 </RelativeLayout>
