@@ -10,7 +10,7 @@
         android:id="@+id/tvRecipeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Recipe Name"
+        android:text="@string/recipe_name"
         android:textSize="20dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -23,17 +23,18 @@
         android:layout_margin="10dp"
         android:layout_height="150dp"
         android:gravity="center_horizontal"
-        app:srcCompat="@android:color/background_dark"
+        app:srcCompat="@drawable/recipe_image"
         android:layout_below="@+id/tvRecipeName"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/tvRecipeDirections"
         android:layout_width="wrap_content"
-        android:layout_below="@+id/ivRecipeImage"
         android:layout_height="350dp"
         android:scrollbars = "vertical"
-        android:text="@string/test_recipe" >
+        android:text="@string/test_recipe"
+        android:layout_below="@+id/ivRecipeImage"
+        android:layout_centerHorizontal="true">
     </TextView>
 
     <ImageButton
