@@ -9,15 +9,12 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
 import joseph.com.mealplan.R;
 
@@ -26,6 +23,7 @@ public class GroceryList extends AppCompatActivity {
     List<HashMap<String, String>> listItems;
     HashMap<String, String> resultsMap = new HashMap<>();
     SimpleAdapter adapter;
+    Hashtable<String, Integer> valid = new Hashtable<String, Integer>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,16 +35,10 @@ public class GroceryList extends AppCompatActivity {
         HashMap<String, String> nameAddresses = new HashMap<>();
 
 
-        String[] array = {"-Ham\n-Chicken", "-Milk \n-Cheese \n-Butter", "-Bread", "-Potatoes \n-Lettuce", "-Spaghetti \n-Rice", "-Banana\n-Kiwi \n-Pineapple", "-Sugar"};
-        Set<String> dups    = new HashSet<>();
-        int i = 1;
-
-        while(nameAddresses.size() != 5){
-            String values = array[new Random().nextInt(array.length)];
-            if(dups.add(values)) {
-                nameAddresses.put("Aisle #"+i, values);
-                i+=1;
-            }
+        String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak"};
+        int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5};
+        for(int i = 0; i != 11; i++){
+            valid.put(nameArray[i], number[i]);
         }
 
         listItems = new ArrayList<>();
@@ -55,15 +47,6 @@ public class GroceryList extends AppCompatActivity {
                 new int[]{R.id.txAisle, R.id.txGroc});
 
 
-        Iterator it = nameAddresses.entrySet().iterator();
-        while (it.hasNext())
-        {
-            HashMap<String, String> resultsMap = new HashMap<>();
-            Map.Entry pair = (Map.Entry)it.next();
-            resultsMap.put("First Line", pair.getKey().toString());
-            resultsMap.put("Second Line", pair.getValue().toString()+"\n");
-            listItems.add(resultsMap);
-        }
         resultsListView.setAdapter(adapter);
 
         setupListViewListener();
@@ -98,33 +81,38 @@ public class GroceryList extends AppCompatActivity {
     }
 
 
-    public void onAddItem(View v){
+    public void onAddItem(View v) {
         EditText txAdd = (EditText) findViewById(R.id.txAdd);
-        String ItemText =  txAdd.getText().toString();
+        String ItemText = txAdd.getText().toString().toLowerCase();
         HashMap<String, String> resultsMap = new HashMap<>();
-        Random r = new Random();
-        if(listItems.size() > 1) {
-            resultsMap = listItems.get(r.nextInt(listItems.size() - 1));
-            String dummy = resultsMap.get("Second Line");
-            resultsMap.put("Second Line", dummy + "-"+ItemText+"\n");
-            //listItems.add(resultsMap);
-            txAdd.setText("");
+        //String lower = ItemText.toLowerCase();
+        if (valid.containsKey(ItemText)) {
+            try{
+                for(int i = 0; i != listItems.size() + 1; i++){
+                    resultsMap = listItems.get(i);
+                    String aisle = resultsMap.get("First Line");
+                    if(aisle.equals("Aisle #" + valid.get(ItemText))){
+                        String dummy = resultsMap.get("Second Line");
+                        resultsMap.put("Second Line", dummy + "-" + ItemText + "\n");
+                        adapter.notifyDataSetChanged();
+                        //listItems.add(resultsMap);
+                        txAdd.setText("");
+                        break;
+                    }
+                }
+            }
             //Toast.makeText(getApplicationContext(),"Item Added", Toast.LENGTH_LONG).show();
+            catch(IndexOutOfBoundsException e){
+                resultsMap = new HashMap<>();
+                resultsMap.put("First Line", "Aisle #" + valid.get(ItemText));
+                resultsMap.put("Second Line", "-" + ItemText + "\n");
+                listItems.add(resultsMap);
+                adapter.notifyDataSetChanged();
+                txAdd.setText("");
+            }
         }
-        else if(listItems.size() == 1){
-            resultsMap = listItems.get(0);
-            String dummy = resultsMap.get("Second Line");
-            resultsMap.put("Second Line", dummy + "-"+ItemText+"\n");
-            //listItems.add(resultsMap);
-            txAdd.setText("");
-            //Toast.makeText(getApplicationContext(),"Item Added", Toast.LENGTH_LONG).show();
-        }
-        else if(listItems.size() == 0){
-            resultsMap.put("First Line", "Aisle #2");
-            resultsMap.put("Second Line", "-"+ItemText+ "\n");
-            listItems.add(resultsMap);
-            adapter.notifyDataSetChanged();
-            txAdd.setText("");
+        else{
+            Toast.makeText(getApplicationContext(), "Not a valid grocery item!", Toast.LENGTH_LONG).show();
         }
     }
 }
