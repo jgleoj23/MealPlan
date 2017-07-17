@@ -5,26 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +36,8 @@ public class SearchFragment extends Fragment {
 
     private String TAG = getClass().getName();
     private RecipeClient client;
-    ArrayList<Recipe> recipes;
+
+    private ResultsAdapter resultsAdapter;
 
     @BindView(R.id.svQuery)
     SearchView svQuery;
@@ -53,11 +52,10 @@ public class SearchFragment extends Fragment {
         svQuery.setSuggestionsAdapter(null);
         svQuery.setIconified(false);
 
-        final ResultsAdapter resultsAdapter = new ResultsAdapter();
+        resultsAdapter = new ResultsAdapter();
         rvResults.setAdapter(resultsAdapter);
         rvResults.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        fetchRecipes("chicken");
         svQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -66,19 +64,8 @@ public class SearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(final String newText) {
-                if (newText.length() == 3) {
-                    resultsAdapter.recipes = new ArrayList<>(Arrays.asList(new Recipe("Hotdog"), new Recipe("Pasta"), new Recipe("Ramen"),
-                                                                           new Recipe("Pizza"), new Recipe("Sushi"), new Recipe("Chili")));
-                    resultsAdapter.notifyDataSetChanged();
-                } else if (newText.length() > 3) {
-                    Iterables.removeIf(resultsAdapter.recipes, new Predicate<Recipe>() {
-                        @Override
-                        public boolean apply(@Nullable Recipe recipe) {
-                            return !recipe.getTitle().contains(newText);
-                        }
-                    });
-
-                    resultsAdapter.notifyDataSetChanged();
+                if (newText.length() >= 3) {
+                    fetchRecipes(newText);
                 }
 
                 return true;
@@ -91,8 +78,7 @@ public class SearchFragment extends Fragment {
 
     public class ResultsAdapter extends RecyclerView.Adapter<ResultView> {
 
-        private List<Recipe> recipes = Arrays.asList(new Recipe("Hotdog"), new Recipe("Pasta"), new Recipe("Ramen"),
-                                                     new Recipe("Pizza"), new Recipe("Sushi"), new Recipe("Chili"));
+        private List<Recipe> recipes = new ArrayList<>();
 
         @Override
         public ResultView onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -116,6 +102,8 @@ public class SearchFragment extends Fragment {
 
         @BindView(R.id.tvTitle)
         TextView tvTitle;
+        @BindView(R.id.ivPic)
+        ImageView ivPic;
 
         public ResultView(View view) {
             super(view);
@@ -123,14 +111,18 @@ public class SearchFragment extends Fragment {
             ButterKnife.bind(this, view);
         }
 
-        public void bind(Recipe recipe) {
+        public void bind(final Recipe recipe) {
             tvTitle.setText(recipe.getTitle());
+
+            Picasso.with(SearchFragment.this.getContext())
+                   .load(recipe.getImageUrl())
+                   .into(ivPic);
             
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(itemView.getContext(), RecipeDetailsActivity.class);
-                    // TODO intent.putExtra("recipe", recipe)
+                    intent.putExtra("recipe", Parcels.wrap(recipe));
                     startActivity(intent);
                 }
             });
@@ -141,14 +133,23 @@ public class SearchFragment extends Fragment {
         client = new RecipeClient();
         client.getRecipes(query, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        Recipe recipe = Recipe.fromJson(response.getJSONObject(i));
-                        recipes.add(recipe);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.i(TAG, "result:");
+                resultsAdapter.recipes.clear();
+                try {
+                    JSONArray results = response.getJSONArray("recipes");
+                    for (int i = 0; i < results.length(); i++) {
+                        try {
+                            Recipe recipe = Recipe.fromJson(results.getJSONObject(i));
+                            resultsAdapter.recipes.add(recipe);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
+
+                    resultsAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 
