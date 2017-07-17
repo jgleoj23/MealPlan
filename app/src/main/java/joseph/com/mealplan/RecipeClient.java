@@ -4,9 +4,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 /**
  * Created by kcguo on 7/17/17.
  */
@@ -29,6 +26,5 @@ public class RecipeClient {
         params.put("key", "0baf87954f134397696ae1c2da1ce965");
         params.put("q", query);
         client.get(url, params, handler);
-
     }
 }
