@@ -27,3 +27,4 @@ Thumbs.db
 /build
 /captures
 .externalNativeBuild
+.idea/codeStyleSettings.xml
