@@ -26,6 +26,5 @@ public class RecipeClient {
         params.put("key", "0baf87954f134397696ae1c2da1ce965");
         params.put("q", query);
         client.get(url, params, handler);
-
     }
 }
