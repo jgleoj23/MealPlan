@@ -11,6 +11,7 @@ import org.parceler.Parcel;
 public class Recipe {
     private String title;
     private String imageUrl;
+    private String sourceUrl;
 
     public Recipe() {}
 
@@ -22,8 +23,10 @@ public class Recipe {
         Recipe recipe = null;
         try {
             String recipeTitle = jsonObject.getString("title");
-             recipe = new Recipe(recipeTitle);
+
+            recipe = new Recipe(recipeTitle);
             recipe.imageUrl = jsonObject.getString("image_url");
+            recipe.sourceUrl = jsonObject.getString("source_url");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -31,6 +34,9 @@ public class Recipe {
         return recipe;
     }
 
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
     public String getTitle() {
         return title;
     }

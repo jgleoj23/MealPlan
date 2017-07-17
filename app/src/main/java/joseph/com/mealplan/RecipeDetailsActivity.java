@@ -6,6 +6,10 @@ import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import org.parceler.Parcels;
+
 import joseph.com.mealplan.model.Recipe;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
@@ -29,6 +33,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         // unwrap recipe passed in via intent
 
+        recipe = Parcels.unwrap(getIntent().getParcelableExtra("recipe"));
+
+        tvRecipeName.setText(recipe.getTitle());
+
+        Glide.with(this)
+                .load(recipe.getImageUrl())
+                .centerCrop()
+                .into(ivRecipeImage);
         // set title
 
     }
