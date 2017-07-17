@@ -21,4 +21,7 @@ Layer the remaining chips on top. Drizzle with remaining cheese sauce, chicken, 
 
 7.
 Top with tomatoes, onion, and avocado and drizzle all over with sour cream or crema. Garnish with cilantro leaves and drained pickled radish slices. Serve immediately.</string>
+    <string name="no_camera_permission">no permission</string>
+    <string name="ok">thanks for your permission</string>
+    <string name="food2fork_key">0baf87954f134397696ae1c2da1ce965</string>
 </resources>
