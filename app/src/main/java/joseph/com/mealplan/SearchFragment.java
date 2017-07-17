@@ -115,7 +115,7 @@ public class SearchFragment extends Fragment {
 
         public void bind(Recipe recipe) {
             tvTitle.setText(recipe.getTitle());
-            
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
