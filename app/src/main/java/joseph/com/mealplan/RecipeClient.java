@@ -7,7 +7,6 @@ import com.loopj.android.http.RequestParams;
 /**
  * Created by kcguo on 7/17/17.
  */
-
 public class RecipeClient {
     private static final String API_BASE_URL = "http://food2fork.com/api/";
     private AsyncHttpClient client;
