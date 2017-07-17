@@ -2,6 +2,7 @@ package joseph.com.mealplan;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -23,11 +24,11 @@ public class RecipeClient {
     }
 
     public void getRecipes(final String query, JsonHttpResponseHandler handler) {
-        try {
-            String url = getApiUrl("search");
-            client.get(url + URLEncoder.encode(query, "utf-8"), handler);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        String url = getApiUrl("search");
+        RequestParams params = new RequestParams();
+        params.put("key", "0baf87954f134397696ae1c2da1ce965");
+        params.put("q", query);
+        client.get(url, params, handler);
+
     }
 }
