@@ -24,4 +24,5 @@ Top with tomatoes, onion, and avocado and drizzle all over with sour cream or cr
     <string name="no_camera_permission">no permission</string>
     <string name="ok">thanks for your permission</string>
     <string name="food2fork_key">0baf87954f134397696ae1c2da1ce965</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
