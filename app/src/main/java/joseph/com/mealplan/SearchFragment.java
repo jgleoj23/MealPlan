@@ -13,7 +13,13 @@ import android.widget.TextView;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +28,7 @@ import javax.annotation.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 import joseph.com.mealplan.model.Recipe;
 
 /**
@@ -30,6 +37,8 @@ import joseph.com.mealplan.model.Recipe;
 public class SearchFragment extends Fragment {
 
     private String TAG = getClass().getName();
+    private RecipeClient client;
+    ArrayList<Recipe> recipes;
 
     @BindView(R.id.svQuery)
     SearchView svQuery;
@@ -48,6 +57,7 @@ public class SearchFragment extends Fragment {
         rvResults.setAdapter(resultsAdapter);
         rvResults.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        fetchRecipes("chicken");
         svQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -125,5 +135,27 @@ public class SearchFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void fetchRecipes(String query) {
+        client = new RecipeClient();
+        client.getRecipes(query, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        Recipe recipe = Recipe.fromJson(response.getJSONObject(i));
+                        recipes.add(recipe);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
     }
 }
