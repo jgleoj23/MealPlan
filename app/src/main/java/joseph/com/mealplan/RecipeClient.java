@@ -1,7 +1,7 @@
 package joseph.com.mealplan;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 /**
@@ -20,7 +20,7 @@ public class RecipeClient {
         return API_BASE_URL + relativeUrl;
     }
 
-    public void getRecipes(final String query, JsonHttpResponseHandler handler) {
+    public void getRecipes(final String query, AsyncHttpResponseHandler handler) {
         String url = getApiUrl("search");
         RequestParams params = new RequestParams();
         params.put("key", "0baf87954f134397696ae1c2da1ce965");
