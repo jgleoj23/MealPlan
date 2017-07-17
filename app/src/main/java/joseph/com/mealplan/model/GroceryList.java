@@ -32,23 +32,19 @@ public class GroceryList extends AppCompatActivity {
 
         resultsListView = (ListView) findViewById(R.id.lvGrocery);
 
-        HashMap<String, String> nameAddresses = new HashMap<>();
-
-
+        //Creates a hash table of valid grocery items
         String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach"};
         int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 6, 6, 1, 3, 3, 3, 3};
         for(int i = 0; i != 20; i++){
             valid.put(nameArray[i], number[i]);
         }
 
+        //Sets up adapter to allow for Aisle #: grocery layout
         listItems = new ArrayList<>();
         adapter = new SimpleAdapter(this, listItems, R.layout.grocery_item,
                 new String[]{"First Line", "Second Line"},
                 new int[]{R.id.txAisle, R.id.txGroc});
-
-
         resultsListView.setAdapter(adapter);
-
         setupListViewListener();
     }
 
@@ -57,22 +53,23 @@ public class GroceryList extends AppCompatActivity {
     private void setupListViewListener(){
         Log.i("MainActivity", "Setting Up List View");
         resultsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+
+            //If list entry is long clicked, delete entry
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i("MainActivity", "Item Removed:" + i);
                 resultsMap = listItems.get(i);
                 listItems.remove(i);
                 adapter.notifyDataSetChanged();
-
                 View.OnClickListener undoDelete = new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v) { //Re-adds the deleted entry
                         listItems.add(0, resultsMap);
                         adapter.notifyDataSetChanged();
                     }
                 };
-
-                Snackbar.make(resultsListView, "Successfully removed", Snackbar.LENGTH_LONG)
+                //Displays snackbar, which allows for undoing the delete
+                Snackbar.make(resultsListView, "Removed Aisle #" + i, Snackbar.LENGTH_LONG)
                         .setAction("Undo", undoDelete)
                         .show();
                 return true;
@@ -83,26 +80,27 @@ public class GroceryList extends AppCompatActivity {
 
     public void onAddItem(View v) {
         EditText txAdd = (EditText) findViewById(R.id.txAdd);
-        String ItemText = txAdd.getText().toString().toLowerCase();
+        String ItemText = txAdd.getText().toString().toLowerCase(); //Lowercase allows for less stringent grocery inputs
         HashMap<String, String> resultsMap = new HashMap<>();
-        //String lower = ItemText.toLowerCase();
-        if (valid.containsKey(ItemText)) {
-            try{
+
+
+        if (valid.containsKey(ItemText)) { //Checks if the inputted text is a valid grocery item
+
+            try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
                 for(int i = 0; i != listItems.size() + 1; i++){
                     resultsMap = listItems.get(i);
                     String aisle = resultsMap.get("First Line");
                     if(aisle.equals("Aisle #" + valid.get(ItemText))){
-                        String dummy = resultsMap.get("Second Line");
-                        resultsMap.put("Second Line", dummy + "-" + ItemText + "\n");
+                        String old = resultsMap.get("Second Line");
+                        resultsMap.put("Second Line", old + "-" + ItemText + "\n");
                         adapter.notifyDataSetChanged();
-                        //listItems.add(resultsMap);
                         txAdd.setText("");
                         break;
                     }
                 }
             }
-            //Toast.makeText(getApplicationContext(),"Item Added", Toast.LENGTH_LONG).show();
-            catch(IndexOutOfBoundsException e){
+
+            catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
                 resultsMap = new HashMap<>();
                 resultsMap.put("First Line", "Aisle #" + valid.get(ItemText));
                 resultsMap.put("Second Line", "-" + ItemText + "\n");
@@ -111,8 +109,9 @@ public class GroceryList extends AppCompatActivity {
                 txAdd.setText("");
             }
         }
+
         else{
-            Toast.makeText(getApplicationContext(), "Not a valid grocery item!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
         }
     }
 }

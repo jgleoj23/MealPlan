@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MealPlan</string>
     <string name="recipe_name">Pasta With Blistered Cherry Tomato Sauce</string>
+    <string name="API_KEY">0baf87954f134397696ae1c2da1ce965</string>
     <string name="test_recipe">For the Pickled Radishes: In a small saucepan, combine vinegar, water, sugar, salt, mustard seeds, coriander seeds, black peppercorns, and bay leaf. Bring to a simmer, stirring occasionally, until sugar and salt dissolve. Remove from the heat and let cool 5 minutes. Pack sliced radishes into a 2-cup heatproof Mason or other glass canning jar. Pour brine into jar, making sure to cover the radishes completely. Allow to cool to room temperature, about 20 minutes. Seal jar with a tight-fitting lid and shake or rotate it to evenly distribute the brine and spices. The pickles will be ready in about 1 hour, but are best after a few hours. They can be refrigerated up to 1 week.
 
 2.
