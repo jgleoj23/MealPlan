@@ -1,4 +1,4 @@
-package joseph.com.mealplan.model;
+package joseph.com.mealplan;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;

@@ -21,6 +21,6 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/ivPic"
         android:isScrollContainer="true"
-        android:text="TextView"
-        android:textAppearance="@android:style/TextAppearance.Material.Large"/>
+        android:text="Food Name"
+        android:textAppearance="@android:style/TextAppearance.Material.Large" />
 </RelativeLayout>
