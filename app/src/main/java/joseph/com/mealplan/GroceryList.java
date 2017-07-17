@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-import joseph.com.mealplan.R;
-
 public class GroceryList extends AppCompatActivity {
     ListView resultsListView;
     List<HashMap<String, String>> listItems;
@@ -33,9 +31,9 @@ public class GroceryList extends AppCompatActivity {
         resultsListView = (ListView) findViewById(R.id.lvGrocery);
 
         //Creates a hash table of valid grocery items
-        String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach"};
-        int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 6, 6, 1, 3, 3, 3, 3};
-        for(int i = 0; i != 20; i++){
+        String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen"};
+        int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 6, 6, 1, 3, 3, 3, 3, 4};
+        for(int i = 0; i != 21; i++){
             valid.put(nameArray[i], number[i]);
         }
 
@@ -85,14 +83,14 @@ public class GroceryList extends AppCompatActivity {
 
 
         if (valid.containsKey(ItemText)) { //Checks if the inputted text is a valid grocery item
-
+            String capitalized =ItemText.substring(0, 1).toUpperCase() + ItemText.substring(1);
             try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
                 for(int i = 0; i != listItems.size() + 1; i++){
                     resultsMap = listItems.get(i);
                     String aisle = resultsMap.get("First Line");
                     if(aisle.equals("Aisle #" + valid.get(ItemText))){
                         String old = resultsMap.get("Second Line");
-                        resultsMap.put("Second Line", old + "-" + ItemText + "\n");
+                        resultsMap.put("Second Line", old + "-" + capitalized + "\n");
                         adapter.notifyDataSetChanged();
                         txAdd.setText("");
                         break;
@@ -103,7 +101,7 @@ public class GroceryList extends AppCompatActivity {
             catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
                 resultsMap = new HashMap<>();
                 resultsMap.put("First Line", "Aisle #" + valid.get(ItemText));
-                resultsMap.put("Second Line", "-" + ItemText + "\n");
+                resultsMap.put("Second Line", "-" + capitalized + "\n");
                 listItems.add(resultsMap);
                 adapter.notifyDataSetChanged();
                 txAdd.setText("");
