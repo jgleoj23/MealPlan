@@ -35,9 +35,9 @@ public class GroceryList extends AppCompatActivity {
         HashMap<String, String> nameAddresses = new HashMap<>();
 
 
-        String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak"};
-        int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5};
-        for(int i = 0; i != 11; i++){
+        String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach"};
+        int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 6, 6, 1, 3, 3, 3, 3};
+        for(int i = 0; i != 20; i++){
             valid.put(nameArray[i], number[i]);
         }
 
