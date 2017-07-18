@@ -1,8 +1,8 @@
 package joseph.com.mealplan;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -73,6 +73,13 @@ public class SearchFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public static SearchFragment newInstance() {
+        SearchFragment fragment = new SearchFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
     }
 
 
