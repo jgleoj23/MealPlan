@@ -22,7 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GroceryList extends Fragment {
+public class GroceryListFragment extends Fragment {
     List<HashMap<String, String>> listItems;
     HashMap<String, String> resultsMap = new HashMap<>();
     SimpleAdapter adapter;
@@ -38,7 +38,7 @@ public class GroceryList extends Fragment {
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_grocery_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_grocery_list, container, false);
         ButterKnife.bind(this, view);
         super.onCreate(savedInstanceState);
 
@@ -51,7 +51,7 @@ public class GroceryList extends Fragment {
 
         //Sets up adapter to allow for Aisle #: grocery layout
         listItems = new ArrayList<>();
-        adapter = new SimpleAdapter(getContext(), listItems, R.layout.grocery_item,
+        adapter = new SimpleAdapter(getContext(), listItems, R.layout.item_grocery,
                 new String[]{"First Line", "Second Line"},
                 new int[]{R.id.txAisle, R.id.txGroc});
         resultsListView.setAdapter(adapter);

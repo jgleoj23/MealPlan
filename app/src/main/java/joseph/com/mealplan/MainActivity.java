@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     return new MealPlanFragment();
                 case 2:
-                    return new GroceryList();
+                    return new GroceryListFragment();
                 default:
                     throw new RuntimeException("position " + position + " is out of bounds");
             }
