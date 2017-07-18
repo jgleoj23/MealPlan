@@ -11,4 +11,6 @@ public class FavoritesFragments extends AppCompatActivity {
         setContentView(R.layout.fragment_favorites);
 
     }
+
+
 }

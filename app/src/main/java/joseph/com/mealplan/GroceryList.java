@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -18,20 +19,28 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class GroceryList extends Fragment {
-    ListView resultsListView;
     List<HashMap<String, String>> listItems;
     HashMap<String, String> resultsMap = new HashMap<>();
     SimpleAdapter adapter;
     Hashtable<String, Integer> valid = new Hashtable<String, Integer>();
 
+    @BindView(R.id.lvGrocery)
+    ListView resultsListView;
+    @BindView(R.id.txAdd)
+    EditText txAdd;
+    @BindView(R.id.btAdd)
+    Button btAdd;
+
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_grocery_list, container, false);
+        ButterKnife.bind(this, view);
         super.onCreate(savedInstanceState);
-
-        resultsListView = (ListView) view.findViewById(R.id.lvGrocery);
 
         //Creates a hash table of valid grocery items
         String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen"};
@@ -71,17 +80,23 @@ public class GroceryList extends Fragment {
                     }
                 };
                 //Displays snackbar, which allows for undoing the delete
-                Snackbar.make(resultsListView, "Removed Aisle #" + i, Snackbar.LENGTH_LONG)
+                Snackbar.make(resultsListView, "Removed Aisle #" + (i+1), Snackbar.LENGTH_LONG)
                         .setAction("Undo", undoDelete)
                         .show();
                 return true;
+            }
+        });
+
+        btAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAddItem(v);
             }
         });
     }
 
 
     public void onAddItem(View v) {
-        EditText txAdd = (EditText) v.findViewById(R.id.txAdd);
         String ItemText = txAdd.getText().toString().toLowerCase(); //Lowercase allows for less stringent grocery inputs
         HashMap<String, String> resultsMap = new HashMap<>();
 
