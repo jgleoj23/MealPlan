@@ -46,7 +46,6 @@ public class SearchFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.i("tag", "hello");
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(this, view);
 
@@ -132,7 +131,7 @@ public class SearchFragment extends Fragment {
 
     private void fetchRecipes(String query) {
         client = new RecipeClient();
-        client.getRecipes(query, new JsonHttpResponseHandler() {
+        client.searchRecipes(query, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.i(TAG, "result:");
