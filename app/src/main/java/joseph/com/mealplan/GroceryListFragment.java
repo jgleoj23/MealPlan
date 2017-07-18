@@ -80,7 +80,7 @@ public class GroceryListFragment extends Fragment {
                     }
                 };
                 //Displays snackbar, which allows for undoing the delete
-                Snackbar.make(resultsListView, "Removed Aisle #" + (i+1), Snackbar.LENGTH_LONG)
+                Snackbar.make(resultsListView, "Removed Aisle", Snackbar.LENGTH_LONG)
                         .setAction("Undo", undoDelete)
                         .show();
                 return true;
