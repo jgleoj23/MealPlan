@@ -2,9 +2,11 @@ package joseph.com.mealplan;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -16,19 +18,20 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-public class GroceryList extends AppCompatActivity {
+public class GroceryList extends Fragment {
     ListView resultsListView;
     List<HashMap<String, String>> listItems;
     HashMap<String, String> resultsMap = new HashMap<>();
     SimpleAdapter adapter;
     Hashtable<String, Integer> valid = new Hashtable<String, Integer>();
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_grocery_list);
-        getSupportActionBar().setTitle("Grocery List");
 
-        resultsListView = (ListView) findViewById(R.id.lvGrocery);
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_grocery_list, container, false);
+        super.onCreate(savedInstanceState);
+
+        resultsListView = (ListView) view.findViewById(R.id.lvGrocery);
 
         //Creates a hash table of valid grocery items
         String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen"};
@@ -39,11 +42,12 @@ public class GroceryList extends AppCompatActivity {
 
         //Sets up adapter to allow for Aisle #: grocery layout
         listItems = new ArrayList<>();
-        adapter = new SimpleAdapter(this, listItems, R.layout.grocery_item,
+        adapter = new SimpleAdapter(getContext(), listItems, R.layout.grocery_item,
                 new String[]{"First Line", "Second Line"},
                 new int[]{R.id.txAisle, R.id.txGroc});
         resultsListView.setAdapter(adapter);
         setupListViewListener();
+        return view;
     }
 
 
@@ -77,7 +81,7 @@ public class GroceryList extends AppCompatActivity {
 
 
     public void onAddItem(View v) {
-        EditText txAdd = (EditText) findViewById(R.id.txAdd);
+        EditText txAdd = (EditText) v.findViewById(R.id.txAdd);
         String ItemText = txAdd.getText().toString().toLowerCase(); //Lowercase allows for less stringent grocery inputs
         HashMap<String, String> resultsMap = new HashMap<>();
 
@@ -109,7 +113,7 @@ public class GroceryList extends AppCompatActivity {
         }
 
         else{
-            Toast.makeText(getApplicationContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
         }
     }
 }
