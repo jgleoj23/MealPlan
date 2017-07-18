@@ -57,12 +57,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 recipe.addIngredients(response);
                 String ingredientsList = "";
-                int count = recipe.getIngredients().size();
                 for (int i = 0; i < recipe.getIngredients().size(); i++) {
                     ingredientsList += recipe.getIngredients().get(i);
                     ingredientsList += "\n";
                 }
-
 
                 tvRecipeDirections.setText(ingredientsList);
             }
