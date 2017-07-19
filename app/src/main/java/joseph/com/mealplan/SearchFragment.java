@@ -1,6 +1,5 @@
 package joseph.com.mealplan;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,17 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +28,8 @@ import joseph.com.mealplan.model.Recipe;
  * @author Joseph Gardi
  */
 public class SearchFragment extends Fragment {
+
+    public static List<Recipe> bad;
 
     private String TAG = getClass().getName();
     private RecipeClient client;
@@ -89,8 +86,7 @@ public class SearchFragment extends Fragment {
 
         @Override
         public ResultView onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recipe, parent, false);
-            return new ResultView(view);
+            return new ResultView(parent);
         }
 
         @Override
@@ -104,37 +100,6 @@ public class SearchFragment extends Fragment {
         }
     }
 
-
-    public class ResultView extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.tvTitle)
-        TextView tvTitle;
-        @BindView(R.id.ivPic)
-        ImageView ivPic;
-
-        public ResultView(View view) {
-            super(view);
-
-            ButterKnife.bind(this, view);
-        }
-
-        public void bind(final Recipe recipe) {
-            tvTitle.setText(recipe.getTitle());
-
-            Picasso.with(SearchFragment.this.getContext())
-                   .load(recipe.getImageUrl())
-                   .into(ivPic);
-            
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(itemView.getContext(), RecipeDetailsActivity.class);
-                    intent.putExtra("recipe", Parcels.wrap(recipe));
-                    startActivity(intent);
-                }
-            });
-        }
-    }
 
     private void fetchRecipes(String query) {
         client = new RecipeClient();
@@ -155,6 +120,7 @@ public class SearchFragment extends Fragment {
                     }
 
                     resultsAdapter.notifyDataSetChanged();
+                    bad = resultsAdapter.recipes;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

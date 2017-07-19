@@ -1,6 +1,7 @@
 package joseph.com.mealplan.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kcguo on 7/13/17.
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 
 public class Day {
     private String name;
-    private ArrayList<Recipe> meals;
+    private List<Recipe> meals = new ArrayList<>();
 
     public Day(String name) {
         this.name = name;
@@ -22,8 +23,7 @@ public class Day {
         this.name = name;
     }
 
-    public void addMeals(Recipe meal) {
-        meals.add(meal);
+    public List<Recipe> getMeals() {
+        return meals;
     }
-
 }
