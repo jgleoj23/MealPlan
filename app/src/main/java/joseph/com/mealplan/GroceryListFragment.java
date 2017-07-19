@@ -27,6 +27,7 @@ public class GroceryListFragment extends Fragment {
     HashMap<String, String> resultsMap = new HashMap<>();
     SimpleAdapter adapter;
     Hashtable<String, Integer> valid = new Hashtable<String, Integer>();
+    MainActivity mainActivity;
 
     @BindView(R.id.lvGrocery)
     ListView resultsListView;
@@ -35,6 +36,11 @@ public class GroceryListFragment extends Fragment {
     @BindView(R.id.btAdd)
     Button btAdd;
 
+    public static GroceryListFragment newInstance(MainActivity mainActivity) {
+        GroceryListFragment fragment = new GroceryListFragment();
+        fragment.mainActivity = mainActivity;
+        return fragment;
+    }
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

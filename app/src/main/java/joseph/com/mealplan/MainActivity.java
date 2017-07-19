@@ -18,6 +18,10 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = getClass().getName();
     private ViewPager viewPager;
 
+    private MealPlanFragment mealPlanFragment;
+    private FavoritesFragment favoritesFragment;
+    private GroceryListFragment groceryListFragment;
+
     {
         instance = this;
     }
@@ -29,8 +33,12 @@ public class MainActivity extends AppCompatActivity {
         return mealPlanFragment;
     }
 
-    private MealPlanFragment mealPlanFragment;
-    private FavoritesFragment favoritesFragment;
+    public GroceryListFragment getGroceryListFragment() {
+        if (groceryListFragment == null) {
+            groceryListFragment = groceryListFragment.newInstance(MainActivity.this);
+        }
+        return groceryListFragment;
+    }
 
     public FavoritesFragment getFavoritesFragment() {
         if (favoritesFragment == null) {
@@ -64,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     return getMealPlanFragment();
                 case 2:
-                    return new GroceryListFragment();
+                    return getGroceryListFragment();
                 case 3:
                     return getFavoritesFragment();
                 default:
