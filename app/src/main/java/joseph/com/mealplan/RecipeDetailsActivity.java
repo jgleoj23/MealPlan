@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private RecipeClient client;
     Recipe recipe;
+    FavoritesFragment favoritesFragment;
 
     TextView tvRecipeName;
     ImageView ivRecipeImage;
@@ -67,5 +69,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
+    }
+
+    public void addFavorites(View view) {
+        favoritesFragment.resultsAdapter.recipes.add(recipe);
+        favoritesFragment.resultsAdapter.notifyDataSetChanged();
     }
 }
