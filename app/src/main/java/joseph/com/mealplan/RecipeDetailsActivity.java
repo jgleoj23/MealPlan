@@ -51,24 +51,25 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 .into(ivRecipeImage);
 
         client = new RecipeClient();
-        Log.i("tag", recipe.getRecipeId());
-        client.getRecipe(recipe.getRecipeId(), new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                recipe.addIngredients(response);
-                String ingredientsList = "";
-                for (int i = 0; i < recipe.getIngredients().size(); i++) {
-                    ingredientsList += recipe.getIngredients().get(i);
-                    ingredientsList += "\n";
+        if (recipe.getRecipeId() != null) {
+            client.getRecipe(recipe.getRecipeId(), new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    recipe.addIngredients(response);
+                    String ingredientsList = "";
+                    for (int i = 0; i < recipe.getIngredients().size(); i++) {
+                        ingredientsList += recipe.getIngredients().get(i);
+                        ingredientsList += "\n";
+                    }
+
+                    tvRecipeDirections.setText(ingredientsList);
                 }
 
-                tvRecipeDirections.setText(ingredientsList);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                }
+            });
+        }
     }
 }

@@ -25,6 +25,7 @@ public class Recipe {
     public Recipe(String title) {
         this.title = title;
         this.ingredients = new ArrayList<>();
+
     }
 
     public static Recipe fromJson(JSONObject jsonObject) {
