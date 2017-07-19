@@ -43,9 +43,9 @@ public class GroceryListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //Creates a hash table of valid grocery items
-        String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen"};
-        int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 6, 6, 1, 3, 3, 3, 3, 4};
-        for(int i = 0; i != 21; i++){
+        String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen", "chicken", "cheesecake"};
+        int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2};
+        for(int i = 0; i != 23; i++){
             valid.put(nameArray[i], number[i]);
         }
 
@@ -99,7 +99,6 @@ public class GroceryListFragment extends Fragment {
     public void onAddItem(View v) {
         String ItemText = txAdd.getText().toString().toLowerCase(); //Lowercase allows for less stringent grocery inputs
         HashMap<String, String> resultsMap = new HashMap<>();
-
 
         if (valid.containsKey(ItemText)) { //Checks if the inputted text is a valid grocery item
             String capitalized =ItemText.substring(0, 1).toUpperCase() + ItemText.substring(1);
