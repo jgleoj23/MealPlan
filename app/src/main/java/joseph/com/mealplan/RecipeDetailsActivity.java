@@ -3,6 +3,11 @@ package joseph.com.mealplan;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+import android.view.View;
+>>>>>>> 35f2de028154d7fe5186c2223cf83004aed5d51e
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +24,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private RecipeClient client;
     Recipe recipe;
+    FavoritesFragment favoritesFragment;
 
     TextView tvRecipeName;
     ImageView ivRecipeImage;
@@ -66,5 +72,11 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
+    }
+
+    public void addFavorites(View view) {
+        favoritesFragment.resultsAdapter.recipes.add(recipe);
+        
+        favoritesFragment.resultsAdapter.notifyDataSetChanged();
     }
 }

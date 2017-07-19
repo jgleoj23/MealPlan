@@ -30,6 +30,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private MealPlanFragment mealPlanFragment;
+    private FavoritesFragment favoritesFragment;
+
+    public FavoritesFragment getFavoritesFragment() {
+        if (favoritesFragment == null) {
+            favoritesFragment = favoritesFragment.newInstance(MainActivity.this);
+        }
+        return favoritesFragment;
+    }
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     public class MainPagerAdapter extends FragmentPagerAdapter {
 
-        private List<String> tabs = Arrays.asList("Search", "Meal Plan", "Grocery");
+        private List<String> tabs = Arrays.asList("Search", "Meal Plan", "Grocery", "Favorites");
 
         public MainPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -57,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
                     return getMealPlanFragment();
                 case 2:
                     return new GroceryListFragment();
+                case 3:
+                    return getFavoritesFragment();
                 default:
                     throw new RuntimeException("position " + position + " is out of bounds");
             }
@@ -64,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
