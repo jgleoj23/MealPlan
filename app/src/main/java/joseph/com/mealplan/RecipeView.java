@@ -1,11 +1,10 @@
 package joseph.com.mealplan;
 
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -19,32 +18,32 @@ import joseph.com.mealplan.model.Recipe;
 /**
  * @author Joseph Gardi
  */
-public class ResultView extends RecyclerView.ViewHolder {
+public class RecipeView extends RelativeLayout {
 
     @BindView(R.id.tvTitle)
     TextView tvTitle;
     @BindView(R.id.ivPic)
     ImageView ivPic;
 
-    public ResultView(ViewGroup parent) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recipe, parent, false));
-
-        ButterKnife.bind(this, itemView);
+    public RecipeView(Context context) {
+        super(context);
+        inflate(getContext(), R.layout.item_recipe, this);
+        ButterKnife.bind(this);
     }
 
     public void bind(final Recipe recipe) {
         tvTitle.setText(recipe.getTitle());
 
-        Picasso.with(itemView.getContext())
+        Picasso.with(getContext())
                .load(recipe.getImageUrl())
                .into(ivPic);
 
-        itemView.setOnClickListener(new View.OnClickListener() {
+        setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(itemView.getContext(), RecipeDetailsActivity.class);
+                Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
                 intent.putExtra("recipe", Parcels.wrap(recipe));
-                itemView.getContext().startActivity(intent);
+                getContext().startActivity(intent);
             }
         });
     }

@@ -3,7 +3,6 @@ package joseph.com.mealplan;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,7 +47,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                .into(ivRecipeImage);
 
         client = new RecipeClient();
-        Log.i("tag", recipe.getRecipeId());
+//        Log.i("tag", recipe.getRecipeId());
         client.getRecipe(recipe.getRecipeId(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

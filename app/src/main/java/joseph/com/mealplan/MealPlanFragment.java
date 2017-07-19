@@ -1,7 +1,9 @@
 package joseph.com.mealplan;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,16 +50,7 @@ public class MealPlanFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (addingRecipe != null) {
-            // TODO add it and addingRecipe = null
-        }
-    }
-
-    Recipe addingRecipe;
+    private Recipe addingRecipe;
 
     public void addRecipe(Recipe recipe) {
         addingRecipe = recipe;
@@ -124,10 +117,44 @@ public class MealPlanFragment extends Fragment {
 
                 return view;
             } else {
-                Recipe recipe = (Recipe) item;
-                ResultView resultView = new ResultView(parent);
-                resultView.bind(recipe);
-                return resultView.itemView;
+                final Recipe recipe = (Recipe) item;
+                RecipeView recipeView = new RecipeView(getContext());
+
+                recipeView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                        alert.setTitle("Alert!!");
+                        alert.setMessage("Are you sure to delete record");
+                        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                for (Day day : days) {
+                                    if (day.getMeals().remove(recipe)) {
+                                        break;
+                                    }
+                                }
+                                MealAdapter.this.notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        });
+                        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        alert.show();
+
+                        return true;
+                    }
+                });
+
+                recipeView.bind(recipe);
+                return recipeView;
             }
         }
     }
