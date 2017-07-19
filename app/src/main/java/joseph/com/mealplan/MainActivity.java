@@ -90,4 +90,8 @@ public class MainActivity extends AppCompatActivity {
 //        getMealPlanFragment().addRecipe(recipe);
 //        viewPager.setCurrentItem(1);
     }
+
+    public void favorite(Recipe recipe) {
+        Log.i(TAG, "add to favorites");
+    }
 }
