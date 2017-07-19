@@ -32,7 +32,6 @@
         android:layout_width="wrap_content"
         android:layout_height="350dp"
         android:scrollbars = "vertical"
-        android:text="@string/test_recipe"
         android:layout_below="@+id/ivRecipeImage"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"

@@ -103,7 +103,7 @@ public class SearchFragment extends Fragment {
 
     private void fetchRecipes(String query) {
         client = new RecipeClient();
-        client.getRecipes(query, new JsonHttpResponseHandler() {
+        client.searchRecipes(query, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.i(TAG, "result:");

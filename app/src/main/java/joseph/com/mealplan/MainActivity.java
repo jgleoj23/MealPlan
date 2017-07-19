@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     public class MainPagerAdapter extends FragmentPagerAdapter {
 
-        private List<String> tabs = Arrays.asList("Search", "Meal Plan");
+        private List<String> tabs = Arrays.asList("Search", "Meal Plan", "Grocery");
 
         public MainPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
                     return new SearchFragment();
                 case 1:
                     return getMealPlanFragment();
+                case 2:
+                    return new GroceryListFragment();
                 default:
                     throw new RuntimeException("position " + position + " is out of bounds");
             }
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override

@@ -20,7 +20,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".RecipeDetailsActivity" />
-        <activity android:name=".FavoritesFragments"></activity>
     </application>
 
 </manifest>

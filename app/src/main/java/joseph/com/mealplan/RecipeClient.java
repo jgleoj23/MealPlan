@@ -19,11 +19,19 @@ public class RecipeClient {
         return API_BASE_URL + relativeUrl;
     }
 
-    public void getRecipes(final String query, AsyncHttpResponseHandler handler) {
+    public void searchRecipes(final String query, AsyncHttpResponseHandler handler) {
         String url = getApiUrl("search");
         RequestParams params = new RequestParams();
         params.put("key", "0baf87954f134397696ae1c2da1ce965");
         params.put("q", query);
+        client.get(url, params, handler);
+    }
+
+    public void getRecipe(String recipe, AsyncHttpResponseHandler handler) {
+        String url = getApiUrl("get");
+        RequestParams params = new RequestParams();
+        params.put("key", "0baf87954f134397696ae1c2da1ce965");
+        params.put("rId", recipe);
         client.get(url, params, handler);
     }
 }
