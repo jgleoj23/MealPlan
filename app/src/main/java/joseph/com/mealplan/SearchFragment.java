@@ -80,18 +80,18 @@ public class SearchFragment extends Fragment {
     }
 
 
-    public class ResultsAdapter extends RecyclerView.Adapter<ViewHolder> {
+    public class ResultsAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
         private List<Recipe> recipes = new ArrayList<>();
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder();
+        public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new RecipeViewHolder(new RecipeView(getContext()));
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.recipeView.bind(recipes.get(position));
+        public void onBindViewHolder(RecipeViewHolder holder, int position) {
+            holder.getRecipeView().bind(recipes.get(position));
         }
 
         @Override
@@ -100,14 +100,6 @@ public class SearchFragment extends Fragment {
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        private RecipeView recipeView;
-
-        public ViewHolder() {
-            super(new RecyclerView(getContext()));
-        }
-    }
 
 
     private void fetchRecipes(String query) {
