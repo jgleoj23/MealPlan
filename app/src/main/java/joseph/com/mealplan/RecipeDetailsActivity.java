@@ -16,6 +16,8 @@ import org.parceler.Parcels;
 import cz.msebera.android.httpclient.Header;
 import joseph.com.mealplan.model.Recipe;
 
+import static joseph.com.mealplan.MainActivity.instance;
+
 public class RecipeDetailsActivity extends AppCompatActivity {
 
     private RecipeClient client;
@@ -45,7 +47,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         Picasso.with(this)
                .load(recipe.getImageUrl())
-               .fit()
+               .fit().centerCrop()
                .into(ivRecipeImage);
 
         client = new RecipeClient();
@@ -76,5 +78,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         favoritesFragment.resultsAdapter.recipes.add(recipe);
         
         favoritesFragment.resultsAdapter.notifyDataSetChanged();
+    }
+
+    public void addMealPlan(View view) {
+        instance.plan(recipe);
+        finish();
     }
 }

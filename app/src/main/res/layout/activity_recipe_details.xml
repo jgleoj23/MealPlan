@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="17dp"
         app:srcCompat="@android:drawable/ic_input_add"
+        android:onClick="addMealPlan"
         android:layout_marginStart="135dp"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/tvRecipeName" />
