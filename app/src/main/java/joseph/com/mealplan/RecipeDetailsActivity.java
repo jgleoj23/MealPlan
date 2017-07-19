@@ -1,20 +1,17 @@
 package joseph.com.mealplan;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.parceler.Parcels;
-
-import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 import joseph.com.mealplan.model.Recipe;
@@ -23,6 +20,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private RecipeClient client;
     Recipe recipe;
+    FavoritesFragment favoritesFragment;
 
     TextView tvRecipeName;
     ImageView ivRecipeImage;
@@ -45,10 +43,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         tvRecipeName.setText(recipe.getTitle());
 
-        Glide.with(this)
-                .load(recipe.getImageUrl())
-                .centerCrop()
-                .into(ivRecipeImage);
+        Picasso.with(this)
+               .load(recipe.getImageUrl())
+               .fit()
+               .into(ivRecipeImage);
 
         client = new RecipeClient();
         if (recipe.getRecipeId() != null) {
@@ -65,11 +63,18 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                     tvRecipeDirections.setText(ingredientsList);
                 }
 
+                //
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
                 }
             });
         }
+    }
+
+    public void addFavorites(View view) {
+        favoritesFragment.resultsAdapter.recipes.add(recipe);
+        
+        favoritesFragment.resultsAdapter.notifyDataSetChanged();
     }
 }
