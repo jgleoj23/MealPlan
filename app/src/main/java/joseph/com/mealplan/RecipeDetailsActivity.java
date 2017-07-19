@@ -16,6 +16,8 @@ import org.parceler.Parcels;
 import cz.msebera.android.httpclient.Header;
 import joseph.com.mealplan.model.Recipe;
 
+import static joseph.com.mealplan.MainActivity.instance;
+
 public class RecipeDetailsActivity extends AppCompatActivity {
 
     private RecipeClient client;
@@ -45,34 +47,42 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         Picasso.with(this)
                .load(recipe.getImageUrl())
-               .fit()
+               .fit().centerCrop()
                .into(ivRecipeImage);
 
         client = new RecipeClient();
-//        Log.i("tag", recipe.getRecipeId());
-        client.getRecipe(recipe.getRecipeId(), new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                recipe.addIngredients(response);
-                String ingredientsList = "";
-                for (int i = 0; i < recipe.getIngredients().size(); i++) {
-                    ingredientsList += recipe.getIngredients().get(i);
-                    ingredientsList += "\n";
+        if (recipe.getRecipeId() != null) {
+            client.getRecipe(recipe.getRecipeId(), new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    recipe.addIngredients(response);
+                    String ingredientsList = "";
+                    for (int i = 0; i < recipe.getIngredients().size(); i++) {
+                        ingredientsList += recipe.getIngredients().get(i);
+                        ingredientsList += "\n";
+                    }
+
+                    tvRecipeDirections.setText(ingredientsList);
                 }
 
-                tvRecipeDirections.setText(ingredientsList);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-            }
-        });
+                //
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                }
+            });
+        }
     }
 
     public void addFavorites(View view) {
-        favoritesFragment.resultsAdapter.recipes.add(recipe);
+        instance.favorite(recipe);
+        //favoritesFragment.resultsAdapter.recipes.add(recipe);
         
-        favoritesFragment.resultsAdapter.notifyDataSetChanged();
+        //favoritesFragment.resultsAdapter.notifyDataSetChanged();
+    }
+
+    public void addMealPlan(View view) {
+        instance.plan(recipe);
+        finish();
     }
 }
