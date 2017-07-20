@@ -42,16 +42,15 @@ public class GroceryListFragment extends Fragment {
         return fragment;
     }
 
-
+    String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen", "chicken", "cheesecake", "sugar"};
+    int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2, 2};
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_grocery_list, container, false);
         ButterKnife.bind(this, view);
         super.onCreate(savedInstanceState);
 
         //Creates a hash table of valid grocery items
-        String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen", "chicken", "cheesecake"};
-        int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2};
-        for(int i = 0; i != 23; i++){
+        for(int i = 0; i != 24; i++){
             valid.put(nameArray[i], number[i]);
         }
 
@@ -134,6 +133,47 @@ public class GroceryListFragment extends Fragment {
 
         else{
             Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void onImportGrocery(String ingredient) {
+        HashMap<String, String> resultsMap = new HashMap<>();
+        if (valid.containsKey(ingredient)) { //Checks if the inputted text is a valid grocery item
+            String capitalized =ingredient.substring(0, 1).toUpperCase() + ingredient.substring(1);
+            try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
+                for(int i = 0; i != listItems.size() + 1; i++){
+                    resultsMap = listItems.get(i);
+                    String aisle = resultsMap.get("First Line");
+                    if(aisle.equals("Aisle #" + valid.get(ingredient))){
+                        String old = resultsMap.get("Second Line");
+                        resultsMap.put("Second Line", old + "-" + capitalized + "\n");
+                        adapter.notifyDataSetChanged();
+                        txAdd.setText("");
+                        break;
+                    }
+                }
+            }
+
+            catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
+                resultsMap = new HashMap<>();
+                resultsMap.put("First Line", "Aisle #" + valid.get(ingredient));
+                resultsMap.put("Second Line", "-" + capitalized + "\n");
+                listItems.add(resultsMap);
+                adapter.notifyDataSetChanged();
+                txAdd.setText("");
+            }
+        }
+    }
+
+    public void addGroceries(ArrayList<String> ingredients) {
+        for(int i = 0; i != ingredients.size(); i++){
+            String ingredient = ingredients.get(i).toLowerCase();
+            for(int j = 0; j != 24; j++){
+                if(ingredient.contains(nameArray[j])){
+                    onImportGrocery(nameArray[j]);
+                    break;
+                }
+            }
         }
     }
 }
