@@ -1,5 +1,7 @@
 package joseph.com.mealplan;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -49,6 +51,16 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                .load(recipe.getImageUrl())
                .fit().centerCrop()
                .into(ivRecipeImage);
+
+        ivRecipeImage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse(recipe.getSourceUrl()));
+                startActivity(intent);
+            }
+        });
 
         client = new RecipeClient();
         if (recipe.getRecipeId() != null) {
