@@ -21,11 +21,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import joseph.com.mealplan.model.Grocery;
 
 public class GroceryListFragment extends Fragment {
     List<HashMap<String, String>> listItems;
+    // Use Map as the type
     HashMap<String, String> resultsMap = new HashMap<>();
     SimpleAdapter adapter;
+    // You don't need Hashtable unless you are using threads
     Hashtable<String, Integer> valid = new Hashtable<String, Integer>();
 
     @BindView(R.id.lvGrocery)
@@ -35,6 +39,8 @@ public class GroceryListFragment extends Fragment {
     @BindView(R.id.btAdd)
     Button btAdd;
 
+    private Realm realm = Realm.getDefaultInstance();
+
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +49,10 @@ public class GroceryListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //Creates a hash table of valid grocery items
-        String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen", "chicken", "cheesecake"};
+        // Use Arrays.listOf and then an iterator
+        String[] nameArray = {"Ham", "Cheese", "Pineapple", "Milk", "Bread", "Kiwi", "Butter", "Rice", "Pasta",
+                "Tomato", "Steak", "French fries", "Avocado", "Cookies", "Cake", "Water", "Onions", "Carrots",
+                "Garlic", "Spinach", "Ramen", "Chicken", "Cheesecake"};
         int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2};
         for(int i = 0; i != 23; i++){
             valid.put(nameArray[i], number[i]);
@@ -51,17 +60,25 @@ public class GroceryListFragment extends Fragment {
 
         //Sets up adapter to allow for Aisle #: grocery layout
         listItems = new ArrayList<>();
+
+
         adapter = new SimpleAdapter(getContext(), listItems, R.layout.item_grocery,
                 new String[]{"First Line", "Second Line"},
                 new int[]{R.id.txAisle, R.id.txGroc});
         resultsListView.setAdapter(adapter);
         setupListViewListener();
+
+        for (Grocery grocery : realm.where(Grocery.class).findAll()) {
+            showItem(grocery.getName());
+        }
+
         return view;
     }
 
 
 
     private void setupListViewListener(){
+        // Use TAG. This is not MainActivity
         Log.i("MainActivity", "Setting Up List View");
         resultsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
 
@@ -90,44 +107,56 @@ public class GroceryListFragment extends Fragment {
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddItem(v);
+                String itemText = txAdd.getText().toString();
+                String capitalized = itemText.substring(0, 1).toUpperCase() + itemText.substring(1).toLowerCase();
+                if (valid.containsKey(capitalized)) {
+                    saveItem(capitalized);
+                    showItem(capitalized);
+                } else {
+                    Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void saveItem(final String itemText) {
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.insert(new Grocery(itemText));
             }
         });
     }
 
 
-    public void onAddItem(View v) {
-        String ItemText = txAdd.getText().toString().toLowerCase(); //Lowercase allows for less stringent grocery inputs
+    public void showItem(String itemText) {
+        // Use Map and the IDE says that initializing this is redundant.
         HashMap<String, String> resultsMap = new HashMap<>();
 
-        if (valid.containsKey(ItemText)) { //Checks if the inputted text is a valid grocery item
-            String capitalized =ItemText.substring(0, 1).toUpperCase() + ItemText.substring(1);
-            try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
-                for(int i = 0; i != listItems.size() + 1; i++){
-                    resultsMap = listItems.get(i);
-                    String aisle = resultsMap.get("First Line");
-                    if(aisle.equals("Aisle #" + valid.get(ItemText))){
-                        String old = resultsMap.get("Second Line");
-                        resultsMap.put("Second Line", old + "-" + capitalized + "\n");
-                        adapter.notifyDataSetChanged();
-                        txAdd.setText("");
-                        break;
-                    }
+        // Never use try catch for normal control flow. That is like using GOTO
+        // This is what if statements are for
+        try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
+            // Use an iterator.
+            for(int i = 0; i != listItems.size() + 1; i++){
+                resultsMap = listItems.get(i);
+                String aisle = resultsMap.get("First Line");
+                if(aisle.equals("Aisle #" + valid.get(itemText))){
+                    String old = resultsMap.get("Second Line");
+                    resultsMap.put("Second Line", old + "-" + itemText+ "\n");
+                    adapter.notifyDataSetChanged();
+                    txAdd.setText("");
+                    break;
                 }
-            }
-
-            catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
-                resultsMap = new HashMap<>();
-                resultsMap.put("First Line", "Aisle #" + valid.get(ItemText));
-                resultsMap.put("Second Line", "-" + capitalized + "\n");
-                listItems.add(resultsMap);
-                adapter.notifyDataSetChanged();
-                txAdd.setText("");
             }
         }
 
-        else{
-            Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
+        catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
+            resultsMap = new HashMap<>();
+            resultsMap.put("First Line", "Aisle #" + valid.get(itemText));
+            resultsMap.put("Second Line", "-" + itemText + "\n");
+            listItems.add(resultsMap);
+            adapter.notifyDataSetChanged();
+            txAdd.setText("");
         }
     }
 }

@@ -1,15 +1,24 @@
 package joseph.com.mealplan.model;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
 
 /**
  * Created by kcguo on 7/13/17.
  */
+@RealmClass
+public class Day extends RealmObject {
 
-public class Day {
+    @PrimaryKey
     private String name;
-    private List<Recipe> meals = new ArrayList<>();
+
+    public Day() {}
+
+    private RealmList<Recipe> meals = new RealmList<>();
 
     public Day(String name) {
         this.name = name;

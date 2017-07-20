@@ -42,7 +42,7 @@ public class RecipeView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-                intent.putExtra("recipe", Parcels.wrap(recipe));
+                intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
                 getContext().startActivity(intent);
             }
         });

@@ -11,39 +11,68 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import joseph.com.mealplan.model.Day;
 import joseph.com.mealplan.model.Recipe;
 
 public class MealPlanFragment extends Fragment {
 
-    private List<Day> days = Arrays.asList(new Day("Sunday"), new Day("Monday"));
+    private List<Day> days = new ArrayList<>();
     private LayoutInflater inflater;
+    private Realm realm = Realm.getDefaultInstance();
 
     @BindView(R.id.lvMealPlan)
     ListView lvMealPlan;
 
     MainActivity mainActivity;
 
+    public MealPlanFragment() {
+        for (String dayName : Arrays.asList("Sunday", "Monday", "Tuesday")) {
+            Day day = realm.where(Day.class).equalTo("name", dayName).findFirst();
+            if (day == null) {
+                day = new Day(dayName);
+                final Day finalDay = day;
+                realm.executeTransactionAsync(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.insert(finalDay);
+                    }
+                });
+            }
+
+            days.add(day);
+        }
+    }
+
 
     public static MealPlanFragment newInstance(MainActivity mainActivity) {
         MealPlanFragment fragment = new MealPlanFragment();
         fragment.mainActivity = mainActivity;
+
+
         return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         this.inflater = inflater;
         View view = inflater.inflate(R.layout.fragment_meal_plan, container, false);
         ButterKnife.bind(this, view);
 
-        days.get(0).getMeals().add(new Recipe("Hot dog"));
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                days.get(0).getMeals().add(new Recipe("Hot dog"));
+            }
+        });
 
         lvMealPlan.setAdapter(new MealAdapter());
 
@@ -111,6 +140,12 @@ public class MealPlanFragment extends Fragment {
                         if (addingRecipe != null) {
                             day.getMeals().add(addingRecipe);
                             addingRecipe = null;
+                            Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(day);
+                                }
+                            });
                         }
                     }
                 });

@@ -11,6 +11,7 @@ import android.util.Log;
 import java.util.Arrays;
 import java.util.List;
 
+import io.realm.Realm;
 import joseph.com.mealplan.model.Recipe;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Realm.init(this);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void plan(Recipe recipe) {
         Log.i(TAG, "start plan");
-//        getMealPlanFragment().addRecipe(recipe);
-//        viewPager.setCurrentItem(1);
+        getMealPlanFragment().addRecipe(recipe);
+        viewPager.setCurrentItem(1);
     }
 }

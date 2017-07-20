@@ -7,24 +7,34 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
 
 /**
  * @author Joseph Gardi
  */
-@Parcel
-public class Recipe {
+@RealmClass
+@Parcel(value = Parcel.Serialization.BEAN, analyze = { Recipe.class })
+public class Recipe extends RealmObject {
+
+    @PrimaryKey
+    private long id;
+
     private String title;
     private String imageUrl;
     private String sourceUrl;
     private String recipeId;
-    private ArrayList<String> ingredients;
+    private RealmList<Grocery> ingredients;
 
     public Recipe() {}
 
     public Recipe(String title) {
         this.title = title;
-        this.ingredients = new ArrayList<>();
+//        this.ingredients = new ArrayList<>();
     }
 
     public static Recipe fromJson(JSONObject jsonObject) {
@@ -50,14 +60,14 @@ public class Recipe {
             JSONArray ingredientArray = jsonObject.getJSONObject("recipe").getJSONArray("ingredients");
             int count = ingredientArray.length();
             for (int i = 0; i < ingredientArray.length(); i++) {
-                this.ingredients.add(ingredientArray.getString(i));
+                this.ingredients.add(new Grocery(ingredientArray.getString(i)));
                 Log.i("tag", "adding to ingredients");
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-    public ArrayList<String> getIngredients() {
+    public List<Grocery> getIngredients() {
         return ingredients;
     }
     public String getSourceUrl() {
@@ -79,5 +89,13 @@ public class Recipe {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
