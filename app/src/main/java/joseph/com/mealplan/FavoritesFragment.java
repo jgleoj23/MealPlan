@@ -2,6 +2,7 @@ package joseph.com.mealplan;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,7 @@ import joseph.com.mealplan.model.Recipe;
 public class FavoritesFragment extends Fragment {
     @BindView(R.id.rvFavorites)
     RecyclerView rvFavorites;
-    ResultsAdapter resultsAdapter;
+    ResultsAdapter resultsAdapter = new ResultsAdapter();
 
     MainActivity mainActivity;
 
@@ -33,14 +34,19 @@ public class FavoritesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_favorites, container, false);
         ButterKnife.bind(this, view);
         super.onCreate(savedInstanceState);
-        resultsAdapter = new ResultsAdapter();
         rvFavorites.setAdapter(resultsAdapter);
+        rvFavorites.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
+    }
+
+    public void addFavorite(Recipe recipe) {
+        resultsAdapter.recipes.add(recipe);
+        resultsAdapter.notifyDataSetChanged();
     }
 
     public class ResultsAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
-        public List<Recipe> recipes = new ArrayList<>();
+        private List<Recipe> recipes = new ArrayList<>();
 
         @Override
         public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

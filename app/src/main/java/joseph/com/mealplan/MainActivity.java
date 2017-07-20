@@ -95,11 +95,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void plan(Recipe recipe) {
         Log.i(TAG, "start plan");
-//        getMealPlanFragment().addRecipe(recipe);
-//        viewPager.setCurrentItem(1);
+        getMealPlanFragment().addRecipe(recipe);
+        viewPager.setCurrentItem(1);
     }
 
     public void favorite(Recipe recipe) {
         Log.i(TAG, "add to favorites");
+        getFavoritesFragment().addFavorite(recipe);
+        viewPager.setCurrentItem(3);
     }
 }
