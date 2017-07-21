@@ -1,6 +1,7 @@
 package joseph.com.mealplan;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -49,15 +50,15 @@ public class GroceryListFragment extends Fragment {
         return fragment;
     }
 
-    String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen", "chicken", "cheesecake", "sugar"};
-    int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2, 2};
+    String[] nameArray = {"sour cream", "olive oil", "canola oil", "black pepper", "vanilla extract", "cream cheese", "sour cream", "graham cracker", "cocoa", "salt", "chocolate", "ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onion", "carrot", "garlic", "spinach", "ramen", "chicken", "cheesecake", "sugar", "egg", "lemon", "flour", "potato"};
+    int[] number = {1, 4, 4, 3, 2, 1, 1, 2, 2, 2, 2, 5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2, 2, 1, 3, 2, 3};
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_grocery_list, container, false);
         ButterKnife.bind(this, view);
 
         //Creates a hash table of valid grocery items
-        for(int i = 0; i != 24; i++){
+        for(int i = 0; i != 39; i++){
             valid.put(nameArray[i], number[i]);
         }
 
@@ -112,7 +113,7 @@ public class GroceryListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String itemText = txAdd.getText().toString();
-                String capitalized = itemText.substring(0, 1).toUpperCase() + itemText.substring(1).toLowerCase();
+                String capitalized = GroceryListFragment.this.capitalize(itemText);
                 if (valid.containsKey(capitalized)) {
                     saveItem(capitalized);
                     showItem(capitalized);
@@ -121,6 +122,11 @@ public class GroceryListFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @NonNull
+    private String capitalize(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
     private void saveItem(final String itemText) {
@@ -228,13 +234,14 @@ public class GroceryListFragment extends Fragment {
             }
     }
 
-    public void addGroceries(List<Grocery> ingredients) {
-        for(int i = 0; i != ingredients.size(); i++){
-            String ingredient = ingredients.get(i).getName().toLowerCase();
-            for(int j = 0; j != 24; j++){
-                if(ingredient.contains(nameArray[j])){
-                    onImportGrocery(nameArray[j]);
-                    break;
+
+    public void addGroceries(List<Grocery> groceries) {
+        for (Grocery grocery : groceries) {
+            String name = capitalize(grocery.getName());
+            for (String ingredientName : nameArray) {
+                if (name.contains(ingredientName)) {
+                    onImportGrocery(ingredientName);
+                    return;
                 }
             }
         }
