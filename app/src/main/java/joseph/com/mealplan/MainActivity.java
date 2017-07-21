@@ -103,5 +103,6 @@ public class MainActivity extends AppCompatActivity {
     public void favorite(Recipe recipe) {
         Log.i(TAG, "add to favorites");
         getFavoritesFragment().addFavorite(recipe);
+
     }
 }
