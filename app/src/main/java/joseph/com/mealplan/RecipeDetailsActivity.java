@@ -8,6 +8,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
@@ -88,6 +89,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     public void addFavorites(View view) {
         instance.favorite(recipe);
+        Toast.makeText(getApplicationContext(), "Recipe added to favorites", Toast.LENGTH_SHORT).show();
     }
 
     public void addMealPlan(View view) {

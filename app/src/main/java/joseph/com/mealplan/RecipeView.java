@@ -36,6 +36,7 @@ public class RecipeView extends RelativeLayout {
 
         Picasso.with(getContext())
                .load(recipe.getImageUrl())
+                .fit().centerCrop()
                .into(ivPic);
 
         setOnClickListener(new View.OnClickListener() {
