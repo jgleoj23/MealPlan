@@ -82,12 +82,13 @@ public class GroceryListFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i("MainActivity", "Item Removed:" + i);
                 resultsMap = listItems.get(i);
-                listItems.remove(i);
+                final String old = resultsMap.get("Second Line");
+                resultsMap.put("Second Line", "");
                 adapter.notifyDataSetChanged();
                 View.OnClickListener undoDelete = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) { //Re-adds the deleted entry
-                        listItems.add(0, resultsMap);
+                        resultsMap.put("Second Line", old);
                         adapter.notifyDataSetChanged();
                     }
                 };
