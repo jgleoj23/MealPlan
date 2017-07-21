@@ -120,6 +120,7 @@ public class GroceryListFragment extends Fragment {
                             break;
                         }
                         else{
+                            Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
                             break;
                         }
                     }
@@ -132,12 +133,24 @@ public class GroceryListFragment extends Fragment {
                 resultsMap.put("Second Line", "-" + capitalized + "\n");
                 listItems.add(resultsMap);
                 adapter.notifyDataSetChanged();
+                for(int i = 0; i != listItems.size(); i++){
+                    listItems.get(i).get("First Line");
+                }
                 txAdd.setText("");
             }
         }
 
         else{
             Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void sortList(List<HashMap<String, String>> listItems) {
+        HashMap<String, String> resultsMap = new HashMap<>();
+        for(int i = 0; i != listItems.size(); i++){
+            resultsMap.put("First Line", "Aisle #"+i+1);
+            resultsMap.put("Second Line", null);
+            listItems.add(i, resultsMap);
         }
     }
 
@@ -154,6 +167,7 @@ public class GroceryListFragment extends Fragment {
                             resultsMap.put("Second Line", old + "-" + capitalized + "\n");
                             adapter.notifyDataSetChanged();
                             txAdd.setText("");
+                            sortList(listItems);
                             break;
                         }
                         else{
