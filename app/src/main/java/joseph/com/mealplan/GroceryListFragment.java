@@ -15,11 +15,16 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,9 +32,9 @@ import io.realm.Realm;
 import joseph.com.mealplan.model.Grocery;
 
 public class GroceryListFragment extends Fragment {
-    List<HashMap<String, String>> listItems;
+    List<Map<String, String>> listItems;
     // Use Map as the type
-    HashMap<String, String> resultsMap = new HashMap<>();
+    Map<String, String> resultsMap = new HashMap<>();
     SimpleAdapter adapter;
     // You don't need Hashtable unless you are using threads
     Hashtable<String, Integer> valid = new Hashtable<String, Integer>();
@@ -50,7 +55,7 @@ public class GroceryListFragment extends Fragment {
         return fragment;
     }
 
-    String[] nameArray = {"sour cream", "olive oil", "canola oil", "black pepper", "vanilla extract", "cream cheese", "sour cream", "graham cracker", "cocoa", "salt", "chocolate", "ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onion", "carrot", "garlic", "spinach", "ramen", "chicken", "cheesecake", "sugar", "egg", "lemon", "flour", "potato"};
+    String[] nameArray = {"Sour cream", "Olive oil", "Canola oil", "Black pepper", "Vanilla extract", "Cream cheese", "Sour cream", "Graham cracker", "Cocoa", "Salt", "Chocolate", "Ham", "Cheese", "Pineapple", "Milk", "Bread", "Kiwi", "Butter", "Rice", "Pasta", "Tomato", "Steak", "French fries", "Avocado", "Cookies", "Cake", "Water", "Onion", "Carrot", "Garlic", "Spinach", "Ramen", "Chicken", "Cheesecake", "Sugar", "Egg", "Lemon", "Flour", "Potato"};
     int[] number = {1, 4, 4, 3, 2, 1, 1, 2, 2, 2, 2, 5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2, 2, 1, 3, 2, 3};
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,16 +117,20 @@ public class GroceryListFragment extends Fragment {
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String itemText = txAdd.getText().toString();
-                String capitalized = GroceryListFragment.this.capitalize(itemText);
-                if (valid.containsKey(capitalized)) {
-                    saveItem(capitalized);
-                    showItem(capitalized);
-                } else {
-                    Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
-                }
+                addGrocery(txAdd.getText().toString());
+
             }
         });
+    }
+
+    public void addGrocery(String name) {
+        String capitalized = GroceryListFragment.this.capitalize(name);
+        if (valid.containsKey(capitalized)) {
+            saveItemToDB(capitalized);
+            showItem(capitalized);
+        } else {
+            Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
+        }
     }
 
     @NonNull
@@ -129,7 +138,7 @@ public class GroceryListFragment extends Fragment {
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
-    private void saveItem(final String itemText) {
+    private void saveItemToDB(final String itemText) {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -139,54 +148,54 @@ public class GroceryListFragment extends Fragment {
     }
 
 
-    public void showItem(String itemText) {
-        // Never use try catch for normal control flow. That is like using GOTO
-        for (Map<String, String> resultsMap : listItems) {
-            String aisle = resultsMap.get("First Line");
-            if(aisle.equals("Aisle #" + valid.get(itemText))) {
-                String old = resultsMap.get("Second Line");
-                if(!old.contains(itemText)){
-                    resultsMap.put("Second Line", old + "-" + itemText + "\n");
-                    adapter.notifyDataSetChanged();
-                    txAdd.setText("");
-                }  else {
-                    Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
-                }
-
-                // Aisle has been found. Were done!
-                return;
+    public void showItem(final String itemText) {
+         Map<String, String> resultsMap = Iterables.tryFind(listItems, new Predicate<Map<String, String>>() {
+            @Override
+            public boolean apply(@Nullable Map<String, String> resultsMap) {
+                return resultsMap.get("First Line").equals("Aisle #" + valid.get(itemText));
             }
-        }
-        // create it
-        resultsMap = new HashMap<String, String>();
+        }).orNull();
 
-        resultsMap.put("First Line", "Aisle #" + valid.get(itemText));
-        resultsMap.put("Second Line", "-" + itemText+ "\n");
-        boolean changed = false;
-        if(listItems.size() == 0){
-            listItems.add(resultsMap);
+        if (resultsMap != null) {
+            String old = resultsMap.get("Second Line");
+            if(!old.contains(itemText)) {
+                resultsMap.put("Second Line", old + "-" + itemText + "\n");
+                adapter.notifyDataSetChanged();
+                txAdd.setText("");
+            } else {
+                Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
+            }
         } else {
-            for (int i = 0; i != listItems.size(); i++) {
-                String number = listItems.get(i).get("First Line");
-                int x = Integer.valueOf(number.substring(number.indexOf("#") + 1));
-                if (x > valid.get(itemText)) {
-                    listItems.add(i, resultsMap);
-                    changed = true;
-                    break;
+            resultsMap = new HashMap<>();
+
+            resultsMap.put("First Line", "Aisle #" + valid.get(itemText));
+            resultsMap.put("Second Line", "-" + itemText+ "\n");
+            boolean changed = false;
+            if(listItems.size() == 0) {
+                listItems.add(resultsMap);
+            } else {
+                for (int i = 0; i != listItems.size(); i++) {
+                    String number = listItems.get(i).get("First Line");
+                    int x = Integer.valueOf(number.substring(number.indexOf("#") + 1));
+                    if (x > valid.get(itemText)) {
+                        listItems.add(i, resultsMap);
+                        changed = true;
+                        break;
+                    }
+                }
+
+                if (!changed) {
+                    listItems.add(resultsMap);
                 }
             }
-
-            if (!changed) {
-                listItems.add(resultsMap);
-            }
+            adapter.notifyDataSetChanged();
+            txAdd.setText("");
         }
-        adapter.notifyDataSetChanged();
-        txAdd.setText("");
     }
 
 
     public void onImportGrocery(String ingredient) {
-        HashMap<String, String> resultsMap = new HashMap<>();
+        Map<String, String> resultsMap = new HashMap<>();
         String capitalized =ingredient.substring(0, 1).toUpperCase() + ingredient.substring(1);
         try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
                 for(int i = 0; i != listItems.size() + 1; i++){
