@@ -42,15 +42,15 @@ public class GroceryListFragment extends Fragment {
         return fragment;
     }
 
-    String[] nameArray = {"sour cream", "olive oil", "canola oil", "black pepper", "vanilla extract", "cream cheese", "sour cream", "graham cracker", "cocoa", "salt", "chocolate", "ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onion", "carrot", "garlic", "spinach", "ramen", "chicken", "cheesecake", "sugar", "egg", "lemon", "flour", "potato"};
-    int[] number = {1, 4, 4, 3, 2, 1, 1, 2, 2, 2, 2, 5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2, 2, 1, 3, 2, 3};
+    String[] nameArray = {"sour cream", "olive oil", "canola oil", "black pepper", "vanilla extract", "cream cheese", "sour cream", "graham cracker", "cocoa", "salt", "chocolate", "ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onion", "carrot", "garlic", "spinach", "ramen", "chicken", "cheesecake", "sugar", "egg", "lemon", "flour", "potato", "bacon"};
+    int[] number = {1, 4, 4, 3, 2, 1, 1, 2, 2, 2, 2, 5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2, 2, 1, 3, 2, 3, 5};
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_grocery_list, container, false);
         ButterKnife.bind(this, view);
         super.onCreate(savedInstanceState);
 
         //Creates a hash table of valid grocery items
-        for(int i = 0; i != 39; i++){
+        for(int i = 0; i != 40; i++){
             valid.put(nameArray[i], number[i]);
         }
 
@@ -214,7 +214,7 @@ public class GroceryListFragment extends Fragment {
     public void addGroceries(ArrayList<String> ingredients) {
         for(int i = 0; i != ingredients.size(); i++){
             String ingredient = ingredients.get(i).toLowerCase();
-            for(int j = 0; j != 39; j++){
+            for(int j = 0; j != 40; j++){
                 if(ingredient.contains(nameArray[j])){
                     onImportGrocery(nameArray[j]);
                     break;
