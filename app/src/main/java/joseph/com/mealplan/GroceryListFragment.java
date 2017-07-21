@@ -61,12 +61,6 @@ public class GroceryListFragment extends Fragment {
                 new int[]{R.id.txAisle, R.id.txGroc});
         resultsListView.setAdapter(adapter);
 
-//        for(int i = 0; i != 5; i++){
-//            resultsMap = new HashMap<>();
-//            resultsMap.put("First Line", "");
-//            resultsMap.put("Second Line", "");
-//            listItems.add(resultsMap);
-//        }
         setupListViewListener();
         return view;
     }
@@ -79,16 +73,16 @@ public class GroceryListFragment extends Fragment {
 
             //If list entry is long clicked, delete entry
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
                 Log.i("MainActivity", "Item Removed:" + i);
                 resultsMap = listItems.get(i);
-                final String old = resultsMap.get("Second Line");
-                resultsMap.put("Second Line", "");
+                listItems.remove(i);
+                final int x = i;
                 adapter.notifyDataSetChanged();
                 View.OnClickListener undoDelete = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) { //Re-adds the deleted entry
-                        resultsMap.put("Second Line", old);
+                        listItems.add(x, resultsMap);
                         adapter.notifyDataSetChanged();
                     }
                 };
