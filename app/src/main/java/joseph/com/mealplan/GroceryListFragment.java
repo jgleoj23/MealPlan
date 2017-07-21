@@ -60,6 +60,13 @@ public class GroceryListFragment extends Fragment {
                 new String[]{"First Line", "Second Line"},
                 new int[]{R.id.txAisle, R.id.txGroc});
         resultsListView.setAdapter(adapter);
+
+        for(int i = 0; i != 5; i++){
+            resultsMap = new HashMap<>();
+            resultsMap.put("First Line", "Aisle #"+(i+1));
+            resultsMap.put("Second Line", "");
+            listItems.add(resultsMap);
+        }
         setupListViewListener();
         return view;
     }
@@ -131,11 +138,8 @@ public class GroceryListFragment extends Fragment {
                 resultsMap = new HashMap<>();
                 resultsMap.put("First Line", "Aisle #" + valid.get(ItemText));
                 resultsMap.put("Second Line", "-" + capitalized + "\n");
-                listItems.add(resultsMap);
+                listItems.set(valid.get(ItemText), resultsMap);
                 adapter.notifyDataSetChanged();
-                for(int i = 0; i != listItems.size(); i++){
-                    listItems.get(i).get("First Line");
-                }
                 txAdd.setText("");
             }
         }
@@ -145,14 +149,6 @@ public class GroceryListFragment extends Fragment {
         }
     }
 
-    private void sortList(List<HashMap<String, String>> listItems) {
-        HashMap<String, String> resultsMap = new HashMap<>();
-        for(int i = 0; i != listItems.size(); i++){
-            resultsMap.put("First Line", "Aisle #"+i+1);
-            resultsMap.put("Second Line", null);
-            listItems.add(i, resultsMap);
-        }
-    }
 
     public void onImportGrocery(String ingredient) {
         HashMap<String, String> resultsMap = new HashMap<>();
@@ -167,7 +163,6 @@ public class GroceryListFragment extends Fragment {
                             resultsMap.put("Second Line", old + "-" + capitalized + "\n");
                             adapter.notifyDataSetChanged();
                             txAdd.setText("");
-                            sortList(listItems);
                             break;
                         }
                         else{
