@@ -63,7 +63,7 @@ public class GroceryListFragment extends Fragment {
 
         for(int i = 0; i != 5; i++){
             resultsMap = new HashMap<>();
-            resultsMap.put("First Line", "Aisle #"+(i+1));
+            resultsMap.put("First Line", "");
             resultsMap.put("Second Line", "");
             listItems.add(resultsMap);
         }
@@ -139,7 +139,7 @@ public class GroceryListFragment extends Fragment {
                 resultsMap = new HashMap<>();
                 resultsMap.put("First Line", "Aisle #" + valid.get(ItemText));
                 resultsMap.put("Second Line", "-" + capitalized + "\n");
-                listItems.set(valid.get(ItemText), resultsMap);
+                listItems.set(valid.get(ItemText)-1, resultsMap);
                 adapter.notifyDataSetChanged();
                 txAdd.setText("");
             }
