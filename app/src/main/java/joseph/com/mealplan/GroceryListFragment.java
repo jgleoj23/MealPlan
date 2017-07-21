@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,30 +49,26 @@ public class GroceryListFragment extends Fragment {
         return fragment;
     }
 
-
+    String[] nameArray = {"ham", "cheese", "pineapple", "milk", "bread", "kiwi", "butter", "rice", "pasta", "tomato", "steak", "french fries", "avocado", "cookies", "cake", "water", "onions", "carrots", "garlic", "spinach", "ramen", "chicken", "cheesecake", "sugar"};
+    int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2, 2};
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_grocery_list, container, false);
         ButterKnife.bind(this, view);
-        super.onCreate(savedInstanceState);
 
         //Creates a hash table of valid grocery items
-        // Use Arrays.listOf and then an iterator
-        String[] nameArray = {"Ham", "Cheese", "Pineapple", "Milk", "Bread", "Kiwi", "Butter", "Rice", "Pasta",
-                "Tomato", "Steak", "French fries", "Avocado", "Cookies", "Cake", "Water", "Onions", "Carrots",
-                "Garlic", "Spinach", "Ramen", "Chicken", "Cheesecake"};
-        int[] number = {5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2};
-        for(int i = 0; i != 23; i++){
+        for(int i = 0; i != 24; i++){
             valid.put(nameArray[i], number[i]);
         }
 
         //Sets up adapter to allow for Aisle #: grocery layout
-        listItems = new ArrayList<>();
-
+        listItems = new ArrayList<>(6);
 
         adapter = new SimpleAdapter(getContext(), listItems, R.layout.item_grocery,
                 new String[]{"First Line", "Second Line"},
                 new int[]{R.id.txAisle, R.id.txGroc});
         resultsListView.setAdapter(adapter);
+
         setupListViewListener();
 
         for (Grocery grocery : realm.where(Grocery.class).findAll()) {
@@ -90,15 +87,16 @@ public class GroceryListFragment extends Fragment {
 
             //If list entry is long clicked, delete entry
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
                 Log.i("MainActivity", "Item Removed:" + i);
                 resultsMap = listItems.get(i);
                 listItems.remove(i);
+                final int x = i;
                 adapter.notifyDataSetChanged();
                 View.OnClickListener undoDelete = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) { //Re-adds the deleted entry
-                        listItems.add(0, resultsMap);
+                        listItems.add(x, resultsMap);
                         adapter.notifyDataSetChanged();
                     }
                 };
@@ -136,33 +134,109 @@ public class GroceryListFragment extends Fragment {
 
 
     public void showItem(String itemText) {
-        // Use Map and the IDE says that initializing this is redundant.
-        HashMap<String, String> resultsMap = new HashMap<>();
-
         // Never use try catch for normal control flow. That is like using GOTO
-        // This is what if statements are for
-        try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
-            // Use an iterator.
-            for(int i = 0; i != listItems.size() + 1; i++){
-                resultsMap = listItems.get(i);
-                String aisle = resultsMap.get("First Line");
-                if(aisle.equals("Aisle #" + valid.get(itemText))){
-                    String old = resultsMap.get("Second Line");
-                    resultsMap.put("Second Line", old + "-" + itemText+ "\n");
+        for (Map<String, String> resultsMap : listItems) {
+            String aisle = resultsMap.get("First Line");
+            if(aisle.equals("Aisle #" + valid.get(itemText))) {
+                String old = resultsMap.get("Second Line");
+                if(!old.contains(itemText)){
+                    resultsMap.put("Second Line", old + "-" + itemText + "\n");
                     adapter.notifyDataSetChanged();
                     txAdd.setText("");
+                }  else {
+                    Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
+                }
+
+                // Aisle has been found. Were done!
+                return;
+            }
+        }
+        // create it
+        resultsMap = new HashMap<String, String>();
+
+        resultsMap.put("First Line", "Aisle #" + valid.get(itemText));
+        resultsMap.put("Second Line", "-" + itemText+ "\n");
+        boolean changed = false;
+        if(listItems.size() == 0){
+            listItems.add(resultsMap);
+        } else {
+            for (int i = 0; i != listItems.size(); i++) {
+                String number = listItems.get(i).get("First Line");
+                int x = Integer.valueOf(number.substring(number.indexOf("#") + 1));
+                if (x > valid.get(itemText)) {
+                    listItems.add(i, resultsMap);
+                    changed = true;
                     break;
                 }
             }
-        }
 
+            if (!changed) {
+                listItems.add(resultsMap);
+            }
+        }
+        adapter.notifyDataSetChanged();
+        txAdd.setText("");
+    }
+
+
+    public void onImportGrocery(String ingredient) {
+        HashMap<String, String> resultsMap = new HashMap<>();
+        String capitalized =ingredient.substring(0, 1).toUpperCase() + ingredient.substring(1);
+        try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
+                for(int i = 0; i != listItems.size() + 1; i++){
+                    resultsMap = listItems.get(i);
+                    String aisle = resultsMap.get("First Line");
+                    if(aisle.equals("Aisle #" + valid.get(ingredient))){
+                        String old = resultsMap.get("Second Line");
+                        if(!old.contains(capitalized)){
+                            resultsMap.put("Second Line", old + "-" + capitalized + "\n");
+                            adapter.notifyDataSetChanged();
+                            txAdd.setText("");
+                            break;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+                }
+        }
         catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
             resultsMap = new HashMap<>();
-            resultsMap.put("First Line", "Aisle #" + valid.get(itemText));
-            resultsMap.put("Second Line", "-" + itemText + "\n");
-            listItems.add(resultsMap);
+            resultsMap.put("First Line", "Aisle #" + valid.get(ingredient));
+            resultsMap.put("Second Line", "-" + capitalized + "\n");
+            boolean changed = false;
+            if(listItems.size() == 0){
+                listItems.add(resultsMap);
+            }
+            else {
+                for (int i = 0; i != listItems.size(); i++) {
+                    String number = listItems.get(i).get("First Line");
+                    int x = Integer.valueOf(number.substring(number.indexOf("#") + 1));
+                    if (x > valid.get(ingredient)) {
+                        listItems.add(i, resultsMap);
+                        changed = true;
+                        break;
+                    }
+                }
+                if (!changed){
+                    listItems.add(resultsMap);
+                }
+            }
             adapter.notifyDataSetChanged();
             txAdd.setText("");
+                txAdd.setText("");
+            }
+    }
+
+    public void addGroceries(List<Grocery> ingredients) {
+        for(int i = 0; i != ingredients.size(); i++){
+            String ingredient = ingredients.get(i).getName().toLowerCase();
+            for(int j = 0; j != 24; j++){
+                if(ingredient.contains(nameArray[j])){
+                    onImportGrocery(nameArray[j]);
+                    break;
+                }
+            }
         }
     }
 }

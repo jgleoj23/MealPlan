@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "start plan");
         getMealPlanFragment().addRecipe(recipe);
         viewPager.setCurrentItem(1);
+        getGroceryListFragment().addGroceries(recipe.getIngredients());
     }
 
     public void favorite(Recipe recipe) {

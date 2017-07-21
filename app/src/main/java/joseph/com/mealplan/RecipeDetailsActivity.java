@@ -1,11 +1,14 @@
 package joseph.com.mealplan;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
@@ -49,6 +52,16 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                .fit().centerCrop()
                .into(ivRecipeImage);
 
+        ivRecipeImage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse(recipe.getSourceUrl()));
+                startActivity(intent);
+            }
+        });
+
         client = new RecipeClient();
 
         if (recipe.getRecipeId() != null) {
@@ -76,6 +89,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     public void addFavorites(View view) {
         instance.favorite(recipe);
+        Toast.makeText(getApplicationContext(), "Recipe added to favorites", Toast.LENGTH_SHORT).show();
     }
 
     public void addMealPlan(View view) {
