@@ -102,12 +102,12 @@ public class SearchFragment extends Fragment {
 
 
 
-    private void fetchRecipes(String query) {
+    private void fetchRecipes(final String query) {
         client = new RecipeClient();
         client.searchRecipes(query, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.i(TAG, "result:");
+                Log.i(TAG, "result for :" + query);
                 resultsAdapter.recipes.clear();
                 try {
                     JSONArray results = response.getJSONArray("recipes");

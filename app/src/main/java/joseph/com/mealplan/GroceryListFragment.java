@@ -31,6 +31,7 @@ public class GroceryListFragment extends Fragment {
     SimpleAdapter adapter;
     // You don't need Hashtable unless you are using threads
     Hashtable<String, Integer> valid = new Hashtable<String, Integer>();
+    MainActivity mainActivity;
 
     @BindView(R.id.lvGrocery)
     ListView resultsListView;
@@ -41,6 +42,11 @@ public class GroceryListFragment extends Fragment {
 
     private Realm realm = Realm.getDefaultInstance();
 
+    public static GroceryListFragment newInstance(MainActivity mainActivity) {
+        GroceryListFragment fragment = new GroceryListFragment();
+        fragment.mainActivity = mainActivity;
+        return fragment;
+    }
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

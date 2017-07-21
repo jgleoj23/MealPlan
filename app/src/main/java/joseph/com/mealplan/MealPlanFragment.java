@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,14 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.common.base.Function;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,63 +29,49 @@ import joseph.com.mealplan.model.Recipe;
 
 public class MealPlanFragment extends Fragment {
 
+    private String TAG = getClass().getName();
     private List<Day> days = new ArrayList<>();
-    private LayoutInflater inflater;
     private Realm realm = Realm.getDefaultInstance();
+    private Recipe addingRecipe;
 
     @BindView(R.id.lvMealPlan)
     ListView lvMealPlan;
 
-    MainActivity mainActivity;
 
     public MealPlanFragment() {
-        for (String dayName : Arrays.asList("Sunday", "Monday", "Tuesday")) {
-            Day day = realm.where(Day.class).equalTo("name", dayName).findFirst();
+        for (final String dayName : Arrays.asList("Sunday", "Monday", "Tuesday")) {
+            final Day day = realm.where(Day.class).equalTo("name", dayName).findFirst();
             if (day == null) {
-                day = new Day(dayName);
-                final Day finalDay = day;
-                realm.executeTransactionAsync(new Realm.Transaction() {
+                final Day newDay = realm.createObject(Day.class);
+                realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        realm.insert(finalDay);
+                        newDay.setName(dayName);
+                        days.add(newDay);
+                        Log.i(TAG, "finalDay is " + newDay);
                     }
                 });
+            } else {
+                days.add(day);
             }
-
-            days.add(day);
         }
+
+        Log.i(TAG, "making meal plan: " + days.size());
     }
 
 
-    public static MealPlanFragment newInstance(MainActivity mainActivity) {
-        MealPlanFragment fragment = new MealPlanFragment();
-        fragment.mainActivity = mainActivity;
-
-
-        return fragment;
+    public static MealPlanFragment newInstance() {
+        return new MealPlanFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        this.inflater = inflater;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meal_plan, container, false);
         ButterKnife.bind(this, view);
-
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                days.get(0).getMeals().add(new Recipe("Hot dog"));
-            }
-        });
-
         lvMealPlan.setAdapter(new MealAdapter());
-
         return view;
     }
 
-    private Recipe addingRecipe;
 
     public void addRecipe(Recipe recipe) {
         addingRecipe = recipe;
@@ -88,49 +80,46 @@ public class MealPlanFragment extends Fragment {
 
     public class MealAdapter extends BaseAdapter {
 
+        private List flattenDays() {
+            return Utils.flatten(days, new Function<Object, Collection>() {
+                @Nullable
+                @Override
+                public Collection apply(@Nullable Object input) {
+                    realm.beginTransaction();
+                    List meals =  ((Day) input).getMeals();
+                    realm.commitTransaction();
+                    return meals;
+                }
+            });
+        }
+
+
         @Override
         public int getCount() {
-            int i = 0;
-            for (Day day : days) {
-                i += 1 + day.getMeals().size();
-            }
-
-            return i;
+            return flattenDays().size();
         }
+
 
         @Override
         public Object getItem(int position) {
-            int i = 0;
-            for (Day day : days) {
-                if (i == position) {
-                    return day;
-                }
-
-                i += 1;
-
-                for (Recipe recipe : day.getMeals()) {
-                    if (i == position) {
-                        return recipe;
-                    }
-
-                    i += 1;
-                }
-            }
-
-            throw new IndexOutOfBoundsException("position " + position + "is out of bounds");
+            return flattenDays().get(position);
         }
+
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            Log.i(TAG, "get id: " + position);
+            return position;
         }
+
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            Log.i(TAG, "getView: " + position);
             Object item = getItem(position);
             if (item instanceof Day) {
                 final Day day = (Day) item;
-                View view = inflater.inflate(R.layout.item_day, parent, false);
+                View view = LayoutInflater.from(getContext()).inflate(R.layout.item_day, parent, false);
                 TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
                 tvDay.setText(day.getName());
 
@@ -138,14 +127,20 @@ public class MealPlanFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if (addingRecipe != null) {
-                            day.getMeals().add(addingRecipe);
-                            addingRecipe = null;
-                            Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+                            Log.i(TAG, "adding it");
+                            realm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.insertOrUpdate(day);
+                                    addingRecipe.setId(realm.where(Recipe.class).max("id").longValue() + 1);
+//                                    addingRecipe.setId(newRecipe.getId());
+//                                    realm.copyToRealm(addingRecipe);
+                                    day.getMeals().add(addingRecipe);
                                 }
                             });
+
+                            addingRecipe = null;
+
+                            MealAdapter.this.notifyDataSetChanged();
                         }
                     }
                 });
@@ -153,7 +148,9 @@ public class MealPlanFragment extends Fragment {
                 return view;
             } else {
                 final Recipe recipe = (Recipe) item;
+                Log.i(TAG, "recipe: " + recipe.getTitle());
                 RecipeView recipeView = new RecipeView(getContext());
+                recipeView.bind(recipe);
 
                 recipeView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -165,11 +162,7 @@ public class MealPlanFragment extends Fragment {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                for (Day day : days) {
-                                    if (day.getMeals().remove(recipe)) {
-                                        break;
-                                    }
-                                }
+                                flattenDays().remove(recipe);
                                 MealAdapter.this.notifyDataSetChanged();
                                 dialog.dismiss();
                             }
@@ -188,7 +181,6 @@ public class MealPlanFragment extends Fragment {
                     }
                 });
 
-                recipeView.bind(recipe);
                 return recipeView;
             }
         }
