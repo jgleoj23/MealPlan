@@ -55,18 +55,18 @@ public class GroceryListFragment extends Fragment {
         }
 
         //Sets up adapter to allow for Aisle #: grocery layout
-        listItems = new ArrayList<>();
+        listItems = new ArrayList<>(6);
         adapter = new SimpleAdapter(getContext(), listItems, R.layout.item_grocery,
                 new String[]{"First Line", "Second Line"},
                 new int[]{R.id.txAisle, R.id.txGroc});
         resultsListView.setAdapter(adapter);
 
-        for(int i = 0; i != 5; i++){
-            resultsMap = new HashMap<>();
-            resultsMap.put("First Line", "");
-            resultsMap.put("Second Line", "");
-            listItems.add(resultsMap);
-        }
+//        for(int i = 0; i != 5; i++){
+//            resultsMap = new HashMap<>();
+//            resultsMap.put("First Line", "");
+//            resultsMap.put("Second Line", "");
+//            listItems.add(resultsMap);
+//        }
         setupListViewListener();
         return view;
     }
@@ -139,7 +139,24 @@ public class GroceryListFragment extends Fragment {
                 resultsMap = new HashMap<>();
                 resultsMap.put("First Line", "Aisle #" + valid.get(ItemText));
                 resultsMap.put("Second Line", "-" + capitalized + "\n");
-                listItems.set(valid.get(ItemText)-1, resultsMap);
+                boolean changed = false;
+                if(listItems.size() == 0){
+                    listItems.add(resultsMap);
+                }
+                else {
+                    for (int i = 0; i != listItems.size(); i++) {
+                        String number = listItems.get(i).get("First Line");
+                        int x = Integer.valueOf(number.substring(number.indexOf("#") + 1));
+                        if (x > valid.get(ItemText)) {
+                            listItems.add(i, resultsMap);
+                            changed = true;
+                            break;
+                        }
+                    }
+                    if(changed == false){
+                        listItems.add(resultsMap);
+                    }
+                }
                 adapter.notifyDataSetChanged();
                 txAdd.setText("");
             }
@@ -173,11 +190,29 @@ public class GroceryListFragment extends Fragment {
                 }
         }
         catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
-                resultsMap = new HashMap<>();
-                resultsMap.put("First Line", "Aisle #" + valid.get(ingredient));
-                resultsMap.put("Second Line", "-" + capitalized + "\n");
+            resultsMap = new HashMap<>();
+            resultsMap.put("First Line", "Aisle #" + valid.get(ingredient));
+            resultsMap.put("Second Line", "-" + capitalized + "\n");
+            boolean changed = false;
+            if(listItems.size() == 0){
                 listItems.add(resultsMap);
-                adapter.notifyDataSetChanged();
+            }
+            else {
+                for (int i = 0; i != listItems.size(); i++) {
+                    String number = listItems.get(i).get("First Line");
+                    int x = Integer.valueOf(number.substring(number.indexOf("#") + 1));
+                    if (x > valid.get(ingredient)) {
+                        listItems.add(i, resultsMap);
+                        changed = true;
+                        break;
+                    }
+                }
+                if(changed == false){
+                    listItems.add(resultsMap);
+                }
+            }
+            adapter.notifyDataSetChanged();
+            txAdd.setText("");
                 txAdd.setText("");
             }
     }
