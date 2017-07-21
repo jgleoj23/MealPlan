@@ -76,7 +76,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     public void addFavorites(View view) {
         instance.favorite(recipe);
-        finish();
     }
 
     public void addMealPlan(View view) {

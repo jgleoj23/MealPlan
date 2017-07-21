@@ -113,10 +113,15 @@ public class GroceryListFragment extends Fragment {
                     String aisle = resultsMap.get("First Line");
                     if(aisle.equals("Aisle #" + valid.get(ItemText))){
                         String old = resultsMap.get("Second Line");
-                        resultsMap.put("Second Line", old + "-" + capitalized + "\n");
-                        adapter.notifyDataSetChanged();
-                        txAdd.setText("");
-                        break;
+                        if(!old.contains(capitalized)){
+                            resultsMap.put("Second Line", old + "-" + capitalized + "\n");
+                            adapter.notifyDataSetChanged();
+                            txAdd.setText("");
+                            break;
+                        }
+                        else{
+                            break;
+                        }
                     }
                 }
             }
@@ -138,23 +143,26 @@ public class GroceryListFragment extends Fragment {
 
     public void onImportGrocery(String ingredient) {
         HashMap<String, String> resultsMap = new HashMap<>();
-        if (valid.containsKey(ingredient)) { //Checks if the inputted text is a valid grocery item
-            String capitalized =ingredient.substring(0, 1).toUpperCase() + ingredient.substring(1);
-            try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
+        String capitalized =ingredient.substring(0, 1).toUpperCase() + ingredient.substring(1);
+        try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
                 for(int i = 0; i != listItems.size() + 1; i++){
                     resultsMap = listItems.get(i);
                     String aisle = resultsMap.get("First Line");
                     if(aisle.equals("Aisle #" + valid.get(ingredient))){
                         String old = resultsMap.get("Second Line");
-                        resultsMap.put("Second Line", old + "-" + capitalized + "\n");
-                        adapter.notifyDataSetChanged();
-                        txAdd.setText("");
-                        break;
+                        if(!old.contains(capitalized)){
+                            resultsMap.put("Second Line", old + "-" + capitalized + "\n");
+                            adapter.notifyDataSetChanged();
+                            txAdd.setText("");
+                            break;
+                        }
+                        else{
+                            break;
+                        }
                     }
                 }
-            }
-
-            catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
+        }
+        catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
                 resultsMap = new HashMap<>();
                 resultsMap.put("First Line", "Aisle #" + valid.get(ingredient));
                 resultsMap.put("Second Line", "-" + capitalized + "\n");
@@ -162,7 +170,6 @@ public class GroceryListFragment extends Fragment {
                 adapter.notifyDataSetChanged();
                 txAdd.setText("");
             }
-        }
     }
 
     public void addGroceries(ArrayList<String> ingredients) {
