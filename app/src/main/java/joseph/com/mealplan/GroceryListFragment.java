@@ -60,6 +60,13 @@ public class GroceryListFragment extends Fragment {
                 new String[]{"First Line", "Second Line"},
                 new int[]{R.id.txAisle, R.id.txGroc});
         resultsListView.setAdapter(adapter);
+
+        for(int i = 0; i != 5; i++){
+            resultsMap = new HashMap<>();
+            resultsMap.put("First Line", "");
+            resultsMap.put("Second Line", "");
+            listItems.add(resultsMap);
+        }
         setupListViewListener();
         return view;
     }
@@ -75,12 +82,13 @@ public class GroceryListFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i("MainActivity", "Item Removed:" + i);
                 resultsMap = listItems.get(i);
-                listItems.remove(i);
+                final String old = resultsMap.get("Second Line");
+                resultsMap.put("Second Line", "");
                 adapter.notifyDataSetChanged();
                 View.OnClickListener undoDelete = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) { //Re-adds the deleted entry
-                        listItems.add(0, resultsMap);
+                        resultsMap.put("Second Line", old);
                         adapter.notifyDataSetChanged();
                     }
                 };
@@ -120,6 +128,7 @@ public class GroceryListFragment extends Fragment {
                             break;
                         }
                         else{
+                            Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
                             break;
                         }
                     }
@@ -130,7 +139,7 @@ public class GroceryListFragment extends Fragment {
                 resultsMap = new HashMap<>();
                 resultsMap.put("First Line", "Aisle #" + valid.get(ItemText));
                 resultsMap.put("Second Line", "-" + capitalized + "\n");
-                listItems.add(resultsMap);
+                listItems.set(valid.get(ItemText)-1, resultsMap);
                 adapter.notifyDataSetChanged();
                 txAdd.setText("");
             }
@@ -140,6 +149,7 @@ public class GroceryListFragment extends Fragment {
             Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
         }
     }
+
 
     public void onImportGrocery(String ingredient) {
         HashMap<String, String> resultsMap = new HashMap<>();
