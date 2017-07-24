@@ -42,11 +42,10 @@ public class MealPlanFragment extends Fragment {
         for (final String dayName : Arrays.asList("Sunday", "Monday", "Tuesday")) {
             final Day day = realm.where(Day.class).equalTo("name", dayName).findFirst();
             if (day == null) {
-                final Day newDay = realm.createObject(Day.class);
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        newDay.setName(dayName);
+                        Day newDay = realm.createObject(Day.class, dayName);
                         days.add(newDay);
                         Log.i(TAG, "finalDay is " + newDay);
                     }
