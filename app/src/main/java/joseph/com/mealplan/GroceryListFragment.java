@@ -160,9 +160,11 @@ public class GroceryListFragment extends Fragment {
                 resultsMap.put("Second Line", old + "-" + itemText + "\n");
                 adapter.notifyDataSetChanged();
                 txAdd.setText("");
-            } else {
-                Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
             }
+//            } else {
+//              Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show()
+//              This line was being buggy and always displayed
+//            }
         } else {
             resultsMap = new HashMap<>();
 
