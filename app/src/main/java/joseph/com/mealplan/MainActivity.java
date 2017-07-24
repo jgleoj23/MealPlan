@@ -36,14 +36,14 @@ public class MainActivity extends AppCompatActivity {
 
     public GroceryListFragment getGroceryListFragment() {
         if (groceryListFragment == null) {
-            groceryListFragment = groceryListFragment.newInstance(MainActivity.this);
+            groceryListFragment = GroceryListFragment.newInstance(MainActivity.this);
         }
         return groceryListFragment;
     }
 
     public FavoritesFragment getFavoritesFragment() {
         if (favoritesFragment == null) {
-            favoritesFragment = favoritesFragment.newInstance(MainActivity.this);
+            favoritesFragment = FavoritesFragment.newInstance(MainActivity.this);
         }
         return favoritesFragment;
     }

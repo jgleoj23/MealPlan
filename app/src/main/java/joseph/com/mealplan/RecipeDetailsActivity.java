@@ -23,6 +23,8 @@ import static joseph.com.mealplan.MainActivity.instance;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
+    private String TAG = getClass().getName();
+
     private RecipeClient client;
     Recipe recipe;
 
@@ -71,7 +73,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                     recipe.addIngredients(response);
                     String ingredientsList = "";
                     for (int i = 0; i < recipe.getIngredients().size(); i++) {
-                        ingredientsList += recipe.getIngredients().get(i);
+                        ingredientsList += recipe.getIngredients().get(i).getName();
                         ingredientsList += "\n";
                     }
 

@@ -20,6 +20,7 @@ import io.realm.annotations.RealmClass;
 @RealmClass
 @Parcel(value = Parcel.Serialization.BEAN, analyze = { Recipe.class })
 public class Recipe extends RealmObject {
+    private static String TAG = Recipe.class.getName();
 
     @PrimaryKey
     private long id;
@@ -27,8 +28,13 @@ public class Recipe extends RealmObject {
     private String title;
     private String imageUrl;
     private String sourceUrl;
+
+    public void setRecipeId(String recipeId) {
+        this.recipeId = recipeId;
+    }
+
     private String recipeId;
-    private RealmList<Grocery> ingredients;
+    private RealmList<Grocery> ingredients = new RealmList<>();
 
     public Recipe() {}
 
@@ -46,6 +52,7 @@ public class Recipe extends RealmObject {
             recipe.imageUrl = jsonObject.getString("image_url");
             recipe.sourceUrl = jsonObject.getString("source_url");
             recipe.recipeId = jsonObject.getString("recipe_id");
+            Log.i(TAG, recipe.recipeId);
 
         } catch (Exception e) {
             e.printStackTrace();
