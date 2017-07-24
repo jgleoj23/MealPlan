@@ -192,56 +192,6 @@ public class GroceryListFragment extends Fragment {
     }
 
 
-    public void onImportGrocery(String ingredient) {
-        Map<String, String> resultsMap = new HashMap<>();
-        String capitalized =ingredient.substring(0, 1).toUpperCase() + ingredient.substring(1);
-        try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
-                for(int i = 0; i != listItems.size() + 1; i++){
-                    resultsMap = listItems.get(i);
-                    String aisle = resultsMap.get("First Line");
-                    if(aisle.equals("Aisle #" + valid.get(ingredient))){
-                        String old = resultsMap.get("Second Line");
-                        if(!old.contains(capitalized)){
-                            resultsMap.put("Second Line", old + "-" + capitalized + "\n");
-                            adapter.notifyDataSetChanged();
-                            txAdd.setText("");
-                            break;
-                        }
-                        else{
-                            break;
-                        }
-                    }
-                }
-        }
-        catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
-            resultsMap = new HashMap<>();
-            resultsMap.put("First Line", "Aisle #" + valid.get(ingredient));
-            resultsMap.put("Second Line", "-" + capitalized + "\n");
-            boolean changed = false;
-            if(listItems.size() == 0){
-                listItems.add(resultsMap);
-            }
-            else {
-                for (int i = 0; i != listItems.size(); i++) {
-                    String number = listItems.get(i).get("First Line");
-                    int x = Integer.valueOf(number.substring(number.indexOf("#") + 1));
-                    if (x > valid.get(ingredient)) {
-                        listItems.add(i, resultsMap);
-                        changed = true;
-                        break;
-                    }
-                }
-                if (!changed){
-                    listItems.add(resultsMap);
-                }
-            }
-            adapter.notifyDataSetChanged();
-            txAdd.setText("");
-                txAdd.setText("");
-            }
-    }
-
-
     public void addGroceries(List<Grocery> groceries) {
         for (Grocery grocery : groceries) {
             String name = grocery.getName().toLowerCase();
