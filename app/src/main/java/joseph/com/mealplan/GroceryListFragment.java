@@ -87,8 +87,6 @@ public class GroceryListFragment extends Fragment {
 
 
     private void setupListViewListener(){
-        // Use TAG. This is not MainActivity
-        Log.i("MainActivity", "Setting Up List View");
         resultsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
 
             //If list entry is long clicked, delete entry
@@ -246,11 +244,11 @@ public class GroceryListFragment extends Fragment {
 
     public void addGroceries(List<Grocery> groceries) {
         for (Grocery grocery : groceries) {
-            String name = capitalize(grocery.getName());
+            String name = grocery.getName().toLowerCase();
             for (String ingredientName : nameArray) {
-                if (name.contains(ingredientName)) {
-                    onImportGrocery(ingredientName);
-                    return;
+                if (name.contains(ingredientName.toLowerCase())) {
+                    addGrocery(ingredientName);
+                    break;
                 }
             }
         }
