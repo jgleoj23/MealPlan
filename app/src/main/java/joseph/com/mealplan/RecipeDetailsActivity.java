@@ -66,27 +66,25 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         client = new RecipeClient();
 
-        if (recipe.getRecipeId() != null) {
-            client.getRecipe(recipe.getRecipeId(), new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    recipe.addIngredients(response);
-                    String ingredientsList = "";
-                    for (int i = 0; i < recipe.getIngredients().size(); i++) {
-                        ingredientsList += recipe.getIngredients().get(i).getName();
-                        ingredientsList += "\n";
-                    }
-
-                    tvRecipeDirections.setText(ingredientsList);
+        client.getRecipe(recipe.getId(), new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                recipe.addIngredients(response);
+                String ingredientsList = "";
+                for (int i = 0; i < recipe.getIngredients().size(); i++) {
+                    ingredientsList += recipe.getIngredients().get(i).getName();
+                    ingredientsList += "\n";
                 }
 
-                //
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                }
-            });
-        }
+                tvRecipeDirections.setText(ingredientsList);
+            }
+
+            //
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
     }
 
     public void addFavorites(View view) {

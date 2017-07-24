@@ -29,11 +29,6 @@ public class Recipe extends RealmObject {
     private String imageUrl;
     private String sourceUrl;
 
-    public void setRecipeId(String recipeId) {
-        this.recipeId = recipeId;
-    }
-
-    private String recipeId;
     private RealmList<Grocery> ingredients = new RealmList<>();
 
     public Recipe() {}
@@ -51,8 +46,7 @@ public class Recipe extends RealmObject {
             recipe = new Recipe(recipeTitle);
             recipe.imageUrl = jsonObject.getString("image_url");
             recipe.sourceUrl = jsonObject.getString("source_url");
-            recipe.recipeId = jsonObject.getString("recipe_id");
-            Log.i(TAG, recipe.recipeId);
+            recipe.id = jsonObject.getLong("recipe_id");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,8 +84,6 @@ public class Recipe extends RealmObject {
     public String getImageUrl() {
         return imageUrl;
     }
-
-    public String getRecipeId() { return recipeId; }
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
