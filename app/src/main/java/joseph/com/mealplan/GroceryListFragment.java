@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -87,14 +85,10 @@ public class GroceryListFragment extends Fragment {
 
 
     private void setupListViewListener(){
-        // Use TAG. This is not MainActivity
-        Log.i("MainActivity", "Setting Up List View");
         resultsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-
             //If list entry is long clicked, delete entry
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
-                Log.i("MainActivity", "Item Removed:" + i);
                 resultsMap = listItems.get(i);
                 listItems.remove(i);
                 final int x = i;
@@ -141,13 +135,7 @@ public class GroceryListFragment extends Fragment {
 
     @NonNull
     private static String capitalize(String str) {
-        int firstLetterIndex = Pattern.compile("[A-z]").matcher(str).start();
-        if (firstLetterIndex == -1) {
-            return str;
-        } else {
-            return str.substring(0, firstLetterIndex) + Character.toUpperCase(str.charAt(firstLetterIndex)) +
-                    str.substring(firstLetterIndex + 1, str.length()).toLowerCase();
-        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
 
@@ -202,9 +190,9 @@ public class GroceryListFragment extends Fragment {
     public void addGroceries(List<Grocery> groceries) {
         for (Grocery grocery : groceries) {
             for (String ingredientName : nameArray) {
-                if (grocery.getName().toLowerCase().contains(ingredientName)) {
+                if (grocery.getName().toLowerCase().contains(ingredientName.toLowerCase())) {
                     addGrocery(ingredientName);
-                    return;
+                    break;
                 }
             }
         }
