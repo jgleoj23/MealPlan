@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -102,8 +103,17 @@ public class MainActivity extends AppCompatActivity {
         getGroceryListFragment().addGroceries(recipe.getIngredients());
     }
 
+    ArrayList<String> favorited = new ArrayList<String>();
+
     public void favorite(Recipe recipe) {
         Log.i(TAG, "add to favorites");
-        getFavoritesFragment().addFavorite(recipe);
+        if(!favorited.contains(recipe.getTitle())) {
+            getFavoritesFragment().addFavorite(recipe);
+            favorited.add(recipe.getTitle());
+        }
+        else{
+            getFavoritesFragment().removeFavorite(recipe);
+            favorited.remove(recipe.getTitle());
+        }
     }
 }
