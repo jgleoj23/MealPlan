@@ -13,7 +13,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
 import joseph.com.mealplan.model.Recipe;
 
 public class FavoritesFragment extends Fragment {
@@ -23,7 +22,7 @@ public class FavoritesFragment extends Fragment {
 
     MainActivity mainActivity;
 
-    private Realm realm = Realm.getDefaultInstance();
+    //private Realm realm = Realm.getDefaultInstance();
 
     public static FavoritesFragment newInstance(MainActivity mainActivity) {
         FavoritesFragment fragment = new FavoritesFragment();
@@ -40,11 +39,11 @@ public class FavoritesFragment extends Fragment {
         rvFavorites.setAdapter(resultsAdapter);
         rvFavorites.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        for (Recipe recipe : realm.where(Recipe.class).findAll()) {
-            favorited.add(recipe.getTitle().toString());
-            resultsAdapter.recipes.add(recipe);
-            resultsAdapter.notifyDataSetChanged();
-        }
+//        for (Recipe recipe : realm.where(Recipe.class).findAll()) {
+//            favorited.add(recipe.getTitle().toString());
+//            resultsAdapter.recipes.add(recipe);
+//            resultsAdapter.notifyDataSetChanged();
+//        }
 
         return view;
     }
@@ -52,12 +51,12 @@ public class FavoritesFragment extends Fragment {
     ArrayList<String> favorited = new ArrayList<String>();
     public void addFavorite(final Recipe recipe) {
         if(!favorited.contains(recipe.getTitle())) {
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm1) {
-                    realm1.insert(recipe);
-                }
-            });
+//            realm.executeTransactionAsync(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm1) {
+//                    realm1.insert(recipe);
+//                }
+//            });
             resultsAdapter.recipes.add(recipe);
             resultsAdapter.notifyDataSetChanged();
         }
