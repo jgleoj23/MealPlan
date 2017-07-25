@@ -111,9 +111,5 @@ public class MainActivity extends AppCompatActivity {
             getFavoritesFragment().addFavorite(recipe);
             favorited.add(recipe.getTitle());
         }
-        else{
-            getFavoritesFragment().removeFavorite(recipe);
-            favorited.remove(recipe.getTitle());
-        }
     }
 }

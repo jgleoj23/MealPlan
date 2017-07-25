@@ -13,6 +13,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import joseph.com.mealplan.model.Recipe;
 
 public class FavoritesFragment extends Fragment {
@@ -21,6 +22,8 @@ public class FavoritesFragment extends Fragment {
     ResultsAdapter resultsAdapter = new ResultsAdapter();
 
     MainActivity mainActivity;
+
+    private Realm realm = Realm.getDefaultInstance();
 
     public static FavoritesFragment newInstance(MainActivity mainActivity) {
         FavoritesFragment fragment = new FavoritesFragment();
@@ -36,15 +39,27 @@ public class FavoritesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         rvFavorites.setAdapter(resultsAdapter);
         rvFavorites.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        for (Recipe recipe : realm.where(Recipe.class).findAll()) {
+            favorited.add(recipe.getTitle().toString());
+            resultsAdapter.recipes.add(recipe);
+            resultsAdapter.notifyDataSetChanged();
+        }
+
         return view;
     }
 
     ArrayList<String> favorited = new ArrayList<String>();
-    public void addFavorite(Recipe recipe) {
+    public void addFavorite(final Recipe recipe) {
         if(!favorited.contains(recipe.getTitle())) {
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm1) {
+                    realm1.insert(recipe);
+                }
+            });
             resultsAdapter.recipes.add(recipe);
             resultsAdapter.notifyDataSetChanged();
-            favorited.add(recipe.getTitle());
         }
     }
 

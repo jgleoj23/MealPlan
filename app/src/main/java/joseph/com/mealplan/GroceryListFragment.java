@@ -112,7 +112,6 @@ public class GroceryListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 addGrocery(txAdd.getText().toString());
-
             }
         });
     }
@@ -154,6 +153,7 @@ public class GroceryListFragment extends Fragment {
                 adapter.notifyDataSetChanged();
                 txAdd.setText("");
             }
+            //Buggy toast (displays whenever on Meal Plan)
 //            } else {
 //                Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
 //            }
