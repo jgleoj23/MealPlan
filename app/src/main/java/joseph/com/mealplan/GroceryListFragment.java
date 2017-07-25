@@ -128,14 +128,16 @@ public class GroceryListFragment extends Fragment {
             });
 
             showItem(capitalized);
-        } else {
-            Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
         }
+        //I commented this out because there's a bug that causes the toast to appear every time you open the Meal Plan fragment
+//        else {
+//            Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
+//        }
     }
 
     @NonNull
     private static String capitalize(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase(); //This is fine
     }
 
 
@@ -190,9 +192,9 @@ public class GroceryListFragment extends Fragment {
     public void addGroceries(List<Grocery> groceries) {
         for (Grocery grocery : groceries) {
             for (String ingredientName : nameArray) {
-                if (grocery.getName().toLowerCase().contains(ingredientName.toLowerCase())) {
+                if (grocery.getName().toLowerCase().contains(ingredientName.toLowerCase())) { //Making the entire grocery lowercase makes it so we don't have to find the correct word to capitalize
                     addGrocery(ingredientName);
-                    break;
+                    break; //It should be break and not return because return terminates the function after one grocery has been added, while break just escapes the inner for loop and moves to the next grocery item
                 }
             }
         }
