@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setCurrentItem(1);
         getGroceryListFragment().addGroceries(recipe.getIngredients());
     }
+
     ArrayList<String> favorited = new ArrayList<String>();
 
     public void favorite(Recipe recipe) {
@@ -109,6 +110,10 @@ public class MainActivity extends AppCompatActivity {
         if(!favorited.contains(recipe.getTitle())) {
             getFavoritesFragment().addFavorite(recipe);
             favorited.add(recipe.getTitle());
+        }
+        else{
+            getFavoritesFragment().removeFavorite(recipe);
+            favorited.remove(recipe.getTitle());
         }
     }
 }

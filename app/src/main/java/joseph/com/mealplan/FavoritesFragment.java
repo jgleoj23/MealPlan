@@ -39,12 +39,19 @@ public class FavoritesFragment extends Fragment {
         return view;
     }
 
-
+    ArrayList<String> favorited = new ArrayList<String>();
     public void addFavorite(Recipe recipe) {
-        if(!resultsAdapter.recipes.contains(recipe)) {
+        if(!favorited.contains(recipe.getTitle())) {
             resultsAdapter.recipes.add(recipe);
             resultsAdapter.notifyDataSetChanged();
+            favorited.add(recipe.getTitle());
         }
+    }
+
+    public void removeFavorite(Recipe recipe) {
+        resultsAdapter.recipes.remove(recipe);
+        resultsAdapter.notifyDataSetChanged();
+        favorited.remove(recipe.getTitle());
     }
 
     public class ResultsAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
