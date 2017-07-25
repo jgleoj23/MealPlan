@@ -126,13 +126,11 @@ public class GroceryListFragment extends Fragment {
                     realm1.insert(new Grocery(capitalized));
                 }
             });
-
             showItem(capitalized);
         }
-        //I commented this out because there's a bug that causes the toast to appear every time you open the Meal Plan fragment
-//        else {
-//            Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
-//        }
+        else {
+            Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
+        }
     }
 
     @NonNull
@@ -155,9 +153,10 @@ public class GroceryListFragment extends Fragment {
                 resultsMap.put("Second Line", old + "-" + itemText + "\n");
                 adapter.notifyDataSetChanged();
                 txAdd.setText("");
-            } else {
-                Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
             }
+//            } else {
+//                Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
+//            }
         } else {
             resultsMap = new HashMap<>();
 
