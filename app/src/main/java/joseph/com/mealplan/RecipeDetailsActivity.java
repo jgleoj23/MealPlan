@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -69,6 +70,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         client.getRecipe(recipe.getId(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.i(TAG, response.toString());
                 recipe.addIngredients(response);
                 String ingredientsList = "";
                 for (int i = 0; i < recipe.getIngredients().size(); i++) {

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -85,7 +86,6 @@ public class GroceryListFragment extends Fragment {
     }
 
 
-
     private void setupListViewListener(){
         // Use TAG. This is not MainActivity
         Log.i("MainActivity", "Setting Up List View");
@@ -124,9 +124,15 @@ public class GroceryListFragment extends Fragment {
     }
 
     public void addGrocery(String name) {
-        String capitalized = GroceryListFragment.this.capitalize(name);
+        final String capitalized = capitalize(name);
         if (valid.containsKey(capitalized)) {
-            saveItemToDB(capitalized);
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm1) {
+                    realm1.insert(new Grocery(capitalized));
+                }
+            });
+
             showItem(capitalized);
         } else {
             Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
@@ -134,17 +140,14 @@ public class GroceryListFragment extends Fragment {
     }
 
     @NonNull
-    private String capitalize(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
-    }
-
-    private void saveItemToDB(final String itemText) {
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.insert(new Grocery(itemText));
-            }
-        });
+    private static String capitalize(String str) {
+        int firstLetterIndex = Pattern.compile("[A-z]").matcher(str).start();
+        if (firstLetterIndex == -1) {
+            return str;
+        } else {
+            return str.substring(0, firstLetterIndex) + Character.toUpperCase(str.charAt(firstLetterIndex)) +
+                    str.substring(firstLetterIndex + 1, str.length()).toLowerCase();
+        }
     }
 
 
@@ -188,68 +191,19 @@ public class GroceryListFragment extends Fragment {
                     listItems.add(resultsMap);
                 }
             }
+
             adapter.notifyDataSetChanged();
             txAdd.setText("");
-        }
-    }
 
-
-    public void onImportGrocery(String ingredient) {
-        Map<String, String> resultsMap = new HashMap<>();
-        String capitalized =ingredient.substring(0, 1).toUpperCase() + ingredient.substring(1);
-        try{ //Case #1: The aisle # for the provided input has already been created, so update the values under
-                for(int i = 0; i != listItems.size() + 1; i++){
-                    resultsMap = listItems.get(i);
-                    String aisle = resultsMap.get("First Line");
-                    if(aisle.equals("Aisle #" + valid.get(ingredient))){
-                        String old = resultsMap.get("Second Line");
-                        if(!old.contains(capitalized)){
-                            resultsMap.put("Second Line", old + "-" + capitalized + "\n");
-                            adapter.notifyDataSetChanged();
-                            txAdd.setText("");
-                            break;
-                        }
-                        else{
-                            break;
-                        }
-                    }
-                }
         }
-        catch(IndexOutOfBoundsException e){ //Case #2: The aisle # for the input provided doesn't exist yet, so create it
-            resultsMap = new HashMap<>();
-            resultsMap.put("First Line", "Aisle #" + valid.get(ingredient));
-            resultsMap.put("Second Line", "-" + capitalized + "\n");
-            boolean changed = false;
-            if(listItems.size() == 0){
-                listItems.add(resultsMap);
-            }
-            else {
-                for (int i = 0; i != listItems.size(); i++) {
-                    String number = listItems.get(i).get("First Line");
-                    int x = Integer.valueOf(number.substring(number.indexOf("#") + 1));
-                    if (x > valid.get(ingredient)) {
-                        listItems.add(i, resultsMap);
-                        changed = true;
-                        break;
-                    }
-                }
-                if (!changed){
-                    listItems.add(resultsMap);
-                }
-            }
-            adapter.notifyDataSetChanged();
-            txAdd.setText("");
-                txAdd.setText("");
-            }
     }
 
 
     public void addGroceries(List<Grocery> groceries) {
         for (Grocery grocery : groceries) {
-            String name = capitalize(grocery.getName());
             for (String ingredientName : nameArray) {
-                if (name.contains(ingredientName)) {
-                    onImportGrocery(ingredientName);
+                if (grocery.getName().toLowerCase().contains(ingredientName)) {
+                    addGrocery(ingredientName);
                     return;
                 }
             }

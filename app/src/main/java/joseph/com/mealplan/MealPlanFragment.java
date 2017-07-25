@@ -80,16 +80,17 @@ public class MealPlanFragment extends Fragment {
     public class MealAdapter extends BaseAdapter {
 
         private List flattenDays() {
-            return Utils.flatten(days, new Function<Object, Collection>() {
+            realm.beginTransaction();
+            List result = Utils.flatten(days, new Function<Object, Collection>() {
                 @Nullable
                 @Override
                 public Collection apply(@Nullable Object input) {
-                    realm.beginTransaction();
-                    List meals =  ((Day) input).getMeals();
-                    realm.commitTransaction();
-                    return meals;
+                    return ((Day) input).getMeals();
                 }
             });
+            realm.commitTransaction();
+
+            return result;
         }
 
 
@@ -165,9 +166,13 @@ public class MealPlanFragment extends Fragment {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                flattenDays().remove(recipe);
-                                MealAdapter.this.notifyDataSetChanged();
+                                realm.beginTransaction();
+                                for (Day day : days) {
+                                    if (day.getMeals().remove(recipe)) break;
+                                }
+                                realm.commitTransaction();
                                 dialog.dismiss();
+                                MealAdapter.this.notifyDataSetChanged();
                             }
                         });
                         alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
