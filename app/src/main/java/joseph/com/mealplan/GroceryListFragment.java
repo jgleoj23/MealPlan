@@ -45,8 +45,8 @@ public class GroceryListFragment extends Fragment {
     EditText txAdd;
     @BindView(R.id.btAdd)
     Button btAdd;
+    Realm realm = Realm.getDefaultInstance();
 
-    private Realm realm = Realm.getDefaultInstance();
 
     public static GroceryListFragment newInstance(MainActivity mainActivity) {
         GroceryListFragment fragment = new GroceryListFragment();
@@ -157,7 +157,7 @@ public class GroceryListFragment extends Fragment {
 //            } else {
 //                Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
 //            }
-        } else {
+        } else if (resultsMap == null && valid.containsKey(itemText)){
             resultsMap = new HashMap<>();
 
             resultsMap.put("First Line", "Aisle #" + valid.get(itemText));
@@ -166,26 +166,28 @@ public class GroceryListFragment extends Fragment {
             if(listItems.size() == 0) {
                 listItems.add(resultsMap);
             } else {
-                for (int i = 0; i != listItems.size(); i++) {
-                    String number = listItems.get(i).get("First Line");
-                    int x = Integer.valueOf(number.substring(number.indexOf("#") + 1));
-                    if (x > valid.get(itemText)) {
-                        listItems.add(i, resultsMap);
-                        changed = true;
-                        break;
+                    for (int i = 0; i != listItems.size(); i++) {
+                        String number = listItems.get(i).get("First Line");
+                        int index = number.indexOf("#");
+                            int x = Integer.valueOf(number.substring(index + 1));
+                            if (x > valid.get(itemText)) {
+                                listItems.add(i, resultsMap);
+                                changed = true;
+                                break;
+                            }
+                        }
                     }
-                }
+                    if (!changed) {
+                        listItems.add(resultsMap);
+                    }
 
-                if (!changed) {
-                    listItems.add(resultsMap);
-                }
+                    adapter.notifyDataSetChanged();
+                    txAdd.setText("");
+
             }
 
-            adapter.notifyDataSetChanged();
-            txAdd.setText("");
 
         }
-    }
 
 
     public void addGroceries(List<Grocery> groceries) {

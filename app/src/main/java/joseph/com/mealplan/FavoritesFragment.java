@@ -21,7 +21,6 @@ public class FavoritesFragment extends Fragment {
     ResultsAdapter resultsAdapter = new ResultsAdapter();
 
     MainActivity mainActivity;
-
     //private Realm realm = Realm.getDefaultInstance();
 
     public static FavoritesFragment newInstance(MainActivity mainActivity) {

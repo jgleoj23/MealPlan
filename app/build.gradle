@@ -25,6 +25,7 @@ buildscript {
     }
     dependencies {
         classpath "io.realm:realm-gradle-plugin:3.5.0"
+
     }
 }
 apply plugin: 'realm-android'
