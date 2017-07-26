@@ -16,18 +16,18 @@ import butterknife.ButterKnife;
 import joseph.com.mealplan.model.Recipe;
 
 /**
- * @author Joseph Gardi
+ * Created by kcguo on 7/26/17.
  */
-public class RecipeView extends RelativeLayout {
 
+public class RecipeSearchView extends RelativeLayout {
     @BindView(R.id.tvTitle)
     TextView tvTitle;
     @BindView(R.id.ivPic)
     ImageView ivPic;
 
-    public RecipeView(Context context) {
+    public RecipeSearchView(Context context) {
         super(context);
-        inflate(getContext(), R.layout.item_recipe, this);
+        inflate(getContext(), R.layout.item_recipe_search, this);
         ButterKnife.bind(this);
     }
 
@@ -35,9 +35,9 @@ public class RecipeView extends RelativeLayout {
         tvTitle.setText(recipe.getTitle());
 
         Picasso.with(getContext())
-               .load(recipe.getImageUrl())
+                .load(recipe.getImageUrl())
                 .fit().centerCrop()
-               .into(ivPic);
+                .into(ivPic);
 
         setOnClickListener(new View.OnClickListener() {
             @Override

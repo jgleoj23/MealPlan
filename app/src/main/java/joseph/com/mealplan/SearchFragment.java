@@ -80,17 +80,17 @@ public class SearchFragment extends Fragment {
     }
 
 
-    public class ResultsAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
+    public class ResultsAdapter extends RecyclerView.Adapter<RecipeSearchViewHolder> {
 
         private List<Recipe> recipes = new ArrayList<>();
 
         @Override
-        public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new RecipeViewHolder(new RecipeView(getContext()));
+        public RecipeSearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new RecipeSearchViewHolder(new RecipeSearchView(getContext()));
         }
 
         @Override
-        public void onBindViewHolder(RecipeViewHolder holder, int position) {
+        public void onBindViewHolder(RecipeSearchViewHolder holder, int position) {
             holder.getRecipeView().bind(recipes.get(position));
         }
 
