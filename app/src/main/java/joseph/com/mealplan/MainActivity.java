@@ -1,6 +1,7 @@
 package joseph.com.mealplan;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -49,14 +50,17 @@ public class MainActivity extends AppCompatActivity {
         return favoritesFragment;
     }
 
-
+    MainPagerAdapter adapterViewPager;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Realm.init(this);
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        adapterViewPager = new MainPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapterViewPager);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     public class MainPagerAdapter extends FragmentPagerAdapter {
