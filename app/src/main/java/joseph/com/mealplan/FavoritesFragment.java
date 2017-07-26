@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,17 +73,17 @@ public class FavoritesFragment extends Fragment {
     }
 
 
-    public class ResultsAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
+    public class ResultsAdapter extends RecyclerView.Adapter<RecipeSearchViewHolder> {
 
         private List<Recipe> recipes = new ArrayList<>();
 
         @Override
-        public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new RecipeViewHolder(new RecipeView(getContext()));
+        public RecipeSearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new RecipeSearchViewHolder(new RecipeSearchView(getContext()));
         }
 
         @Override
-        public void onBindViewHolder(RecipeViewHolder holder, int position) {
+        public void onBindViewHolder(RecipeSearchViewHolder holder, int position) {
             holder.getRecipeView().bind(recipes.get(position));
         }
 
