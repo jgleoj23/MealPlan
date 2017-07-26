@@ -47,6 +47,7 @@ public class Recipe extends RealmObject {
             recipe.imageUrl = jsonObject.getString("image_url");
             recipe.sourceUrl = jsonObject.getString("source_url");
             recipe.id = jsonObject.getLong("recipe_id");
+            Log.i(TAG, "id is: " + recipe.id);
 
         } catch (Exception e) {
             e.printStackTrace();

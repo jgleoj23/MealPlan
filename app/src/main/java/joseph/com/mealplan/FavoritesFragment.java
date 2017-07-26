@@ -66,7 +66,7 @@ public class FavoritesFragment extends Fragment {
         if(!favorited.contains(recipe.getTitle())) {
             realm.beginTransaction();
             recipe.setTitle("*"+recipe.getTitle());
-            realm.insert(recipe);
+            realm.insertOrUpdate(recipe);
             realm.commitTransaction();
         }
     }
