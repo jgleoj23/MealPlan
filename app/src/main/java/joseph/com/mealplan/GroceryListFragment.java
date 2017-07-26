@@ -162,31 +162,25 @@ public class GroceryListFragment extends Fragment {
 
             resultsMap.put("First Line", "Aisle #" + valid.get(itemText));
             resultsMap.put("Second Line", "-" + itemText+ "\n");
-            boolean changed = false;
             if(listItems.size() == 0) {
                 listItems.add(resultsMap);
-            } else {
+            }
+            else {
                     for (int i = 0; i != listItems.size(); i++) {
                         String number = listItems.get(i).get("First Line");
                         int index = number.indexOf("#");
                             int x = Integer.valueOf(number.substring(index + 1));
-                            if (x > valid.get(itemText)) {
+
+                            if (x >= valid.get(itemText)) {
                                 listItems.add(i, resultsMap);
-                                changed = true;
-                                break;
+                                adapter.notifyDataSetChanged();
+                                txAdd.setText("");
+                                return;
                             }
                         }
+                    listItems.add(resultsMap);
                     }
-                    if (!changed) {
-                        listItems.add(resultsMap);
-                    }
-
-                    adapter.notifyDataSetChanged();
-                    txAdd.setText("");
-
             }
-
-
         }
 
 

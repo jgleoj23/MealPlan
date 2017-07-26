@@ -70,7 +70,7 @@ public class FavoritesFragment extends Fragment {
             realm.commitTransaction();
         }
     }
-    
+
 
     public class ResultsAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
