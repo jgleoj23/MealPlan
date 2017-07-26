@@ -47,5 +47,6 @@ public class RecipeView extends RelativeLayout {
                 getContext().startActivity(intent);
             }
         });
+
     }
 }
