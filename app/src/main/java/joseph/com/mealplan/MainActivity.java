@@ -1,6 +1,5 @@
 package joseph.com.mealplan;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,9 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -65,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_search_black_24dp);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_local_dining_black_24dp);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_restaurant_black_24dp);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_shopping_basket_black_24dp);
         tabLayout.getTabAt(3).setIcon(R.drawable.like);
     }
 
     public class MainPagerAdapter extends FragmentPagerAdapter {
-        private int tabs[] = new int[] {R.drawable.ic_search_black_24dp, R.drawable.ic_local_dining_black_24dp, R.drawable.ic_restaurant_black_24dp, R.drawable.like};
+        private  String tabs[] = new String[] {"Search", "Meals", "Grocery", "Favorite"};
 
         public MainPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -99,12 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Drawable image = getDrawable(tabs[position]);
-            image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-            SpannableString sb = new SpannableString(" ");
-            ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
-            sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return sb;
+            return tabs[position];
         }
     }
 
