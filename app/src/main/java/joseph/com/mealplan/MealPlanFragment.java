@@ -131,12 +131,12 @@ public class MealPlanFragment extends Fragment {
                             realm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    Number maxId = realm.where(Recipe.class).max("id");
-                                    if (maxId != null) {
-                                        addingRecipe.setId(maxId.longValue() + 1);
-                                    } else {
-                                        addingRecipe.setId(0);
-                                    }
+//                                    Number maxId = realm.where(Recipe.class).max("id");
+//                                    if (maxId != null) {
+//                                        addingRecipe.setId(maxId.longValue() + 1);
+//                                    } else {
+//                                        addingRecipe.setId(0);
+//                                    }
 
                                     day.getMeals().add(addingRecipe);
                                 }
