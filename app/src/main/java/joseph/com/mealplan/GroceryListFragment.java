@@ -125,7 +125,7 @@ public class GroceryListFragment extends Fragment {
                     realm1.insert(new Grocery(capitalized));
                 }
             });
-            showItem(capitalized);
+            showItem(capitalized, true);
         }
         else {
             Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
@@ -137,8 +137,11 @@ public class GroceryListFragment extends Fragment {
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase(); //This is fine
     }
 
+    public void showItem(String itemText) {
+        showItem(itemText, false);
+    }
 
-    public void showItem(final String itemText) {
+    public void showItem(final String itemText, boolean shouldMakeToast) {
          Map<String, String> resultsMap = Iterables.tryFind(listItems, new Predicate<Map<String, String>>() {
             @Override
             public boolean apply(@Nullable Map<String, String> resultsMap) {
@@ -152,12 +155,10 @@ public class GroceryListFragment extends Fragment {
                 resultsMap.put("Second Line", old + "-" + itemText + "\n");
                 adapter.notifyDataSetChanged();
                 txAdd.setText("");
+            } else if (shouldMakeToast) {
+                Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
             }
-            //Buggy toast (displays whenever on Meal Plan)
-//            } else {
-//                Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
-//            }
-        } else if (resultsMap == null && valid.containsKey(itemText)){
+        } else if (valid.containsKey(itemText)){
             resultsMap = new HashMap<>();
 
             resultsMap.put("First Line", "Aisle #" + valid.get(itemText));
