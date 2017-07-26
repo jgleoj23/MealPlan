@@ -70,12 +70,7 @@ public class FavoritesFragment extends Fragment {
             realm.commitTransaction();
         }
     }
-
-    public void removeFavorite(Recipe recipe) {
-        resultsAdapter.recipes.remove(recipe);
-        resultsAdapter.notifyDataSetChanged();
-        favorited.remove(recipe.getTitle());
-    }
+    
 
     public class ResultsAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
