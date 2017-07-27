@@ -30,7 +30,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     Recipe recipe;
 
     TextView tvRecipeName;
-    ImageView ivRecipeImage;
+    ScaleImageView ivRecipeImage;
     TextView tvRecipeDirections;
 
     @Override
@@ -40,7 +40,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_details);
 
         tvRecipeName = (TextView) findViewById(R.id.tvRecipeName);
-        ivRecipeImage = (ImageView) findViewById(R.id.ivRecipeImage);
+        ivRecipeImage = (ScaleImageView) findViewById(R.id.ivRecipeImage);
         tvRecipeDirections = (TextView) findViewById(R.id.tvRecipeDirections);
         tvRecipeDirections.setMovementMethod(new ScrollingMovementMethod());
 
