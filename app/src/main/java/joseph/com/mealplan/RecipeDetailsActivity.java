@@ -29,7 +29,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     Recipe recipe;
 
     TextView tvRecipeName;
-    ImageView ivRecipeImage;
+    ScaleImageView ivRecipeImage;
     TextView tvRecipeDirections;
 
     @Override
@@ -39,7 +39,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_details);
 
         tvRecipeName = (TextView) findViewById(R.id.tvRecipeName);
-        ivRecipeImage = (ImageView) findViewById(R.id.ivRecipeImage);
+        ivRecipeImage = (ScaleImageView) findViewById(R.id.ivRecipeImage);
         tvRecipeDirections = (TextView) findViewById(R.id.tvRecipeDirections);
         tvRecipeDirections.setMovementMethod(new ScrollingMovementMethod());
 
@@ -85,6 +85,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
+    }
+
+    public void goToUrl(View view) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+        intent.setData(Uri.parse(recipe.getSourceUrl()));
+        startActivity(intent);
     }
 
     public void addFavorites(View view) {

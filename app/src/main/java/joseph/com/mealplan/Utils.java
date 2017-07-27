@@ -9,6 +9,8 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -31,6 +33,12 @@ public class Utils {
 
     @NonNull
     public static String capitalize(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase(); //This is fine
+        Matcher letterMatcher = Pattern.compile("[A-z]").matcher(str);
+        if (letterMatcher.find()) {
+            int index = letterMatcher.start();
+            return str.substring(0, index) + str.substring(index, index + 1) + str.substring(index + 1);
+        } else {
+            return str;
+        }
     }
 }
