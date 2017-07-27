@@ -1,5 +1,6 @@
 package joseph.com.mealplan;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -40,7 +41,7 @@ public class MealPlanFragment extends Fragment {
 
 
     public MealPlanFragment() {
-        for (final String dayName : Arrays.asList("Sunday", "Monday", "Tuesday")) {
+        for (final String dayName : Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) {
             final Day day = realm.where(Day.class).equalTo("name", dayName).findFirst();
             if (day == null) {
                 realm.executeTransaction(new Realm.Transaction() {
@@ -162,8 +163,8 @@ public class MealPlanFragment extends Fragment {
                     public boolean onLongClick(View v) {
                         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                         alert.setTitle("Alert!!");
-                        alert.setMessage("Are you sure you want to delete this record?");
-                        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        alert.setMessage("What would you like to do?");
+                        alert.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -192,22 +193,76 @@ public class MealPlanFragment extends Fragment {
                                         .show();
                             }
                         });
-                        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        alert.setNegativeButton("BACK", new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
+                    });
+
+
+                        alert.setNeutralButton("DUPLICATE", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final Context context = getContext();
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle("Which day would you like to duplicate this recipe?");
+                                builder.setItems(new CharSequence[]
+                                                {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Back"},
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // The 'which' argument contains the index position
+                                                // of the selected item
+                                                switch (which) {
+                                                    case 0:
+                                                        duplicateRecipe("Sunday", recipe);
+                                                        break;
+                                                    case 1:
+                                                        duplicateRecipe("Monday", recipe);
+                                                        break;
+                                                    case 2:
+                                                        duplicateRecipe("Tuesday", recipe);
+                                                        break;
+                                                    case 3:
+                                                        duplicateRecipe("Wednesday", recipe);
+                                                        break;
+                                                    case 4:
+                                                        duplicateRecipe("Thursday", recipe);
+                                                        break;
+                                                    case 5:
+                                                        duplicateRecipe("Friday", recipe);
+                                                        break;
+                                                    case 6:
+                                                        duplicateRecipe("Saturday", recipe);
+                                                        break;
+                                                    case 7:
+                                                        break;
+                                                }
+                                            }
+                                        });
+                                builder.create().show();
+                            }
                         });
 
                         alert.show();
-
-                        return true;
-                    }
+                    return true;}
                 });
 
                 return recipeView;
             }
+        }
+
+        public void duplicateRecipe(final String dayName, Recipe recipe){
+            realm.beginTransaction();
+            for (Day day : days) {
+                if (day.getName().equals(dayName)) {
+                        day.getMeals().add(recipe);
+                        break;
+                }
+            }
+            realm.commitTransaction();
+            MealAdapter.this.notifyDataSetChanged();
         }
     }
 }
