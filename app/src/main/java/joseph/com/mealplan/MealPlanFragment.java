@@ -2,6 +2,7 @@ package joseph.com.mealplan;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -153,9 +154,9 @@ public class MealPlanFragment extends Fragment {
             } else {
                 final Recipe recipe = (Recipe) item;
                 Log.i(TAG, "recipe: " + recipe.getTitle());
-                RecipeView recipeView = new RecipeView(getContext());
+                final RecipeView recipeView = new RecipeView(getContext());
                 recipeView.bind(recipe);
-
+                final Day[] deleted = new Day[1];
                 recipeView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -168,11 +169,27 @@ public class MealPlanFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 realm.beginTransaction();
                                 for (Day day : days) {
-                                    if (day.getMeals().remove(recipe)) break;
+                                    if (day.getMeals().remove(recipe)) {
+                                        deleted[0] = day;
+                                        break;}
                                 }
                                 realm.commitTransaction();
                                 dialog.dismiss();
                                 MealAdapter.this.notifyDataSetChanged();
+
+                                View.OnClickListener undoDelete = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) { //Re-adds the deleted entry
+                                        realm.beginTransaction();
+                                        deleted[0].getMeals().add(recipe);
+                                        realm.commitTransaction();
+                                        MealAdapter.this.notifyDataSetChanged();
+                                    }
+                                };
+                                //Displays snackbar, which allows for undoing the delete
+                                Snackbar.make(recipeView, "Removed recipe", Snackbar.LENGTH_LONG)
+                                        .setAction("Undo", undoDelete)
+                                        .show();
                             }
                         });
                         alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
