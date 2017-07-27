@@ -118,7 +118,7 @@ public class GroceryListFragment extends Fragment {
 
     public void addGrocery(String name) {
         final String capitalized = capitalize(name);
-        if (valid.containsKey(capitalized)) {
+        if (valid.containsKey(capitalized) && !capitalized.equals("Empty")) {
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm1) {
@@ -134,7 +134,11 @@ public class GroceryListFragment extends Fragment {
 
     @NonNull
     private static String capitalize(String str) {
+        if(str.length() == 0){
+            return "Empty";
+        }
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase(); //This is fine
+
     }
 
     public void showItem(String itemText) {
