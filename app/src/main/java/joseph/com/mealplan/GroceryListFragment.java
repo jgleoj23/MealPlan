@@ -111,8 +111,10 @@ public class GroceryListFragment extends Fragment {
     }
 
     private void loadGroceryFromDisk(Grocery grocery) {
-        getOrAddAisle(grocery.getName()).getGroceries().add(grocery);
-        adapter.notifyDataSetChanged();
+        if(valid.containsKey(grocery.getName())) {
+            getOrAddAisle(grocery.getName()).getGroceries().add(grocery);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void showItem(final String itemText) {
