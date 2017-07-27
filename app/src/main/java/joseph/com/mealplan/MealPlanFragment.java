@@ -161,7 +161,7 @@ public class MealPlanFragment extends Fragment {
                     public boolean onLongClick(View v) {
                         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                         alert.setTitle("Alert!!");
-                        alert.setMessage("Are you sure to delete record");
+                        alert.setMessage("Are you want to delete this record?");
                         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
                             @Override
