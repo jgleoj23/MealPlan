@@ -158,6 +158,7 @@ public class MealPlanFragment extends Fragment {
                 final RecipeView recipeView = new RecipeView(getContext());
                 recipeView.bind(recipe);
                 final Day[] deleted = new Day[1];
+                final int i = position;
                 recipeView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -168,12 +169,15 @@ public class MealPlanFragment extends Fragment {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                realm.beginTransaction();
-                                for (Day day : days) {
-                                    if (day.getMeals().remove(recipe)) {
-                                        deleted[0] = day;
-                                        break;}
+                                Object intendedDay = getItem(i);
+                                int j = i;
+                                while (intendedDay instanceof Recipe) {
+                                    j = j - 1;
+                                    intendedDay = getItem(j);
                                 }
+                                deleted[0] = (Day) intendedDay;
+                                realm.beginTransaction();
+                                ((Day) intendedDay).getMeals().remove(recipe);
                                 realm.commitTransaction();
                                 dialog.dismiss();
                                 MealAdapter.this.notifyDataSetChanged();
@@ -193,16 +197,16 @@ public class MealPlanFragment extends Fragment {
                                         .show();
                             }
                         });
-                        alert.setNegativeButton("BACK", new DialogInterface.OnClickListener() {
+                        alert.setNeutralButton("BACK", new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                    });
+                        });
 
 
-                        alert.setNeutralButton("DUPLICATE", new DialogInterface.OnClickListener() {
+                        alert.setNegativeButton("DUPLICATE", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 final Context context = getContext();
