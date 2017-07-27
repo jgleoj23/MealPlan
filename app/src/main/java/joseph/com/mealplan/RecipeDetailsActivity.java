@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     TextView tvRecipeName;
     ScaleImageView ivRecipeImage;
     TextView tvRecipeDirections;
+    ImageButton favorites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         tvRecipeName = (TextView) findViewById(R.id.tvRecipeName);
         ivRecipeImage = (ScaleImageView) findViewById(R.id.ivRecipeImage);
         tvRecipeDirections = (TextView) findViewById(R.id.tvRecipeDirections);
+        favorites = (ImageButton) findViewById(R.id.btFavorite);
+
         tvRecipeDirections.setMovementMethod(new ScrollingMovementMethod());
 
         // unwrap recipe passed in via intent
@@ -108,6 +112,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         Intent intent = new Intent("favorite");
         intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        favorites.setVisibility(View.INVISIBLE);
         Toast.makeText(getApplicationContext(), "Recipe added to favorites", Toast.LENGTH_SHORT).show();
     }
 
