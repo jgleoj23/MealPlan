@@ -2,6 +2,7 @@ package joseph.com.mealplan;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -122,7 +125,7 @@ public class FavoritesFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             // Get the data item for this position
-            Recipe recipe = getItem(position);
+            final Recipe recipe = getItem(position);
             // Check if an existing view is being reused, otherwise inflate the view
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_recipe, parent, false);
@@ -136,6 +139,14 @@ public class FavoritesFragment extends Fragment {
                         .fit().centerCrop()
                         .into(ivPic);
 
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
+                    intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
+                    getContext().startActivity(intent);
+                }
+            });
 
             return convertView;
         }
