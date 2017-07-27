@@ -40,15 +40,10 @@ public class Recipe extends RealmObject {
     public static Recipe fromJson(JSONObject jsonObject) {
         Recipe recipe = null;
         try {
-            Log.i("tag", jsonObject.toString());
-            String recipeTitle = jsonObject.getString("title");
-
-            recipe = new Recipe(recipeTitle);
+            recipe = new Recipe(jsonObject.getString("title"));
             recipe.imageUrl = jsonObject.getString("image_url");
             recipe.sourceUrl = jsonObject.getString("source_url");
-            recipe.id = jsonObject.getLong("recipe_id");
-            Log.i(TAG, "id is: " + recipe.id);
-
+            recipe.id = Long.parseLong(jsonObject.getString("recipe_id"));
         } catch (Exception e) {
             e.printStackTrace();
         }
