@@ -34,14 +34,12 @@ import joseph.com.mealplan.model.Recipe;
 public class FavoritesFragment extends Fragment {
     @BindView(R.id.lvFavorites)
     ListView lvFavorites;
-    MainActivity mainActivity;
     FavoritesAdapter favoritesAdapter;
     ArrayList<Recipe> recipes = new ArrayList<>();
     private Realm realm = Realm.getDefaultInstance();
 
-    public static FavoritesFragment newInstance(MainActivity mainActivity) {
+    public static FavoritesFragment newInstance() {
         FavoritesFragment fragment = new FavoritesFragment();
-        fragment.mainActivity = mainActivity;
         return fragment;
     }
 

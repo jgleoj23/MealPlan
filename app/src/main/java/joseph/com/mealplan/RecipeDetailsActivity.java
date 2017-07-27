@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -20,8 +21,6 @@ import org.parceler.Parcels;
 
 import cz.msebera.android.httpclient.Header;
 import joseph.com.mealplan.model.Recipe;
-
-import static joseph.com.mealplan.MainActivity.instance;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
@@ -46,7 +45,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         tvRecipeDirections.setMovementMethod(new ScrollingMovementMethod());
 
         // unwrap recipe passed in via intent
-
         recipe = Parcels.unwrap(getIntent().getParcelableExtra("recipe"));
 
         tvRecipeName.setText(recipe.getTitle());
@@ -91,7 +89,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 tvRecipeDirections.setTypeface(typeface);
             }
 
-            //
+
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
@@ -108,12 +106,16 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     public void addFavorites(View view) {
-        instance.favorite(recipe);
+        Intent intent = new Intent("favorite");
+        intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         Toast.makeText(getApplicationContext(), "Recipe added to favorites", Toast.LENGTH_SHORT).show();
     }
 
     public void addMealPlan(View view) {
-        instance.plan(recipe);
+        Intent intent = new Intent("plan");
+        intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
     }
 }
