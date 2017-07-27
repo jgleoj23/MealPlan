@@ -89,6 +89,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         });
     }
 
+    public void goToUrl(View view) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+        intent.setData(Uri.parse(recipe.getSourceUrl()));
+        startActivity(intent);
+    }
+
     public void addFavorites(View view) {
         instance.favorite(recipe);
         Toast.makeText(getApplicationContext(), "Recipe added to favorites", Toast.LENGTH_SHORT).show();
