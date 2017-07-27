@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import org.parceler.Parcels;
 
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Recipe recipe = Parcels.unwrap(getIntent().getParcelableExtra("recipe"));
+                Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
                 getFavoritesFragment().addFavorite(recipe);
             }
         }, new IntentFilter("favorite"));
@@ -67,9 +68,10 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Recipe recipe = Parcels.unwrap(getIntent().getParcelableExtra("recipe"));
+                Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
                 getMealPlanFragment().addRecipe(recipe);
                 viewPager.setCurrentItem(1);
+                Log.i(TAG, "recips is " + recipe + ", " + getGroceryListFragment());
                 getGroceryListFragment().addGroceries(recipe.getIngredients());
             }
         }, new IntentFilter("plan"));
