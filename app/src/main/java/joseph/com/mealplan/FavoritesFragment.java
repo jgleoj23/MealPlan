@@ -17,19 +17,18 @@ import io.realm.Realm;
 import joseph.com.mealplan.model.Recipe;
 
 public class FavoritesFragment extends Fragment {
-    @BindView(R.id.rvFavorites)
-    RecyclerView rvFavorites;
-    ResultsAdapter resultsAdapter = new ResultsAdapter();
 
-    MainActivity mainActivity;
+    ResultsAdapter resultsAdapter = new ResultsAdapter();
+    List<Recipe> favorites = new ArrayList<>();
     private Realm realm = Realm.getDefaultInstance();
 
-    public static FavoritesFragment newInstance(MainActivity mainActivity) {
+    @BindView(R.id.rvFavorites)
+    RecyclerView rvFavorites;
+
+    public static FavoritesFragment newInstance() {
         FavoritesFragment fragment = new FavoritesFragment();
-        fragment.mainActivity = mainActivity;
         return fragment;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,32 +37,23 @@ public class FavoritesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         rvFavorites.setAdapter(resultsAdapter);
         for (Recipe recipe : realm.where(Recipe.class).findAll()) {
-            if(recipe.getTitle().substring(0, 1).equals("*") && !favorited.contains(recipe.getTitle())) {
+            if(recipe.getTitle().substring(0, 1).equals("*") && !favorites.contains(recipe.getTitle())) {
                 showFavorite(recipe);
-                favorited.add(recipe.getTitle());
             }
         }
         rvFavorites.setLayoutManager(new LinearLayoutManager(getContext()));
 
-//        for (Recipe recipe : realm.where(Recipe.class).findAll()) {
-//            favorited.add(recipe.getTitle().toString());
-//            resultsAdapter.recipes.add(recipe);
-//            resultsAdapter.notifyDataSetChanged();
-//        }
-
         return view;
     }
 
-    ArrayList<String> favorited = new ArrayList<String>();
-
     public void showFavorite(final Recipe recipe){
-        if(!favorited.contains(recipe.getTitle())) {
-            resultsAdapter.recipes.add(recipe);
+        if(!favorites.contains(recipe.getTitle())) {
+            favorites.add(recipe);
             resultsAdapter.notifyDataSetChanged();
         }
     }
     public void addFavorite(final Recipe recipe) {
-        if(!favorited.contains(recipe.getTitle())) {
+        if(!favorites.contains(recipe.getTitle())) {
             realm.beginTransaction();
             recipe.setTitle("*"+recipe.getTitle());
             realm.insertOrUpdate(recipe);
@@ -72,9 +62,7 @@ public class FavoritesFragment extends Fragment {
     }
 
 
-    public class ResultsAdapter extends RecyclerView.Adapter<RecipeSearchViewHolder> {
-
-        private List<Recipe> recipes = new ArrayList<>();
+    private class ResultsAdapter extends RecyclerView.Adapter<RecipeSearchViewHolder> {
 
         @Override
         public RecipeSearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -83,12 +71,12 @@ public class FavoritesFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(RecipeSearchViewHolder holder, int position) {
-            holder.getRecipeView().bind(recipes.get(position));
+            holder.getRecipeView().bind(favorites.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return recipes.size();
+            return favorites.size();
         }
     }
 }

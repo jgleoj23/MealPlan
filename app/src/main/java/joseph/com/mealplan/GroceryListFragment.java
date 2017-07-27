@@ -1,112 +1,83 @@
 package joseph.com.mealplan;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.base.Supplier;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import joseph.com.mealplan.model.Aisle;
 import joseph.com.mealplan.model.Grocery;
 
+import static com.google.common.collect.Iterables.tryFind;
+import static joseph.com.mealplan.Utils.capitalize;
+
 public class GroceryListFragment extends Fragment {
-    List<Map<String, String>> listItems;
-    // Use Map as the type
-    Map<String, String> resultsMap = new HashMap<>();
-    SimpleAdapter adapter;
-    // You don't need Hashtable unless you are using threads
-    Hashtable<String, Integer> valid = new Hashtable<String, Integer>();
-    MainActivity mainActivity;
+
+    private final String TAG = getClass().getName();
+    private SortedSet<Aisle> aisles = new TreeSet<>();
+    private GroceryAdapter adapter = new GroceryAdapter();
+    private Map<String, Integer> valid = new HashMap<>();
+    private Realm realm = Realm.getDefaultInstance();
 
     @BindView(R.id.lvGrocery)
-    ListView resultsListView;
+    ListView lvResults;
     @BindView(R.id.txAdd)
     EditText txAdd;
     @BindView(R.id.btAdd)
     Button btAdd;
-    Realm realm = Realm.getDefaultInstance();
 
+    private String[] nameArray = {"Sour cream", "Olive oil", "Canola oil", "Black pepper", "Vanilla extract",
+            "Cream cheese", "Sour cream", "Graham cracker", "Cocoa", "Salt", "Chocolate", "Ham", "Cheese", "Pineapple",
+            "Milk", "Bread", "Kiwi", "Butter", "Rice", "Pasta", "Tomato", "Steak", "French fries", "Avocado", "Cookies",
+            "Cake", "Water", "Onion", "Carrot", "Garlic", "Spinach", "Ramen", "Chicken", "Cheesecake", "Sugar", "Egg",
+            "Lemon", "Flour", "Potato"};
+    private int[] number = {1, 4, 4, 3, 2, 1, 1, 2, 2, 2, 2, 5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3,
+            4, 5, 2, 2, 1, 3, 2, 3};
 
-    public static GroceryListFragment newInstance(MainActivity mainActivity) {
-        GroceryListFragment fragment = new GroceryListFragment();
-        fragment.mainActivity = mainActivity;
-        return fragment;
+    public static GroceryListFragment newInstance() {
+        return new GroceryListFragment();
     }
 
-    String[] nameArray = {"Sour cream", "Olive oil", "Canola oil", "Black pepper", "Vanilla extract", "Cream cheese", "Sour cream", "Graham cracker", "Cocoa", "Salt", "Chocolate", "Ham", "Cheese", "Pineapple", "Milk", "Bread", "Kiwi", "Butter", "Rice", "Pasta", "Tomato", "Steak", "French fries", "Avocado", "Cookies", "Cake", "Water", "Onion", "Carrot", "Garlic", "Spinach", "Ramen", "Chicken", "Cheesecake", "Sugar", "Egg", "Lemon", "Flour", "Potato"};
-    int[] number = {1, 4, 4, 3, 2, 1, 1, 2, 2, 2, 2, 5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3, 4, 5, 2, 2, 1, 3, 2, 3};
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_grocery_list, container, false);
         ButterKnife.bind(this, view);
 
-        //Creates a hash table of valid grocery items
-        for(int i = 0; i != 39; i++){
+        for(int i = 0; i != nameArray.length; i++) {
             valid.put(nameArray[i], number[i]);
         }
 
-        //Sets up adapter to allow for Aisle #: grocery layout
-        listItems = new ArrayList<>(6);
-
-        adapter = new SimpleAdapter(getContext(), listItems, R.layout.item_grocery,
-                new String[]{"First Line", "Second Line"},
-                new int[]{R.id.txAisle, R.id.txGroc});
-        resultsListView.setAdapter(adapter);
-
-        setupListViewListener();
+        lvResults.setAdapter(adapter);
 
         for (Grocery grocery : realm.where(Grocery.class).findAll()) {
-            showItem(grocery.getName());
+            loadGroceryFromDisk(grocery);
         }
-
-        return view;
-    }
-
-
-    private void setupListViewListener(){
-        resultsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-            //If list entry is long clicked, delete entry
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
-                resultsMap = listItems.get(i);
-                listItems.remove(i);
-                final int x = i;
-                adapter.notifyDataSetChanged();
-                View.OnClickListener undoDelete = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) { //Re-adds the deleted entry
-                        listItems.add(x, resultsMap);
-                        adapter.notifyDataSetChanged();
-                    }
-                };
-                //Displays snackbar, which allows for undoing the delete
-                Snackbar.make(resultsListView, "Removed Aisle", Snackbar.LENGTH_LONG)
-                        .setAction("Undo", undoDelete)
-                        .show();
-                return true;
-            }
-        });
 
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,76 +85,19 @@ public class GroceryListFragment extends Fragment {
                 addGrocery(txAdd.getText().toString());
             }
         });
+
+        return view;
     }
 
     public void addGrocery(String name) {
         final String capitalized = capitalize(name);
         if (valid.containsKey(capitalized)) {
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm1) {
-                    realm1.insert(new Grocery(capitalized));
-                }
-            });
-            showItem(capitalized, true);
+            showItem(capitalized);
         }
         else {
             Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
         }
     }
-
-    @NonNull
-    private static String capitalize(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase(); //This is fine
-    }
-
-    public void showItem(String itemText) {
-        showItem(itemText, false);
-    }
-
-    public void showItem(final String itemText, boolean shouldMakeToast) {
-         Map<String, String> resultsMap = Iterables.tryFind(listItems, new Predicate<Map<String, String>>() {
-            @Override
-            public boolean apply(@Nullable Map<String, String> resultsMap) {
-                return resultsMap.get("First Line").equals("Aisle #" + valid.get(itemText));
-            }
-        }).orNull();
-
-        if (resultsMap != null) {
-            String old = resultsMap.get("Second Line");
-            if(!old.contains(itemText)) {
-                resultsMap.put("Second Line", old + "-" + itemText + "\n");
-                adapter.notifyDataSetChanged();
-                txAdd.setText("");
-            } else if (shouldMakeToast) {
-                Toast.makeText(getContext(), "Grocery already in list.", Toast.LENGTH_LONG).show();
-            }
-        } else if (valid.containsKey(itemText)){
-            resultsMap = new HashMap<>();
-
-            resultsMap.put("First Line", "Aisle #" + valid.get(itemText));
-            resultsMap.put("Second Line", "-" + itemText+ "\n");
-            if(listItems.size() == 0) {
-                listItems.add(resultsMap);
-            }
-            else {
-                    for (int i = 0; i != listItems.size(); i++) {
-                        String number = listItems.get(i).get("First Line");
-                        int index = number.indexOf("#");
-                            int x = Integer.valueOf(number.substring(index + 1));
-
-                            if (x >= valid.get(itemText)) {
-                                listItems.add(i, resultsMap);
-                                adapter.notifyDataSetChanged();
-                                txAdd.setText("");
-                                return;
-                            }
-                        }
-                    listItems.add(resultsMap);
-                    }
-            }
-        }
-
 
     public void addGroceries(List<Grocery> groceries) {
         for (Grocery grocery : groceries) {
@@ -192,6 +106,142 @@ public class GroceryListFragment extends Fragment {
                     addGrocery(ingredientName);
                     break; //It should be break and not return because return terminates the function after one grocery has been added, while break just escapes the inner for loop and moves to the next grocery item
                 }
+            }
+        }
+    }
+
+    private void loadGroceryFromDisk(Grocery grocery) {
+        getOrAddAisle(grocery.getName()).getGroceries().add(grocery);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void showItem(final String itemText) {
+        final Aisle aisle = getOrAddAisle(itemText);
+
+        Grocery grocery = tryFind(aisle.getGroceries(), new Predicate<Grocery>() {
+            @Override
+            public boolean apply(@Nullable Grocery grocery) {
+                return grocery.getName().contains(itemText);
+            }
+        }).or(new Supplier<Grocery>() {
+            @Override
+            public Grocery get() {
+                realm.beginTransaction();
+                Grocery grocery = realm.createObject(Grocery.class);
+                grocery.setName(itemText);
+                realm.commitTransaction();
+                aisle.getGroceries().add(grocery);
+                adapter.notifyDataSetChanged();
+                return grocery;
+            }
+        });
+
+        // TODO add the description of the use to the grocery
+    }
+
+    private Aisle getOrAddAisle(final String groceryName) {
+        final int aisleNumber = valid.get(groceryName);
+        return tryFind(aisles, new Predicate<Aisle>() {
+            @Override
+            public boolean apply(@Nullable Aisle aisle) {
+                return aisle.getAisleName().equals("Aisle #" + aisleNumber);
+            }
+        }).or(new Supplier<Aisle>() {
+            @Override
+            public Aisle get() {
+                Aisle aisle = new Aisle();
+                aisle.setAisleNumber(aisleNumber);
+                aisles.add(aisle);
+                return aisle;
+            }
+        });
+    }
+
+    private List flattenAisles() {
+        return Utils.flatten(aisles, new Function<Aisle, Collection>() {
+            @Nullable
+            @Override
+            public Collection apply(@Nullable Aisle input) {
+                return input.getGroceries();
+            }
+        });
+    }
+
+    private class GroceryAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return flattenAisles().size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return flattenAisles().get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Object item = getItem(position);
+
+            if (item instanceof Aisle) {
+                TextView textView = new TextView(getContext());
+                textView.setText(((Aisle) item).getAisleName());
+                return textView;
+            } else {
+                View groceryView = LayoutInflater.from(getContext()).inflate(R.layout.item_grocery, parent, false);
+                TextView tvGrocery = (TextView) groceryView.findViewById(R.id.tvGrocery);
+                final Grocery grocery = (Grocery) item;
+                tvGrocery.setText(grocery.getName());
+
+                groceryView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Aisle aisle = getOrAddAisle(grocery.getName());
+                        aisle.getGroceries().remove(grocery);
+                        if (aisle.getGroceries().isEmpty()) {
+                            aisles.remove(aisle);
+                        }
+
+                        adapter.notifyDataSetChanged();
+
+                        Snackbar.make(lvResults, "Removed Grocery", Snackbar.LENGTH_LONG)
+                                .setAction("Undo", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v1) {
+                                        // This way aisle will be added back if I removed it
+                                        Aisle aisle = getOrAddAisle(grocery.getName());
+                                        aisle.getGroceries().add(grocery);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                })
+                                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                    @Override
+                                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                                        if (event != DISMISS_EVENT_ACTION) {
+                                            // The snack bar was not dismissed by the undo button so we are
+                                            // going through with the delete
+                                            realm.executeTransaction(new Realm.Transaction() {
+                                                @Override
+                                                public void execute(Realm realm) {
+                                                    Log.i(TAG, "delete from Realm");
+                                                    grocery.deleteFromRealm();
+                                                }
+                                            });
+                                        }
+                                    }
+                                })
+                                .show();
+
+                        return true;
+                    }
+                });
+
+                return groceryView;
             }
         }
     }
