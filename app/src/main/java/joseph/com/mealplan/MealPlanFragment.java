@@ -83,11 +83,11 @@ public class MealPlanFragment extends Fragment {
 
         private List flattenDays() {
             realm.beginTransaction();
-            List result = Utils.flatten(days, new Function<Object, Collection>() {
+            List result = Utils.flatten(days, new Function<Day, Collection>() {
                 @Nullable
                 @Override
-                public Collection apply(@Nullable Object input) {
-                    return ((Day) input).getMeals();
+                public Collection apply(@Nullable Day input) {
+                    return input.getMeals();
                 }
             });
             realm.commitTransaction();

@@ -9,6 +9,8 @@ import io.realm.annotations.RealmClass;
 
 /**
  * Created by kcguo on 7/13/17.
+ *
+ * Represents a Day in the MealPlanFragment
  */
 @RealmClass
 public class Day extends RealmObject {
