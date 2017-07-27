@@ -94,6 +94,16 @@ public class FavoritesFragment extends Fragment {
                 return true;
             }
         });
+
+        lvFavorites.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            //If list entry is long clicked, delete entry
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l){
+            Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
+                intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipes.get(i)));
+                getContext().startActivity(intent);
+            }
+        });
     }
 
     ArrayList<String> favorited = new ArrayList<String>();
@@ -139,14 +149,6 @@ public class FavoritesFragment extends Fragment {
                         .fit().centerCrop()
                         .into(ivPic);
 
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-                    intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
-                    getContext().startActivity(intent);
-                }
-            });
 
             return convertView;
         }
