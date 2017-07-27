@@ -1,6 +1,7 @@
 package joseph.com.mealplan;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -47,6 +48,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         recipe = Parcels.unwrap(getIntent().getParcelableExtra("recipe"));
 
         tvRecipeName.setText(recipe.getTitle());
+        final Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/DINAlternate-Bold.ttf");
+        tvRecipeName.setTypeface(typeface);
 
         Picasso.with(this)
                .load(recipe.getImageUrl())
@@ -77,6 +80,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 }
 
                 tvRecipeDirections.setText(ingredientsList);
+                tvRecipeDirections.setTypeface(typeface);
             }
 
 
