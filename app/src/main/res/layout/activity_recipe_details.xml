@@ -74,7 +74,6 @@
         android:scrollbars = "vertical"
         android:layout_below="@+id/rlButtonHeader"
         android:textColor="@color/ingredients"
-        android:text="No ingredients to show."
         android:layout_centerHorizontal="true"
         android:lineSpacingExtra="5dp"
         android:paddingLeft="20dp"

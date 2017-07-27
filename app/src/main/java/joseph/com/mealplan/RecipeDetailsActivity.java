@@ -80,8 +80,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                     ingredientsList += recipe.getIngredients().get(i).getName();
                     ingredientsList += "\n";
                 }
+                if (ingredientsList == "") {
+                    tvRecipeDirections.setText("No Ingredients to Show.");
+                }
 
-                tvRecipeDirections.setText(ingredientsList);
+                else {
+                    tvRecipeDirections.setText(ingredientsList);
+                }
+
                 tvRecipeDirections.setTypeface(typeface);
             }
 
