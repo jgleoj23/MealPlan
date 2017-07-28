@@ -79,11 +79,7 @@ public class MealPlanFragment extends Fragment {
         lvMealPlan.setAdapter(new MealAdapter());
         return view;
     }
-
-
-    public void addRecipe(Recipe recipe) {
-        addingRecipe = recipe;
-    }
+    
 
     public void addRecipeWithDay(Recipe recipe, String day) {
         addingRecipe = recipe;

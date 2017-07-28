@@ -67,12 +67,7 @@ public class MainActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
                 String day = intent.getStringExtra("day");
-                if (day != null) {
-                    getMealPlanFragment().addRecipeWithDay(recipe, intent.getStringExtra("day"));
-                }
-                else {
-                    getMealPlanFragment().addRecipe(recipe);
-                }
+                getMealPlanFragment().addRecipeWithDay(recipe, intent.getStringExtra("day"));
                 viewPager.setCurrentItem(1);
                 getGroceryListFragment().addGroceriesFor(recipe);
             }
