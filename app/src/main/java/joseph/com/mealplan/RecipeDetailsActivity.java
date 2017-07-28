@@ -117,7 +117,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         if (!MainActivity.getInstance().favorited.contains(recipe.getImageUrl())) {
             MainActivity.getInstance().favorited.add(recipe.getImageUrl());
         }
-        
+
         Intent intent = new Intent("favorite");
         intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
