@@ -114,7 +114,8 @@ public class FavoritesFragment extends Fragment {
     }
 
     public void addFavorite(final Recipe recipe) {
-        if (!favorites.getFavorites().contains(recipe)) {
+        // I have to make sure I'm not adding the same recipe twice
+        if (favorites.getFavorites().where().equalTo("id", recipe.getId()).findFirst() == null) {
             realm.beginTransaction();
             favorites.getFavorites().add(recipe);
             realm.insertOrUpdate(recipe);
