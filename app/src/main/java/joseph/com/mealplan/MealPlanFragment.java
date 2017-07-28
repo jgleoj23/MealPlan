@@ -23,7 +23,6 @@ import com.google.common.collect.FluentIterable;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +35,8 @@ import butterknife.ButterKnife;
 import io.realm.Realm;
 import joseph.com.mealplan.model.Day;
 import joseph.com.mealplan.model.Recipe;
+
+import static joseph.com.mealplan.Utils.DAYS_OF_WEEK;
 
 public class MealPlanFragment extends Fragment {
 
@@ -50,7 +51,7 @@ public class MealPlanFragment extends Fragment {
 
 
     public MealPlanFragment() {
-        for (final String dayName : Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")) {
+        for (final String dayName : DAYS_OF_WEEK) {
             final Day day = realm.where(Day.class).equalTo("name", dayName).findFirst();
             if (day == null) {
                 realm.executeTransaction(new Realm.Transaction() {
@@ -222,35 +223,14 @@ public class MealPlanFragment extends Fragment {
                                         duplicateRecipe(days.get(which).getName(), recipe);
                                     }
                                 });
-                                builder.setItems(new CharSequence[]
-                                                {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"},
-                                        new DialogInterface.OnClickListener() {
+
+
+                                builder.setItems(DAYS_OF_WEEK.toArray(new String[7]),
+                                                 new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 // The 'which' argument contains the index position
                                                 // of the selected item
-                                                switch (which) {
-                                                    case 0:
-                                                        duplicateRecipe("Sunday", recipe);
-                                                        break;
-                                                    case 1:
-                                                        duplicateRecipe("Monday", recipe);
-                                                        break;
-                                                    case 2:
-                                                        duplicateRecipe("Tuesday", recipe);
-                                                        break;
-                                                    case 3:
-                                                        duplicateRecipe("Wednesday", recipe);
-                                                        break;
-                                                    case 4:
-                                                        duplicateRecipe("Thursday", recipe);
-                                                        break;
-                                                    case 5:
-                                                        duplicateRecipe("Friday", recipe);
-                                                        break;
-                                                    case 6:
-                                                        duplicateRecipe("Saturday", recipe);
-                                                        break;
-                                                }
+                                                duplicateRecipe(DAYS_OF_WEEK.get(which), recipe);
                                             }
                                         });
                                 builder.create().show();

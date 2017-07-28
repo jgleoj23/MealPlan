@@ -22,6 +22,9 @@ public class Utils {
 
     private static final String TAG = Utils.class.getName();
 
+    public static final List<String> DAYS_OF_WEEK = Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday",
+                                                                   "Thursday", "Friday", "Saturday");
+
     public static <T> ImmutableList flatten(Iterable<T> items, final Function<T, Collection> getElements) {
         return  FluentIterable.from(items).transformAndConcat(new Function<T, Iterable<?>>() {
             @Nullable

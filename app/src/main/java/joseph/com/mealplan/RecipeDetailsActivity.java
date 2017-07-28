@@ -27,6 +27,8 @@ import io.realm.Realm;
 import joseph.com.mealplan.model.Favorites;
 import joseph.com.mealplan.model.Recipe;
 
+import static joseph.com.mealplan.Utils.DAYS_OF_WEEK;
+
 public class RecipeDetailsActivity extends AppCompatActivity {
 
 
@@ -135,49 +137,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         final Context context = view.getContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Which day would you like to duplicate this recipe?");
-        builder.setItems(new CharSequence[]
-                        {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"},
+        builder.setItems(DAYS_OF_WEEK.toArray(new String[7]),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position
                         // of the selected item
-                        switch (which) {
-                            case 0:
-                                intent.putExtra("day", "Sunday");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                                finish();
-                                break;
-                            case 1:
-                                intent.putExtra("day", "Monday");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                                finish();
-                                break;
-                            case 2:
-                                intent.putExtra("day", "Tuesday");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                                finish();
-                                break;
-                            case 3:
-                                intent.putExtra("day", "Wednesday");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                                finish();
-                                break;
-                            case 4:
-                                intent.putExtra("day", "Thursday");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                                finish();
-                                break;
-                            case 5:
-                                intent.putExtra("day", "Friday");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                                finish();
-                                break;
-                            case 6:
-                                intent.putExtra("day", "Saturday");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                                finish();
-                                break;
-                        }
+                        intent.putExtra("day", DAYS_OF_WEEK.get(which));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                        finish();
                     }
                 });
         builder.create().show();
