@@ -24,12 +24,11 @@ public class Recipe extends RealmObject {
     private static String TAG = Recipe.class.getName();
 
     @PrimaryKey
-    private long id;
+    private String id;
 
     private String title;
     private String imageUrl;
     private String sourceUrl;
-    private boolean isFavorite = false;
 
     private RealmList<Grocery> ingredients = new RealmList<>();
 
@@ -45,7 +44,7 @@ public class Recipe extends RealmObject {
             recipe = new Recipe(jsonObject.getString("title"));
             recipe.imageUrl = jsonObject.getString("image_url");
             recipe.sourceUrl = jsonObject.getString("source_url");
-            recipe.id = Long.parseLong(jsonObject.getString("recipe_id"));
+            recipe.id = jsonObject.getString("recipe_id");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,19 +89,11 @@ public class Recipe extends RealmObject {
         this.imageUrl = imageUrl;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setIsFavorite(boolean favorited) {
-        isFavorite = favorited;
     }
 }

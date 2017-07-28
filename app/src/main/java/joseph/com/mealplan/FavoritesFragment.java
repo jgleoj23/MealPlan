@@ -24,22 +24,29 @@ import com.squareup.picasso.Transformation;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import joseph.com.mealplan.model.Favorites;
 import joseph.com.mealplan.model.Recipe;
 
 public class FavoritesFragment extends Fragment {
 
-    private FavoritesAdapter favoritesAdapter = new FavoritesAdapter();
-    private List<Recipe> favorites = new ArrayList<>();
+    private FavoritesAdapter favoritesAdapter;
+    private Favorites favorites;
     private Realm realm = Realm.getDefaultInstance();
 
     @BindView(R.id.lvFavorites)
     ListView lvFavorites;
+
+    public FavoritesFragment() {
+        favorites = realm.where(Favorites.class).findFirst();
+        if (favorites == null) {
+            realm.beginTransaction();
+            favorites = realm.createObject(Favorites.class);
+            realm.commitTransaction();
+        }
+    }
 
     public static FavoritesFragment newInstance() {
         return new FavoritesFragment();
@@ -52,10 +59,7 @@ public class FavoritesFragment extends Fragment {
         ButterKnife.bind(this, view);
         super.onCreate(savedInstanceState);
 
-        for (Recipe recipe : realm.where(Recipe.class).equalTo("isFavorite", true).findAll()) {
-            favoritesAdapter.add(recipe);
-        }
-
+        favoritesAdapter = new FavoritesAdapter();
         lvFavorites.setAdapter(favoritesAdapter);
 
         setupListViewListener();
@@ -76,13 +80,11 @@ public class FavoritesFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Recipe recipe = favorites.get(i);
-                        favorites.remove(recipe);
+                        Recipe recipe = favorites.getFavorites().get(i);
                         realm.beginTransaction();
-                        recipe.deleteFromRealm();
+                        favorites.getFavorites().remove(recipe);
                         realm.commitTransaction();
                         dialog.dismiss();
-                        favorites.remove(i);
                         favoritesAdapter.notifyDataSetChanged();
                     }
                 });
@@ -105,28 +107,29 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
             Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-                intent.putExtra("recipe", Parcels.wrap(Recipe.class, favorites.get(i)));
+                intent.putExtra("recipe", Parcels.wrap(Recipe.class, favorites.getFavorites().get(i)));
                 getContext().startActivity(intent);
             }
         });
     }
 
     public void addFavorite(final Recipe recipe) {
-        if (!favorites.contains(recipe)) {
+        if (!favorites.getFavorites().contains(recipe)) {
             realm.beginTransaction();
-            recipe.setIsFavorite(true);
+            favorites.getFavorites().add(recipe);
             realm.insertOrUpdate(recipe);
             realm.commitTransaction();
 
-            favoritesAdapter.add(recipe);
-            favoritesAdapter.notifyDataSetChanged();
+            if (favoritesAdapter != null) {
+                favoritesAdapter.notifyDataSetChanged();
+            }
         }
     }
 
     private class FavoritesAdapter extends ArrayAdapter<Recipe> {
 
         private FavoritesAdapter() {
-            super(FavoritesFragment.this.getContext(), 0, favorites);
+            super(FavoritesFragment.this.getContext(), 0, favorites.getFavorites());
         }
 
         @NonNull

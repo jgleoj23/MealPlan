@@ -23,6 +23,8 @@ import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import cz.msebera.android.httpclient.Header;
+import io.realm.Realm;
+import joseph.com.mealplan.model.Favorites;
 import joseph.com.mealplan.model.Recipe;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
@@ -44,6 +46,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
 
+
         tvRecipeName = (TextView) findViewById(R.id.tvRecipeName);
         ivRecipeImage = (ScaleImageView) findViewById(R.id.ivRecipeImage);
         tvRecipeDirections = (TextView) findViewById(R.id.tvRecipeDirections);
@@ -53,8 +56,12 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         // unwrap recipe passed in via intent
         recipe = Parcels.unwrap(getIntent().getParcelableExtra("recipe"));
-        if (recipe.isFavorite()) {
-            favorites.setVisibility(View.INVISIBLE);
+        Favorites favoritesList = Realm.getDefaultInstance().where(Favorites.class).findFirst();
+        if (favoritesList != null) {
+            Recipe recipeInFavorite = favoritesList.getFavorites().where().equalTo("id", recipe.getId()).findFirst();
+            if (recipeInFavorite != null) {
+                favorites.setVisibility(View.INVISIBLE);
+            }
         }
         tvRecipeName.setText(recipe.getTitle());
         final Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/DINAlternate-Bold.ttf");

@@ -27,7 +27,7 @@ public class RecipeClient {
         client.get(url, params, handler);
     }
 
-    public void getRecipe(long recipeId, AsyncHttpResponseHandler handler) {
+    public void getRecipe(String recipeId, AsyncHttpResponseHandler handler) {
         String url = getApiUrl("get");
         RequestParams params = new RequestParams();
         params.put("key", "0baf87954f134397696ae1c2da1ce965");
