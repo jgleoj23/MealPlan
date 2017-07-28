@@ -2,6 +2,7 @@ package joseph.com.mealplan;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -29,10 +30,12 @@ public class RecipeSearchView extends RelativeLayout {
         super(context);
         inflate(getContext(), R.layout.item_recipe_search, this);
         ButterKnife.bind(this);
+
     }
 
     public void bind(final Recipe recipe) {
         tvTitle.setText(recipe.getTitle());
+
 
         Picasso.with(getContext())
                 .load(recipe.getImageUrl())
