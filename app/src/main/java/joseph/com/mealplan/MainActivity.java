@@ -16,12 +16,26 @@ import android.util.Log;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
+
 import io.realm.Realm;
 import joseph.com.mealplan.model.Recipe;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getName();
+    private static MainActivity mInstance = null;
+
+    public ArrayList<String> favorited = new ArrayList<>();
+
+    protected MainActivity(){}
+
+    public static synchronized MainActivity getInstance(){
+        if(null == mInstance) {
+            mInstance = new MainActivity();
+        }
+        return mInstance;
+    }
 
     private ViewPager viewPager;
     private MealPlanFragment mealPlanFragment;

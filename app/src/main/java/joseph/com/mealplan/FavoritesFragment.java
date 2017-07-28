@@ -76,6 +76,7 @@ public class FavoritesFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Recipe recipe = recipes.get(i);
+                        MainActivity.getInstance().favorited.remove(recipe.getImageUrl());
                         realm.beginTransaction();
                         recipe.deleteFromRealm();
                         realm.commitTransaction();
