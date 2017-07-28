@@ -19,10 +19,13 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
+
 import cz.msebera.android.httpclient.Header;
 import joseph.com.mealplan.model.Recipe;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
+
 
     private String TAG = getClass().getName();
 
@@ -49,7 +52,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         // unwrap recipe passed in via intent
         recipe = Parcels.unwrap(getIntent().getParcelableExtra("recipe"));
-
+        if (MainActivity.getInstance().favorited.contains(recipe.getImageUrl())) {
+            favorites.setVisibility(View.INVISIBLE);
+        }
         tvRecipeName.setText(recipe.getTitle());
         final Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/DINAlternate-Bold.ttf");
         tvRecipeName.setTypeface(typeface);
@@ -109,6 +114,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     public void addFavorites(View view) {
+        if (!MainActivity.getInstance().favorited.contains(recipe.getImageUrl())) {
+            MainActivity.getInstance().favorited.add(recipe.getImageUrl());
+        }
+        
         Intent intent = new Intent("favorite");
         intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
