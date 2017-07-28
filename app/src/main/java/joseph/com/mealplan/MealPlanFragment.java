@@ -2,9 +2,12 @@ package joseph.com.mealplan;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +19,8 @@ import android.widget.TextView;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +133,7 @@ public class MealPlanFragment extends Fragment {
 
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             Log.i(TAG, "getView: " + position);
             Object item = getItem(position);
             if (item instanceof Day) {
@@ -148,8 +153,7 @@ public class MealPlanFragment extends Fragment {
                 Log.i(TAG, "recipe: " + recipe.getTitle());
                 final RecipeView recipeView = new RecipeView(getContext());
                 recipeView.bind(recipe);
-                final Day[] deleted = new Day[1];
-                final int i = position;
+
                 recipeView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -160,31 +164,42 @@ public class MealPlanFragment extends Fragment {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Object intendedDay = getItem(i);
-                                int j = i;
-                                while (intendedDay instanceof Recipe) {
-                                    j = j - 1;
+                                Object intendedDay = getItem(position);
+                                for (int j = position; intendedDay instanceof  Recipe; j--) {
                                     intendedDay = getItem(j);
                                 }
-                                deleted[0] = (Day) intendedDay;
+
+                                final Day dayForRecipe = ((Day) intendedDay);
                                 realm.beginTransaction();
-                                ((Day) intendedDay).getMeals().remove(recipe);
+                                dayForRecipe.getMeals().remove(recipe);
                                 realm.commitTransaction();
                                 dialog.dismiss();
                                 MealAdapter.this.notifyDataSetChanged();
 
-                                View.OnClickListener undoDelete = new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) { //Re-adds the deleted entry
-                                        realm.beginTransaction();
-                                        deleted[0].getMeals().add(recipe);
-                                        realm.commitTransaction();
-                                        MealAdapter.this.notifyDataSetChanged();
-                                    }
-                                };
-                                //Displays snackbar, which allows for undoing the delete
+
                                 Snackbar.make(recipeView, "Removed recipe", Snackbar.LENGTH_LONG)
-                                        .setAction("Undo", undoDelete)
+                                        .setAction("Undo", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v1) { //Re-adds the deleted entry
+                                                realm.beginTransaction();
+                                                dayForRecipe.getMeals().add(recipe);
+                                                realm.commitTransaction();
+                                                MealAdapter.this.notifyDataSetChanged();
+                                            }
+                                        })
+                                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                            @Override
+                                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                                if (event != DISMISS_EVENT_ACTION) {
+                                                    // The snack bar was not dismissed by the undo button so we are
+                                                    // going through with the delete
+                                                    Intent intent = new Intent("remove-recipe");
+                                                    intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
+                                                    LocalBroadcastManager.getInstance(getContext())
+                                                                         .sendBroadcast(intent);
+                                                }
+                                            }
+                                        })
                                         .show();
                             }
                         });

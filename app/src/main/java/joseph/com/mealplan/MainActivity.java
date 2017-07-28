@@ -54,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Realm.init(this);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
+        broadcastManager.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }, new IntentFilter("favorite"));
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+        broadcastManager.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
@@ -72,6 +74,16 @@ public class MainActivity extends AppCompatActivity {
                 getGroceryListFragment().addGroceriesFor(recipe);
             }
         }, new IntentFilter("plan"));
+
+        broadcastManager.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
+                getGroceryListFragment().removeIngredientsFor(recipe);
+            }
+        }, new IntentFilter("remove-recipe"));
+
+
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         MainPagerAdapter adapterViewPager = new MainPagerAdapter(getSupportFragmentManager());

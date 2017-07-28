@@ -23,6 +23,7 @@ import com.google.common.collect.FluentIterable;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -94,7 +95,13 @@ public class GroceryListFragment extends Fragment {
             public void onClick(View v) {
                 String capitalized = capitalize(txAdd.getText().toString());
                 if (valid.containsKey(capitalized)) {
-                    getOrAddGrocery(capitalized);
+                    final Grocery grocery = getOrAddGrocery(capitalized);
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            grocery.setWasAddedManullay(true);
+                        }
+                    });
                 } else {
                     Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
                 }
@@ -169,6 +176,40 @@ public class GroceryListFragment extends Fragment {
                 return aisle;
             }
         });
+    }
+
+    public void removeIngredientsFor(final Recipe recipe) {
+        Log.i(TAG, "removing ingredients");
+        for (Iterator<Aisle> aisleIterator = aisles.iterator(); aisleIterator.hasNext();) {
+            Aisle aisle = aisleIterator.next();
+            for (final Iterator<Grocery> groceryIterator = aisle.getGroceries().iterator();
+                 groceryIterator.hasNext();) {
+                final Grocery grocery = groceryIterator.next();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        for (Iterator<Use> useIterator = grocery.getUses().iterator();
+                             useIterator.hasNext();) {
+                            if (useIterator.next().getUse().contains(recipe.getTitle())) {
+                                Log.i(TAG, "removing a use");
+                                useIterator.remove();
+                            }
+                        }
+
+                        if (grocery.getUses().isEmpty() && !grocery.wasAddedManullay()) {
+                            groceryIterator.remove();
+                            grocery.deleteFromRealm();
+                        }
+                    }
+                });
+            }
+
+            if (aisle.getGroceries().isEmpty()) {
+                aisleIterator.remove();
+            }
+        }
+
+        adapter.notifyDataSetChanged();
     }
 
 

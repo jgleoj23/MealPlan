@@ -15,6 +15,8 @@ import io.realm.annotations.RealmClass;
 public class Grocery extends RealmObject {
     private String name;
 
+    private boolean wasAddedManullay = false;
+
     private RealmList<Use> uses = new RealmList<>();
 
     public Grocery() {}
@@ -35,8 +37,12 @@ public class Grocery extends RealmObject {
         return uses;
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
+
+    public boolean wasAddedManullay() {
+        return wasAddedManullay;
+    }
+
+    public void setWasAddedManullay(boolean wasAddedManullay) {
+        this.wasAddedManullay = wasAddedManullay;
     }
 }
