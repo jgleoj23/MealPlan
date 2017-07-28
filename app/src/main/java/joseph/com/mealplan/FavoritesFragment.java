@@ -1,6 +1,5 @@
 package joseph.com.mealplan;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,6 +7,7 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -25,6 +25,7 @@ import com.squareup.picasso.Transformation;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,15 +33,16 @@ import io.realm.Realm;
 import joseph.com.mealplan.model.Recipe;
 
 public class FavoritesFragment extends Fragment {
-    @BindView(R.id.lvFavorites)
-    ListView lvFavorites;
-    FavoritesAdapter favoritesAdapter;
-    ArrayList<Recipe> recipes = new ArrayList<>();
+
+    private FavoritesAdapter favoritesAdapter = new FavoritesAdapter();
+    private List<Recipe> favorites = new ArrayList<>();
     private Realm realm = Realm.getDefaultInstance();
 
+    @BindView(R.id.lvFavorites)
+    ListView lvFavorites;
+
     public static FavoritesFragment newInstance() {
-        FavoritesFragment fragment = new FavoritesFragment();
-        return fragment;
+        return new FavoritesFragment();
     }
 
 
@@ -49,14 +51,13 @@ public class FavoritesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_favorites, container, false);
         ButterKnife.bind(this, view);
         super.onCreate(savedInstanceState);
-        favoritesAdapter = new FavoritesAdapter(getContext(), recipes);
-        lvFavorites.setAdapter(favoritesAdapter);
-        for (Recipe recipe : realm.where(Recipe.class).findAll()) {
-            if (recipe.getTitle().substring(0, 1).equals("*") && !favorited.contains(recipe.getTitle())) {
-                showFavorite(recipe);
-                favorited.add(recipe.getTitle());
-            }
+
+        for (Recipe recipe : realm.where(Recipe.class).equalTo("isFavorite", true).findAll()) {
+            favoritesAdapter.add(recipe);
         }
+
+        lvFavorites.setAdapter(favoritesAdapter);
+
         setupListViewListener();
 
         return view;
@@ -75,12 +76,13 @@ public class FavoritesFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Recipe recipe = recipes.get(i);
+                        Recipe recipe = favorites.get(i);
+                        favorites.remove(recipe);
                         realm.beginTransaction();
                         recipe.deleteFromRealm();
                         realm.commitTransaction();
                         dialog.dismiss();
-                        recipes.remove(i);
+                        favorites.remove(i);
                         favoritesAdapter.notifyDataSetChanged();
                     }
                 });
@@ -101,42 +103,35 @@ public class FavoritesFragment extends Fragment {
         lvFavorites.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             //If list entry is long clicked, delete entry
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l){
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
             Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-                intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipes.get(i)));
+                intent.putExtra("recipe", Parcels.wrap(Recipe.class, favorites.get(i)));
                 getContext().startActivity(intent);
             }
         });
     }
 
-    ArrayList<String> favorited = new ArrayList<String>();
+    public void addFavorite(final Recipe recipe) {
+        if (!favorites.contains(recipe)) {
+            realm.beginTransaction();
+            recipe.setIsFavorite(true);
+            realm.insertOrUpdate(recipe);
+            realm.commitTransaction();
 
-    public void showFavorite(final Recipe recipe) {
-        if (!favorited.contains(recipe.getTitle())) {
             favoritesAdapter.add(recipe);
             favoritesAdapter.notifyDataSetChanged();
         }
     }
 
+    private class FavoritesAdapter extends ArrayAdapter<Recipe> {
 
-    public void addFavorite(final Recipe recipe) {
-        if (!favorited.contains(recipe.getTitle())) {
-            realm.beginTransaction();
-            recipe.setTitle("*" + recipe.getTitle());
-            realm.insertOrUpdate(recipe);
-            realm.commitTransaction();
-        }
-    }
-
-
-    public class FavoritesAdapter extends ArrayAdapter<Recipe> {
-
-        public FavoritesAdapter(Context context, ArrayList<Recipe> recipes) {
-            super(context, 0, recipes);
+        private FavoritesAdapter() {
+            super(FavoritesFragment.this.getContext(), 0, favorites);
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             // Get the data item for this position
             final Recipe recipe = getItem(position);
             // Check if an existing view is being reused, otherwise inflate the view
@@ -145,7 +140,6 @@ public class FavoritesFragment extends Fragment {
             }
             TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
             ImageView ivPic = (ImageView) convertView.findViewById(R.id.ivPic);
-                // Lookup view for data population
             tvTitle.setText(recipe.getTitle());
             Picasso.with(getContext())
                         .load(recipe.getImageUrl())
@@ -156,7 +150,8 @@ public class FavoritesFragment extends Fragment {
 
             return convertView;
         }
-        public class CircleTransform implements Transformation {
+
+        private class CircleTransform implements Transformation {
             @Override
             public Bitmap transform(Bitmap source) {
                 int size = Math.min(source.getWidth(), source.getHeight());

@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private MealPlanFragment mealPlanFragment;
     private FavoritesFragment favoritesFragment;
     private GroceryListFragment groceryListFragment;
-    MainPagerAdapter adapterViewPager;
 
 
     public MealPlanFragment getMealPlanFragment() {
@@ -34,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
             mealPlanFragment = MealPlanFragment.newInstance();
         }
         return mealPlanFragment;
-
     }
 
     public GroceryListFragment getGroceryListFragment() {
@@ -68,14 +66,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
-                getMealPlanFragment().addRecipe(recipe);
+                String day = intent.getStringExtra("day");
+                if (day != null) {
+                    getMealPlanFragment().addRecipeWithDay(recipe, intent.getStringExtra("day"));
+                }
+                else {
+                    getMealPlanFragment().addRecipe(recipe);
+                }
                 viewPager.setCurrentItem(1);
                 getGroceryListFragment().addGroceriesFor(recipe);
             }
         }, new IntentFilter("plan"));
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        adapterViewPager = new MainPagerAdapter(getSupportFragmentManager());
+        MainPagerAdapter adapterViewPager = new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapterViewPager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);

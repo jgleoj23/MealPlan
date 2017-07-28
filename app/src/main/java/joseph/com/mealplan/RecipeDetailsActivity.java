@@ -1,10 +1,13 @@
 package joseph.com.mealplan;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -24,6 +27,7 @@ import joseph.com.mealplan.model.Recipe;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
+
     private String TAG = getClass().getName();
 
     private RecipeClient client;
@@ -33,6 +37,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     ScaleImageView ivRecipeImage;
     TextView tvRecipeDirections;
     ImageButton favorites;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +53,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         // unwrap recipe passed in via intent
         recipe = Parcels.unwrap(getIntent().getParcelableExtra("recipe"));
-
+        if (recipe.isFavorite()) {
+            favorites.setVisibility(View.INVISIBLE);
+        }
         tvRecipeName.setText(recipe.getTitle());
         final Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/DINAlternate-Bold.ttf");
         tvRecipeName.setTypeface(typeface);
@@ -70,7 +77,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         client = new RecipeClient();
 
-        client.getRecipe(recipe.getFoodToForkId(), new JsonHttpResponseHandler() {
+        client.getRecipe(recipe.getId(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.i(TAG, response.toString());
@@ -80,7 +87,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                     ingredientsList += recipe.getIngredients().get(i).getName();
                     ingredientsList += "\n";
                 }
-                if (ingredientsList == "") {
+                if (ingredientsList.isEmpty()) {
                     tvRecipeDirections.setText("No Ingredients to Show.");
                 }
 
@@ -116,9 +123,58 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     public void addMealPlan(View view) {
-        Intent intent = new Intent("plan");
+        final Intent intent = new Intent("plan");
         intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        finish();
+        final Context context = view.getContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Which day would you like to duplicate this recipe?");
+        builder.setItems(new CharSequence[]
+                        {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Back"},
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                        switch (which) {
+                            case 0:
+                                intent.putExtra("day", "Sunday");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                finish();
+                                break;
+                            case 1:
+                                intent.putExtra("day", "Monday");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                finish();
+                                break;
+                            case 2:
+                                intent.putExtra("day", "Tuesday");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                finish();
+                                break;
+                            case 3:
+                                intent.putExtra("day", "Wednesday");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                finish();
+                                break;
+                            case 4:
+                                intent.putExtra("day", "Thursday");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                finish();
+                                break;
+                            case 5:
+                                intent.putExtra("day", "Friday");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                finish();
+                                break;
+                            case 6:
+                                intent.putExtra("day", "Saturday");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                finish();
+                                break;
+                            case 7:
+                                return;
+                        }
+                    }
+                });
+        builder.create().show();
     }
 }
