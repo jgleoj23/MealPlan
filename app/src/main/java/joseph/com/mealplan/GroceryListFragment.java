@@ -68,6 +68,16 @@ public class GroceryListFragment extends Fragment {
     private int[] number = {1, 4, 4, 3, 2, 1, 1, 2, 2, 2, 2, 5, 1, 3, 1, 2, 3, 1, 4, 4, 3, 5, 1, 3, 2, 2, 1, 3, 3, 3, 3,
             4, 5, 2, 2, 1, 3, 2, 3};
 
+    public GroceryListFragment() {
+        for(int i = 0; i != nameArray.length; i++) {
+            valid.put(nameArray[i], number[i]);
+        }
+
+        for (Grocery grocery : realm.where(Grocery.class).findAll()) {
+            loadGroceryFromDisk(grocery);
+        }
+    }
+
     public static GroceryListFragment newInstance() {
         return new GroceryListFragment();
     }
@@ -77,15 +87,7 @@ public class GroceryListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_grocery_list, container, false);
         ButterKnife.bind(this, view);
 
-        for(int i = 0; i != nameArray.length; i++) {
-            valid.put(nameArray[i], number[i]);
-        }
-
         lvResults.setAdapter(adapter);
-
-        for (Grocery grocery : realm.where(Grocery.class).findAll()) {
-            loadGroceryFromDisk(grocery);
-        }
 
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +128,6 @@ public class GroceryListFragment extends Fragment {
     private void loadGroceryFromDisk(Grocery grocery) {
         if(valid.containsKey(grocery.getName())) {
             getOrAddAisle(grocery.getName()).getGroceries().add(grocery);
-            adapter.notifyDataSetChanged();
         }
     }
 
