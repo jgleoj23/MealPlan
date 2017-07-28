@@ -33,8 +33,9 @@
             android:id="@+id/tvUses"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="asdf"
-            android:textAppearance="@android:style/TextAppearance.Small"/>
+            android:lineSpacingExtra="4sp"
+            android:text="asdf \ndasda"
+            android:textAppearance="@android:style/TextAppearance.Small" />
 
 
     </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
