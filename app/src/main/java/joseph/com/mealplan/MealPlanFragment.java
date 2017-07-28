@@ -19,7 +19,9 @@ import com.google.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -58,6 +60,9 @@ public class MealPlanFragment extends Fragment {
                 days.add(day);
             }
         }
+
+        int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        Collections.rotate(days, -1 * (today - 1));
 
         Log.i(TAG, "making meal plan: " + days.size());
     }
