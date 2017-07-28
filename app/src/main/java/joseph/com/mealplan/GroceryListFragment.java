@@ -15,9 +15,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
+import com.google.common.collect.FluentIterable;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,7 +35,10 @@ import butterknife.ButterKnife;
 import io.realm.Realm;
 import joseph.com.mealplan.model.Aisle;
 import joseph.com.mealplan.model.Grocery;
+import joseph.com.mealplan.model.Recipe;
+import joseph.com.mealplan.model.Use;
 
+import static android.text.TextUtils.join;
 import static com.google.common.collect.Iterables.tryFind;
 import static joseph.com.mealplan.Utils.capitalize;
 
@@ -42,6 +47,9 @@ public class GroceryListFragment extends Fragment {
     private final String TAG = getClass().getName();
     private SortedSet<Aisle> aisles = new TreeSet<>();
     private GroceryAdapter adapter = new GroceryAdapter();
+    /**
+     * maps ingredient names to their aisle number
+     */
     private Map<String, Integer> valid = new HashMap<>();
     private Realm realm = Realm.getDefaultInstance();
 
@@ -82,29 +90,34 @@ public class GroceryListFragment extends Fragment {
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addGrocery(txAdd.getText().toString());
+                String capitalized = capitalize(txAdd.getText().toString());
+                if (valid.containsKey(capitalized)) {
+                    getOrAddGrocery(capitalized);
+                } else {
+                    Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
         return view;
     }
 
-    public void addGrocery(String name) {
-        final String capitalized = capitalize(name);
-        if (valid.containsKey(capitalized)) {
-            showItem(capitalized);
-        }
-        else {
-            Toast.makeText(getContext(), "Not a valid grocery item.", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void addGroceries(List<Grocery> groceries) {
-        for (Grocery grocery : groceries) {
-            for (String ingredientName : nameArray) {
-                if (grocery.getName().toLowerCase().contains(ingredientName.toLowerCase())) { //Making the entire grocery lowercase makes it so we don't have to find the correct word to capitalize
-                    addGrocery(ingredientName);
-                    break; //It should be break and not return because return terminates the function after one grocery has been added, while break just escapes the inner for loop and moves to the next grocery item
+    public void addGroceriesFor(Recipe recipe) {
+        for (Grocery grocery : recipe.getIngredients()) {
+            for (final String ingredientName : nameArray) {
+                // Make it all lowercase so that it is case insensitive
+                if (grocery.getName().toLowerCase().contains(ingredientName.toLowerCase())) {
+                    final String useDescription = grocery.getName() + " for " + recipe.getTitle();
+                    final Grocery groceryForList = getOrAddGrocery(ingredientName);
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            groceryForList.getUses().add(new Use(useDescription));
+                        }
+                    });
+                    // It should be break and not return to stop looking for grocery but still add the rest of the
+                    // groceries
+                    break;
                 }
             }
         }
@@ -117,28 +130,26 @@ public class GroceryListFragment extends Fragment {
         }
     }
 
-    private void showItem(final String itemText) {
-        final Aisle aisle = getOrAddAisle(itemText);
+    private Grocery getOrAddGrocery(final String groceryName) {
+        final Aisle aisle = getOrAddAisle(groceryName);
 
-        Grocery grocery = tryFind(aisle.getGroceries(), new Predicate<Grocery>() {
+        return tryFind(aisle.getGroceries(), new Predicate<Grocery>() {
             @Override
             public boolean apply(@Nullable Grocery grocery) {
-                return grocery.getName().contains(itemText);
+                return grocery.getName().contains(groceryName);
             }
         }).or(new Supplier<Grocery>() {
             @Override
             public Grocery get() {
                 realm.beginTransaction();
                 Grocery grocery = realm.createObject(Grocery.class);
-                grocery.setName(itemText);
+                grocery.setName(groceryName);
                 realm.commitTransaction();
                 aisle.getGroceries().add(grocery);
                 adapter.notifyDataSetChanged();
                 return grocery;
             }
         });
-
-        // TODO add the description of the use to the grocery
     }
 
     private Aisle getOrAddAisle(final String groceryName) {
@@ -159,15 +170,6 @@ public class GroceryListFragment extends Fragment {
         });
     }
 
-    private List flattenAisles() {
-        return Utils.flatten(aisles, new Function<Aisle, Collection>() {
-            @Nullable
-            @Override
-            public Collection apply(@Nullable Aisle input) {
-                return input.getGroceries();
-            }
-        });
-    }
 
     private class GroceryAdapter extends BaseAdapter {
 
@@ -199,6 +201,29 @@ public class GroceryListFragment extends Fragment {
                 TextView tvGrocery = (TextView) groceryView.findViewById(R.id.tvGrocery);
                 final Grocery grocery = (Grocery) item;
                 tvGrocery.setText(grocery.getName());
+
+                final ExpandableRelativeLayout expandableLayout =
+                        ((ExpandableRelativeLayout) groceryView.findViewById(R.id.expandableLayout));
+                expandableLayout.collapse();
+
+                groceryView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i(TAG, "toggling");
+                        expandableLayout.toggle();
+                    }
+                });
+
+                TextView tvUses = ((TextView) groceryView.findViewById(R.id.tvUses));
+                List<String> useDescriptions = FluentIterable.from(grocery.getUses())
+                                                             .transform(new Function<Use, String>() {
+                    @Nullable
+                    @Override
+                    public String apply(@Nullable Use use) {
+                        return use.getUse();
+                    }
+                }).toList();
+                tvUses.setText(join("\n", useDescriptions));
 
                 groceryView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -245,6 +270,20 @@ public class GroceryListFragment extends Fragment {
 
                 return groceryView;
             }
+        }
+
+        /**
+         * converts aisles into a format that corresponds to the rows of the ListView
+         * e.g. [Aisle("Aisle #1", Grocery("Sour Cream"), Aisle("Aisle #2"), ...]
+         */
+        private List flattenAisles() {
+            return Utils.flatten(aisles, new Function<Aisle, Collection>() {
+                @Nullable
+                @Override
+                public Collection apply(@Nullable Aisle input) {
+                    return input.getGroceries();
+                }
+            });
         }
     }
 }

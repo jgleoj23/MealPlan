@@ -22,8 +22,11 @@ import io.realm.annotations.RealmClass;
 public class Recipe extends RealmObject {
     private static String TAG = Recipe.class.getName();
 
+
     @PrimaryKey
     private long id;
+
+    private String foodToForkId;
 
     private String title;
     private String imageUrl;
@@ -43,7 +46,7 @@ public class Recipe extends RealmObject {
             recipe = new Recipe(jsonObject.getString("title"));
             recipe.imageUrl = jsonObject.getString("image_url");
             recipe.sourceUrl = jsonObject.getString("source_url");
-            recipe.id = Long.parseLong(jsonObject.getString("recipe_id"));
+            recipe.foodToForkId = jsonObject.getString("recipe_id");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,5 +97,13 @@ public class Recipe extends RealmObject {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getFoodToForkId() {
+        return foodToForkId;
+    }
+
+    public void setFoodToForkId(String foodToForkId) {
+        this.foodToForkId = foodToForkId;
     }
 }

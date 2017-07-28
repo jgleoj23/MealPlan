@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +82,10 @@ public class MealPlanFragment extends Fragment {
 
     public class MealAdapter extends BaseAdapter {
 
+        /**
+         * converts days into a format that corresponds to the rows of the ListView
+         * e.g. [Day("Sunday", Recipe("Soup"), Day("Monday"), ...]
+         */
         private List flattenDays() {
             realm.beginTransaction();
             List result = Utils.flatten(days, new Function<Day, Collection>() {
@@ -133,12 +138,12 @@ public class MealPlanFragment extends Fragment {
                             realm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    Number maxId = realm.where(Recipe.class).max("id");
-//                                    if (maxId != null) {
-//                                        addingRecipe.setId(maxId.longValue() + 1);
-//                                    } else {
-//                                        addingRecipe.setId(0);
-//                                    }
+                                    Number maxId = realm.where(Recipe.class).max("id");
+                                    if (maxId != null) {
+                                        addingRecipe.setId(maxId.longValue() + 1);
+                                    } else {
+                                        addingRecipe.setId(0);
+                                    }
 
                                     day.getMeals().add(addingRecipe);
                                 }
@@ -208,6 +213,18 @@ public class MealPlanFragment extends Fragment {
                                 final Context context = getContext();
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                 builder.setTitle("Which day would you like to duplicate this recipe?");
+                                builder.setItems(FluentIterable.from(days).transform(new Function<Day, String>() {
+                                    @Nullable
+                                    @Override
+                                    public String apply(@Nullable Day day) {
+                                        return day.getName();
+                                    }
+                                }).toArray(String.class), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        duplicateRecipe(days.get(which).getName(), recipe);
+                                    }
+                                });
                                 builder.setItems(new CharSequence[]
                                                 {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Back"},
                                         new DialogInterface.OnClickListener() {

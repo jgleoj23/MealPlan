@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import org.parceler.Parcels;
 
@@ -71,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
                 getMealPlanFragment().addRecipe(recipe);
                 viewPager.setCurrentItem(1);
-                Log.i(TAG, "recips is " + recipe + ", " + getGroceryListFragment());
-                getGroceryListFragment().addGroceries(recipe.getIngredients());
+                getGroceryListFragment().addGroceriesFor(recipe);
             }
         }, new IntentFilter("plan"));
 

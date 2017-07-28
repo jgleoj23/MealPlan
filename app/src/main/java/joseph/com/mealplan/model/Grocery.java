@@ -34,4 +34,9 @@ public class Grocery extends RealmObject {
     public List<Use> getUses() {
         return uses;
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

@@ -16,6 +16,12 @@ public class Use extends RealmObject {
      */
     private String use;
 
+    public Use() {}
+
+    public Use(String use) {
+        this.use = use;
+    }
+
     public String getUse() {
         return use;
     }

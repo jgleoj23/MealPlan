@@ -36,7 +36,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
 
@@ -71,7 +70,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         client = new RecipeClient();
 
-        client.getRecipe(recipe.getId(), new JsonHttpResponseHandler() {
+        client.getRecipe(recipe.getFoodToForkId(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.i(TAG, response.toString());

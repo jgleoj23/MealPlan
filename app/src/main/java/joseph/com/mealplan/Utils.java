@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,12 +20,14 @@ import javax.annotation.Nullable;
  */
 public class Utils {
 
+    private static final String TAG = Utils.class.getName();
+
     public static <T> ImmutableList flatten(Iterable<T> items, final Function<T, Collection> getElements) {
         return  FluentIterable.from(items).transformAndConcat(new Function<T, Iterable<?>>() {
             @Nullable
             @Override
             public Iterable<?> apply(@Nullable T item) {
-                ArrayList list = new ArrayList(Arrays.asList(item));
+                List list = new ArrayList<>(Arrays.asList(item));
                 list.addAll(getElements.apply(item));
                 return list;
             }
@@ -36,7 +39,7 @@ public class Utils {
         Matcher letterMatcher = Pattern.compile("[A-z]").matcher(str);
         if (letterMatcher.find()) {
             int index = letterMatcher.start();
-            return str.substring(0, index) + str.substring(index, index + 1) + str.substring(index + 1);
+            return str.substring(0, index) + str.substring(index, index + 1).toUpperCase() + str.substring(index + 1);
         } else {
             return str;
         }

@@ -46,6 +46,7 @@ dependencies {
     compile 'org.parceler:parceler-api:1.1.9'
     compile 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.0'
     annotationProcessor 'org.parceler:parceler:1.1.9'
+    compile 'com.github.aakira:expandable-layout:1.6.0@aar'
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

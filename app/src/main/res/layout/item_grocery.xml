@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tvGrocery"
@@ -17,5 +18,25 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginStart="82dp"/>
+
+    <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+        android:layout_marginStart="112dp"
+        android:id="@+id/expandableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvGrocery"
+        app:ael_duration="400"
+        app:ael_expanded="false"
+        app:ael_interpolator="bounce">
+
+        <TextView
+            android:id="@+id/tvUses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="asdf"
+            android:textAppearance="@android:style/TextAppearance.Small"/>
+
+
+    </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
 </RelativeLayout>
