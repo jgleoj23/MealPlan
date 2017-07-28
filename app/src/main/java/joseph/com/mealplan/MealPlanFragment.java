@@ -35,6 +35,7 @@ public class MealPlanFragment extends Fragment {
     private List<Day> days = new ArrayList<>();
     private Realm realm = Realm.getDefaultInstance();
     private Recipe addingRecipe;
+    private String addingDay;
 
     @BindView(R.id.lvMealPlan)
     ListView lvMealPlan;
@@ -76,6 +77,11 @@ public class MealPlanFragment extends Fragment {
 
     public void addRecipe(Recipe recipe) {
         addingRecipe = recipe;
+    }
+
+    public void addRecipeWithDay(Recipe recipe, String day) {
+        addingRecipe = recipe;
+        addingDay = day;
     }
 
 
@@ -124,33 +130,11 @@ public class MealPlanFragment extends Fragment {
                 View view = LayoutInflater.from(getContext()).inflate(R.layout.item_day, parent, false);
                 TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
                 tvDay.setText(day.getName());
-
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (addingRecipe != null) {
-                            Log.i(TAG, "adding it");
-                            realm.executeTransaction(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-//                                    Number maxId = realm.where(Recipe.class).max("id");
-//                                    if (maxId != null) {
-//                                        addingRecipe.setId(maxId.longValue() + 1);
-//                                    } else {
-//                                        addingRecipe.setId(0);
-//                                    }
-
-                                    day.getMeals().add(addingRecipe);
-                                }
-                            });
-
-                            addingRecipe = null;
-
-                            MealAdapter.this.notifyDataSetChanged();
-                        }
-                    }
-                });
-
+                if(addingDay != null && addingRecipe != null){
+                    duplicateRecipe(addingDay, addingRecipe);
+                    addingDay = null;
+                    addingRecipe = null;
+                }
                 return view;
             } else {
                 final Recipe recipe = (Recipe) item;
