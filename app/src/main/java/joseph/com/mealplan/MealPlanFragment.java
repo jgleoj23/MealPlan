@@ -158,8 +158,7 @@ public class MealPlanFragment extends Fragment {
                     @Override
                     public boolean onLongClick(View v) {
                         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                        alert.setTitle("Alert!!");
-                        alert.setMessage("What would you like to do?");
+                        alert.setMessage("Select an option");
                         alert.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
 
                             @Override
@@ -201,18 +200,11 @@ public class MealPlanFragment extends Fragment {
                                             }
                                         })
                                         .show();
-                            }
-                        });
-                        alert.setNeutralButton("BACK", new DialogInterface.OnClickListener() {
 
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
                             }
                         });
 
-
-                        alert.setNegativeButton("DUPLICATE", new DialogInterface.OnClickListener() {
+                        alert.setNeutralButton("DUPLICATE", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 final Context context = getContext();
@@ -231,7 +223,7 @@ public class MealPlanFragment extends Fragment {
                                     }
                                 });
                                 builder.setItems(new CharSequence[]
-                                                {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Back"},
+                                                {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"},
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 // The 'which' argument contains the index position
@@ -257,8 +249,6 @@ public class MealPlanFragment extends Fragment {
                                                         break;
                                                     case 6:
                                                         duplicateRecipe("Saturday", recipe);
-                                                        break;
-                                                    case 7:
                                                         break;
                                                 }
                                             }

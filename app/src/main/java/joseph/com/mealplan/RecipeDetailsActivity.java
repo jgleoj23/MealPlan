@@ -136,7 +136,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Which day would you like to duplicate this recipe?");
         builder.setItems(new CharSequence[]
-                        {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Back"},
+                        {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"},
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position
@@ -177,8 +177,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                                 finish();
                                 break;
-                            case 7:
-                                return;
                         }
                     }
                 });
