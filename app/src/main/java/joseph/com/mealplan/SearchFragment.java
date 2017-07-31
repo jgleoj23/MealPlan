@@ -48,6 +48,7 @@ public class SearchFragment extends Fragment {
 
         svQuery.setSuggestionsAdapter(null);
         svQuery.setIconified(false);
+        svQuery.clearFocus();
 
         resultsAdapter = new ResultsAdapter();
         rvResults.setAdapter(resultsAdapter);
@@ -72,12 +73,6 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
-    public static SearchFragment newInstance() {
-        SearchFragment fragment = new SearchFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
 
     public class ResultsAdapter extends RecyclerView.Adapter<RecipeSearchViewHolder> {

@@ -74,7 +74,6 @@ public class FavoritesFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setTitle("Alert!!");
                 alert.setMessage("Are you sure you want to unfavorite this recipe?");
                 alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
@@ -126,6 +125,8 @@ public class FavoritesFragment extends Fragment {
             }
         }
     }
+
+
 
     private class FavoritesAdapter extends ArrayAdapter<Recipe> {
 

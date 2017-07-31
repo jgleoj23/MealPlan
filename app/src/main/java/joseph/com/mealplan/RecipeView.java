@@ -18,6 +18,8 @@ import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import joseph.com.mealplan.model.Favorites;
 import joseph.com.mealplan.model.Recipe;
 
 /**
@@ -29,15 +31,21 @@ public class RecipeView extends RelativeLayout {
     TextView tvTitle;
     @BindView(R.id.ivPic)
     ImageView ivPic;
+    @BindView(R.id.ivFave)
+    ImageView ivFave;
+    Realm realm = Realm.getDefaultInstance();
+    Favorites favorites;
 
     public RecipeView(Context context) {
         super(context);
+
         inflate(getContext(), R.layout.item_recipe, this);
         ButterKnife.bind(this);
     }
 
 
     public void bind(final Recipe recipe) {
+<<<<<<< HEAD
         tvTitle.setText(recipe.getTitle());
 
         Picasso.with(getContext())
@@ -52,8 +60,39 @@ public class RecipeView extends RelativeLayout {
                 Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
                 intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
                 getContext().startActivity(intent);
+=======
+            tvTitle.setText(recipe.getTitle());
+
+            Picasso.with(getContext())
+                    .load(recipe.getImageUrl())
+                    .fit().centerCrop()
+                    .transform(new CircleTransform())
+                    .into(ivPic);
+
+            favorites = realm.where(Favorites.class).findFirst();
+            if (favorites == null) {
+                realm.beginTransaction();
+                favorites = realm.createObject(Favorites.class);
+                realm.commitTransaction();
             }
-        });
+
+
+            if (favorites.getFavorites().contains(recipe)) {
+                ivFave.setVisibility(VISIBLE);
+>>>>>>> 455b2c2e89b5ef69d67bad7bd551d0673065548f
+            }
+            else{
+                ivFave.setVisibility(INVISIBLE);
+            }
+
+            setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
+                    intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
+                    getContext().startActivity(intent);
+                }
+            });
 
     }
 

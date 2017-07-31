@@ -196,7 +196,7 @@ public class GroceryListFragment extends Fragment {
                             }
                         }
 
-                        if (grocery.getUses().isEmpty() && !grocery.wasAddedManullay()) {
+                        if (grocery.getUses().isEmpty() && !grocery.wasAddedManually()) {
                             groceryIterator.remove();
                             grocery.deleteFromRealm();
                         }
@@ -265,7 +265,7 @@ public class GroceryListFragment extends Fragment {
                         return use.getUse();
                     }
                 }).toList();
-                tvUses.setText(join("\n", useDescriptions));
+                tvUses.setText("-"+join("\n-", useDescriptions));
 
                 groceryView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
