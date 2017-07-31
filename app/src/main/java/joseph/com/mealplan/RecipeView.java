@@ -45,7 +45,6 @@ public class RecipeView extends RelativeLayout {
 
 
     public void bind(final Recipe recipe) {
-<<<<<<< HEAD
         tvTitle.setText(recipe.getTitle());
 
         Picasso.with(getContext())
@@ -57,10 +56,11 @@ public class RecipeView extends RelativeLayout {
         setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-                intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
-                getContext().startActivity(intent);
-=======
+               Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
+               intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
+               getContext().startActivity(intent);
+            }
+        });
             tvTitle.setText(recipe.getTitle());
 
             Picasso.with(getContext())
@@ -79,7 +79,6 @@ public class RecipeView extends RelativeLayout {
 
             if (favorites.getFavorites().contains(recipe)) {
                 ivFave.setVisibility(VISIBLE);
->>>>>>> 455b2c2e89b5ef69d67bad7bd551d0673065548f
             }
             else{
                 ivFave.setVisibility(INVISIBLE);

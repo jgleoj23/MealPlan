@@ -20,7 +20,7 @@ import joseph.com.mealplan.model.Recipe;
  * Created by kcguo on 7/26/17.
  */
 
-public class RecipeSearchView extends RelativeLayout {
+public class RecipeSearchView extends RelativeLayout{
     @BindView(R.id.tvTitle)
     TextView tvTitle;
     @BindView(R.id.ivPic)
@@ -34,6 +34,7 @@ public class RecipeSearchView extends RelativeLayout {
     }
 
     public void bind(final Recipe recipe) {
+
         tvTitle.setText(recipe.getTitle());
 
 
