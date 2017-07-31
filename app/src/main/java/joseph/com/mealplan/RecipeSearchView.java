@@ -34,7 +34,8 @@ public class RecipeSearchView extends RelativeLayout{
     }
 
     public void bind(final Recipe recipe) {
-
+        final Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/DINAlternate-Bold.ttf");
+        tvTitle.setTypeface(typeface);
         tvTitle.setText(recipe.getTitle());
 
 
