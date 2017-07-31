@@ -33,7 +33,6 @@
             android:id="@+id/tvUses"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="8sp"
             android:text="asdf \ndasda"
             android:textAppearance="@android:style/TextAppearance.Small" />
 
