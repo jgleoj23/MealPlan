@@ -139,7 +139,7 @@ public class FavoritesFragment extends Fragment {
             final Recipe recipe = getItem(position);
             // Check if an existing view is being reused, otherwise inflate the view
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_favorite, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_recipe, parent, false);
             }
             TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
             ImageView ivPic = (ImageView) convertView.findViewById(R.id.ivPic);
