@@ -16,13 +16,9 @@ import com.squareup.picasso.Transformation;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
-import joseph.com.mealplan.model.Day;
 import joseph.com.mealplan.model.Favorites;
 import joseph.com.mealplan.model.Recipe;
 
@@ -39,7 +35,6 @@ public class RecipeView extends RelativeLayout {
     ImageView ivFave;
     Realm realm = Realm.getDefaultInstance();
     Favorites favorites;
-    private List<Day> days = new ArrayList<>();
 
     public RecipeView(Context context) {
         super(context);
