@@ -196,7 +196,7 @@ public class GroceryListFragment extends Fragment {
                             }
                         }
 
-                        if (grocery.getUses().isEmpty() && !grocery.wasAddedManullay()) {
+                        if (grocery.getUses().isEmpty() && !grocery.wasAddedManually()) {
                             groceryIterator.remove();
                             grocery.deleteFromRealm();
                         }
