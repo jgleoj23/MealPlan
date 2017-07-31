@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -69,7 +68,7 @@ public class MealPlanFragment extends Fragment {
         }
 
         int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-        Collections.rotate(days, -1 * (today));
+        Collections.rotate(days, -1 * (today - 1));
 
         Log.i(TAG, "making meal plan: " + days.size());
     }
@@ -133,7 +132,6 @@ public class MealPlanFragment extends Fragment {
             return position;
         }
 
-        List<Recipe> savedMeals = new ArrayList<Recipe>();
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             Log.i(TAG, "getView: " + position);
@@ -150,24 +148,6 @@ public class MealPlanFragment extends Fragment {
                     addingRecipe = null;
                 }
 
-                view.setOnClickListener(new AdapterView.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        realm.beginTransaction();
-                        if(day.getMeals().size() != 0){
-                            savedMeals = day.getMeals();
-                            day.getMeals().clear();
-                        }
-                        else{
-                            for(Recipe recipe: savedMeals) {
-                                day.getMeals().add(recipe);
-                            }
-                            savedMeals.clear();
-                        }
-                        realm.commitTransaction();
-                    }
-
-                });
                 return view;
             } else {
                 final Recipe recipe = (Recipe) item;
