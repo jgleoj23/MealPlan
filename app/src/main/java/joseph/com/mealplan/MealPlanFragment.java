@@ -68,7 +68,7 @@ public class MealPlanFragment extends Fragment {
         }
 
         int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-        Collections.rotate(days, -1 * (today));
+        Collections.rotate(days, -1 * (today - 1));
 
         Log.i(TAG, "making meal plan: " + days.size());
     }
@@ -132,7 +132,6 @@ public class MealPlanFragment extends Fragment {
             return position;
         }
 
-        List<Recipe> savedMeals = new ArrayList<Recipe>();
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             Log.i(TAG, "getView: " + position);
