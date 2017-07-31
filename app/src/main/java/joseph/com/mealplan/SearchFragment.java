@@ -48,6 +48,7 @@ public class SearchFragment extends Fragment {
 
         svQuery.setSuggestionsAdapter(null);
         svQuery.setIconified(false);
+        svQuery.clearFocus();
 
         resultsAdapter = new ResultsAdapter();
         rvResults.setAdapter(resultsAdapter);

@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -150,24 +149,6 @@ public class MealPlanFragment extends Fragment {
                     addingRecipe = null;
                 }
 
-                view.setOnClickListener(new AdapterView.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        realm.beginTransaction();
-                        if(day.getMeals().size() != 0){
-                            savedMeals = day.getMeals();
-                            day.getMeals().clear();
-                        }
-                        else{
-                            for(Recipe recipe: savedMeals) {
-                                day.getMeals().add(recipe);
-                            }
-                            savedMeals.clear();
-                        }
-                        realm.commitTransaction();
-                    }
-
-                });
                 return view;
             } else {
                 final Recipe recipe = (Recipe) item;
