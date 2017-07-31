@@ -20,8 +20,6 @@ import javax.annotation.Nullable;
  */
 public class Utils {
 
-    private static final String TAG = Utils.class.getName();
-
     public static final List<String> DAYS_OF_WEEK = Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday",
                                                                    "Thursday", "Friday", "Saturday");
 

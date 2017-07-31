@@ -4,15 +4,10 @@ package joseph.com.mealplan;
  * Created by kcguo on 7/27/17.
  */
         import android.content.Context;
-        import android.content.res.TypedArray;
-        import android.graphics.Bitmap;
-        import android.graphics.drawable.Drawable;
-        import android.util.AttributeSet;
-        import android.util.Log;
-        import android.view.View.MeasureSpec;
-        import android.widget.ImageView;
-        import android.widget.ImageView.ScaleType;
-        import android.widget.RelativeLayout;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.widget.RelativeLayout;
 
 /**
  *
@@ -70,14 +65,6 @@ public class ScaleImageView extends android.support.v7.widget.AppCompatImageView
     public interface ImageChangeListener {
         // a callback for when a change has been made to this imageView
         void changed(boolean isEmpty);
-    }
-
-    public ImageChangeListener getImageChangeListener() {
-        return imageChangeListener;
-    }
-
-    public void setImageChangeListener(ImageChangeListener imageChangeListener) {
-        this.imageChangeListener = imageChangeListener;
     }
 
     @Override

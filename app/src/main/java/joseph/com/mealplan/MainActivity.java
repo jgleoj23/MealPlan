@@ -20,7 +20,6 @@ import joseph.com.mealplan.model.Recipe;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String TAG = getClass().getName();
 
     private ViewPager viewPager;
     private MealPlanFragment mealPlanFragment;
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
                 String day = intent.getStringExtra("day");
-                getMealPlanFragment().addRecipeWithDay(recipe, intent.getStringExtra("day"));
+                getMealPlanFragment().addRecipeWithDay(recipe, day);
                 viewPager.setCurrentItem(1);
                 getGroceryListFragment().addGroceriesFor(recipe);
             }
