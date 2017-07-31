@@ -2,24 +2,23 @@ package joseph.com.mealplan;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import joseph.com.mealplan.model.Recipe;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import com.squareup.picasso.Transformation;
 
 /**
  * @author Joseph Gardi
@@ -37,13 +36,14 @@ public class RecipeView extends RelativeLayout {
         ButterKnife.bind(this);
     }
 
+
     public void bind(final Recipe recipe) {
         tvTitle.setText(recipe.getTitle());
 
         Picasso.with(getContext())
                .load(recipe.getImageUrl())
-                .fit().centerCrop()
-                .transform(new CircleTransform())
+               .fit().centerCrop()
+               .transform(new CircleTransform())
                .into(ivPic);
 
         setOnClickListener(new View.OnClickListener() {

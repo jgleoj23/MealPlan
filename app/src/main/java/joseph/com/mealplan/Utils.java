@@ -1,6 +1,9 @@
 package joseph.com.mealplan;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -46,5 +49,18 @@ public class Utils {
         } else {
             return str;
         }
+    }
+
+    public static AlertDialog.Builder createAlert(String title, String msg, Context context) {
+        return new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(msg)
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
     }
 }
