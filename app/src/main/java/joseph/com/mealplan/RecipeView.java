@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -61,6 +62,9 @@ public class RecipeView extends RelativeLayout {
                getContext().startActivity(intent);
             }
         });
+
+            final Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/DINAlternate-Bold.ttf");
+            tvTitle.setTypeface(typeface);
             tvTitle.setText(recipe.getTitle());
 
             Picasso.with(getContext())
