@@ -15,7 +15,7 @@ import io.realm.annotations.RealmClass;
 public class Grocery extends RealmObject {
     private String name;
 
-    private boolean wasAddedManullay = false;
+    private boolean wasAddedManually = false;
 
     private RealmList<Use> uses = new RealmList<>();
 
@@ -38,11 +38,11 @@ public class Grocery extends RealmObject {
     }
 
 
-    public boolean wasAddedManullay() {
-        return wasAddedManullay;
+    public boolean wasAddedManually() {
+        return wasAddedManually;
     }
 
-    public void setWasAddedManullay(boolean wasAddedManullay) {
-        this.wasAddedManullay = wasAddedManullay;
+    public void setWasAddedManullay(boolean wasAddedManually) {
+        this.wasAddedManually = wasAddedManually;
     }
 }
