@@ -126,6 +126,8 @@ public class FavoritesFragment extends Fragment {
         }
     }
 
+
+
     private class FavoritesAdapter extends ArrayAdapter<Recipe> {
 
         private FavoritesAdapter() {

@@ -2,24 +2,29 @@ package joseph.com.mealplan;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import joseph.com.mealplan.model.Day;
+import joseph.com.mealplan.model.Favorites;
 import joseph.com.mealplan.model.Recipe;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import com.squareup.picasso.Transformation;
 
 /**
  * @author Joseph Gardi
@@ -30,30 +35,51 @@ public class RecipeView extends RelativeLayout {
     TextView tvTitle;
     @BindView(R.id.ivPic)
     ImageView ivPic;
+    @BindView(R.id.ivFave)
+    ImageView ivFave;
+    Realm realm = Realm.getDefaultInstance();
+    Favorites favorites;
+    private List<Day> days = new ArrayList<>();
 
     public RecipeView(Context context) {
         super(context);
+
         inflate(getContext(), R.layout.item_recipe, this);
         ButterKnife.bind(this);
     }
 
     public void bind(final Recipe recipe) {
-        tvTitle.setText(recipe.getTitle());
+            tvTitle.setText(recipe.getTitle());
 
-        Picasso.with(getContext())
-               .load(recipe.getImageUrl())
-                .fit().centerCrop()
-                .transform(new CircleTransform())
-               .into(ivPic);
+            Picasso.with(getContext())
+                    .load(recipe.getImageUrl())
+                    .fit().centerCrop()
+                    .transform(new CircleTransform())
+                    .into(ivPic);
 
-        setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-                intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
-                getContext().startActivity(intent);
+            favorites = realm.where(Favorites.class).findFirst();
+            if (favorites == null) {
+                realm.beginTransaction();
+                favorites = realm.createObject(Favorites.class);
+                realm.commitTransaction();
             }
-        });
+
+
+            if (favorites.getFavorites().contains(recipe)) {
+                ivFave.setVisibility(VISIBLE);
+            }
+            else{
+                ivFave.setVisibility(INVISIBLE);
+            }
+
+            setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
+                    intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
+                    getContext().startActivity(intent);
+                }
+            });
 
     }
 
