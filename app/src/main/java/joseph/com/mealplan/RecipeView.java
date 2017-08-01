@@ -53,7 +53,7 @@ public class RecipeView extends RelativeLayout {
             Picasso.with(getContext())
                     .load(recipe.getImageUrl())
                     .fit().centerCrop()
-                    .transform(new CircleTransform())
+                    //.transform(new CircleTransform())
                     .into(ivPic);
 
             favorites = realm.where(Favorites.class).findFirst();
