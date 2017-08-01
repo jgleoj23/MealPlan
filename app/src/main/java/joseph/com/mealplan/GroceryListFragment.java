@@ -265,7 +265,12 @@ public class GroceryListFragment extends Fragment {
                         return use.getUse();
                     }
                 }).toList();
-                tvUses.setText("-"+join("\n\n-", useDescriptions));
+                if(useDescriptions.size() == 0){
+                    tvUses.setText("");
+                }
+                else {
+                    tvUses.setText("-" + join("\n\n-", useDescriptions));
+                }
 
                 groceryView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override

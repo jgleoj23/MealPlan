@@ -64,7 +64,7 @@ public class MealPlanFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         lvMealPlan.setLayoutManager(new LinearLayoutManager(getContext()));
-        lvMealPlan.setCanDragHorizontally(false);
+        //lvMealPlan.setCanDragHorizontally(false);
         lvMealPlan.setDragListListener(new DragListView.DragListListenerAdapter() {
             /**
              * update realm
@@ -100,7 +100,7 @@ public class MealPlanFragment extends Fragment {
     }
 
     Day getDayForIndex(int index) {
-        for (int i = index; i >= 0; i--) {
+        for (int i = index; i > 0; i--) {
             Object item = adapter.getItemList().get(i).getData();
             if (item instanceof Day) {
                 return ((Day) item);
