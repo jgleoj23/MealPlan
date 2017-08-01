@@ -100,14 +100,18 @@ public class MealPlanFragment extends Fragment {
     }
 
     Day getDayForIndex(int index) {
-        for (int i = index; i >= 0; i--) {
-            Object item = adapter.getItemList().get(i).getData();
-            if (item instanceof Day) {
-                return ((Day) item);
-
+            for (int i = index; i >= 0; i--) {
+                Object item = adapter.getItemList().get(i).getData();
+                if (item instanceof Day) {
+                    return ((Day) item);
+                }
             }
-        }
-
+            for (int j = 0; j != adapter.getItemList().size(); j++){
+                Object item = adapter.getItemList().get(j).getData();
+                if (item instanceof Day) {
+                    return ((Day) item);
+                }
+            }
         throw new RuntimeException("no day found");
     }
     
