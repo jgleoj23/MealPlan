@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -234,16 +235,17 @@ public class GroceryListFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Object item = getItem(position);
-            final Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/DINAlternate-Bold.ttf");
+            final Typeface typeface;
             if (item instanceof Aisle) {
+                typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/Lobster-Regular.ttf");
+                View aisleView = LayoutInflater.from(getContext()).inflate(R.layout.item_aisle, parent, false);
+                TextView tvAisle = (TextView) aisleView.findViewById(R.id.tvAisle);
+                tvAisle.setTypeface(typeface);
+                tvAisle.setText(((Aisle) item).getAisleName());
+                return tvAisle;
 
-
-                TextView textView = new TextView(getContext());
-                textView.setTypeface(typeface);
-                textView.setTextSize(18);
-                textView.setText(((Aisle) item).getAisleName());
-                return textView;
             } else {
+                typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/DINAlternate-Bold.ttf");
                 View groceryView = LayoutInflater.from(getContext()).inflate(R.layout.item_grocery, parent, false);
                 TextView tvGrocery = (TextView) groceryView.findViewById(R.id.tvGrocery);
                 final Grocery grocery = (Grocery) item;
