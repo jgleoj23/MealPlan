@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
@@ -32,6 +34,7 @@ public class RecipeView extends RelativeLayout {
 
     Realm realm = Realm.getDefaultInstance();
     Favorites favorites;
+    ArrayList<String> favorite_name = new ArrayList<String>();
 
     public RecipeView(Context context) {
         super(context);
@@ -55,8 +58,13 @@ public class RecipeView extends RelativeLayout {
             favorites = realm.createObject(Favorites.class);
             realm.commitTransaction();
         }
+        for(Recipe recipe1 : favorites.getFavorites()){
+            if(recipe1.getTitle() != null) {
+                favorite_name.add(recipe1.getTitle());
+            }
+        }
 
-        if (favorites.getFavorites().contains(recipe)) {
+        if (favorite_name.contains(recipe.getTitle())) {
             ivFave.setVisibility(VISIBLE);
         }
         else {
