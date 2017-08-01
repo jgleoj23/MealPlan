@@ -46,23 +46,6 @@ public class RecipeView extends RelativeLayout {
 
 
     public void bind(final Recipe recipe) {
-        tvTitle.setText(recipe.getTitle());
-
-        Picasso.with(getContext())
-               .load(recipe.getImageUrl())
-               .fit().centerCrop()
-               .transform(new CircleTransform())
-               .into(ivPic);
-
-        setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-               intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
-               getContext().startActivity(intent);
-            }
-        });
-
             final Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/DINAlternate-Bold.ttf");
             tvTitle.setTypeface(typeface);
             tvTitle.setText(recipe.getTitle());
