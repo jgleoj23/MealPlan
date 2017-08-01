@@ -7,4 +7,5 @@
     <color name="ingredients">#505050</color>
     <color name="gray">#ebedf2</color>
     <color name="list_item_background">#AACCCCCC</color>
+    <color name="aisle">#000000</color>
 </resources>
