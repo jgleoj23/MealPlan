@@ -45,14 +45,28 @@ public class RecipeView extends RelativeLayout {
 
 
     public void bind(final Recipe recipe) {
-<<<<<<< HEAD
         tvTitle.setText(recipe.getTitle());
 
         Picasso.with(getContext())
-               .load(recipe.getImageUrl())
-               .fit().centerCrop()
-               .transform(new CircleTransform())
-               .into(ivPic);
+                .load(recipe.getImageUrl())
+                .fit().centerCrop()
+                .transform(new CircleTransform())
+                .into(ivPic);
+
+        favorites = realm.where(Favorites.class).findFirst();
+        if (favorites == null) {
+            realm.beginTransaction();
+            favorites = realm.createObject(Favorites.class);
+            realm.commitTransaction();
+        }
+
+
+        if (favorites.getFavorites().contains(recipe)) {
+            ivFave.setVisibility(VISIBLE);
+        }
+        else{
+            ivFave.setVisibility(INVISIBLE);
+        }
 
         setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,40 +74,8 @@ public class RecipeView extends RelativeLayout {
                 Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
                 intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
                 getContext().startActivity(intent);
-=======
-            tvTitle.setText(recipe.getTitle());
-
-            Picasso.with(getContext())
-                    .load(recipe.getImageUrl())
-                    .fit().centerCrop()
-                    .transform(new CircleTransform())
-                    .into(ivPic);
-
-            favorites = realm.where(Favorites.class).findFirst();
-            if (favorites == null) {
-                realm.beginTransaction();
-                favorites = realm.createObject(Favorites.class);
-                realm.commitTransaction();
             }
-
-
-            if (favorites.getFavorites().contains(recipe)) {
-                ivFave.setVisibility(VISIBLE);
->>>>>>> 455b2c2e89b5ef69d67bad7bd551d0673065548f
-            }
-            else{
-                ivFave.setVisibility(INVISIBLE);
-            }
-
-            setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-                    intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
-                    getContext().startActivity(intent);
-                }
-            });
-
+        });
     }
 
     public class CircleTransform implements Transformation {

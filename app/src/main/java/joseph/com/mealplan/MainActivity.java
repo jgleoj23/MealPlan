@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.inputmethod.InputMethodManager;
 
 import org.parceler.Parcels;
 
@@ -87,7 +88,22 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         MainPagerAdapter adapterViewPager = new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapterViewPager);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        // Close keyboard when switching tabs
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(tabLayout.getWindowToken(), 0);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {}
+        });
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_search_black_24dp);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_local_dining_black_24dp);

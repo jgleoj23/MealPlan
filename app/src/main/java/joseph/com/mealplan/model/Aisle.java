@@ -27,10 +27,6 @@ public class Aisle implements Comparable<Aisle> {
         return groceries;
     }
 
-    public void setGroceries(List<Grocery> groceries) {
-        this.groceries = groceries;
-    }
-
     public String getAisleName() {
         return "Aisle #" + getAisleNumber();
     }

@@ -3,15 +3,11 @@ package joseph.com.mealplan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import joseph.com.mealplan.model.Day;
 import joseph.com.mealplan.model.MealRow;
 import joseph.com.mealplan.model.Recipe;
@@ -21,13 +17,20 @@ import joseph.com.mealplan.model.Recipe;
  */
 public class ItemAdapter extends DragItemAdapter<MealRow, DragItemAdapter.ViewHolder> {
 
-    ItemAdapter(List<MealRow> list) {
+    private MealPlanLongClickListener listener;
+
+    public ItemAdapter(List<MealRow> list, MealPlanLongClickListener listener) {
+        this.listener = listener;
         setHasStableIds(true);
         setItemList(list);
     }
 
+    public interface MealPlanLongClickListener {
+        public void longClicked(MealRow row);
+    }
+
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DragItemAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case 0:
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -45,7 +48,7 @@ public class ItemAdapter extends DragItemAdapter<MealRow, DragItemAdapter.ViewHo
             ((DayHolder) holder).tvDay.setText(text);
             holder.itemView.setTag(mItemList.get(position));
         } else {
-            ((RecipeHolder) holder).recipeView.bind(((Recipe) mItemList.get(position).getData()));
+            ((RecipeHolder) holder).bind(position);
         }
     }
 
@@ -63,27 +66,6 @@ public class ItemAdapter extends DragItemAdapter<MealRow, DragItemAdapter.ViewHo
         return mItemList.get(position).getId();
     }
 
-    class DayHolder extends DragItemAdapter.ViewHolder {
-        @BindView(R.id.tvDay)
-        TextView tvDay;
-
-        DayHolder(final View itemView) {
-            super(itemView, R.id.invisibleDummyHandle, false);
-            ButterKnife.bind(this, itemView);
-        }
-
-        @Override
-        public void onItemClicked(View view) {
-            Toast.makeText(view.getContext(), "Item clicked", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public boolean onItemLongClicked(View view) {
-            Toast.makeText(view.getContext(), "Item long clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    }
-
     private class RecipeHolder extends DragItemAdapter.ViewHolder {
 
         private RecipeView recipeView;
@@ -91,6 +73,19 @@ public class ItemAdapter extends DragItemAdapter<MealRow, DragItemAdapter.ViewHo
         private RecipeHolder(RecipeView itemView) {
             super(itemView, R.id.ivPic, false);
             this.recipeView = itemView;
+        }
+
+        private void bind(final int position) {
+            final Recipe recipe = ((Recipe) mItemList.get(position).getData());
+            recipeView.bind(recipe);
+            final MealRow row = getItemList().get(position);
+            recipeView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.longClicked(row);
+                    return true;
+                }
+            });
         }
     }
 }

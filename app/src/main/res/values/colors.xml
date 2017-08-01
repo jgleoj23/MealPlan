@@ -6,4 +6,5 @@
     <color name="recipeTitle">#2a2d33</color>
     <color name="ingredients">#505050</color>
     <color name="gray">#ebedf2</color>
+    <color name="list_item_background">#AACCCCCC</color>
 </resources>

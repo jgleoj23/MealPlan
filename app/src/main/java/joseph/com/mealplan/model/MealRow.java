@@ -1,6 +1,9 @@
 package joseph.com.mealplan.model;
 
 /**
+ * This just wraps {@link #data} which is a Day or Recipe and adds the field {@link #id} which
+ * is used to keep track of rows as they are moved around, duplicated, and deleted
+ *
  * @author Joseph Gardi
  */
 public class MealRow {
