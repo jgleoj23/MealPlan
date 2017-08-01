@@ -242,7 +242,7 @@ public class GroceryListFragment extends Fragment {
                 TextView tvAisle = (TextView) aisleView.findViewById(R.id.tvAisle);
                 tvAisle.setTypeface(typeface);
                 tvAisle.setText(((Aisle) item).getAisleName());
-                return tvAisle;
+                return aisleView;
 
             } else {
                 typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/DINAlternate-Bold.ttf");
@@ -277,7 +277,8 @@ public class GroceryListFragment extends Fragment {
                     tvUses.setText("");
                 }
                 else {
-                    tvUses.setText("-" + join("\n\n-", useDescriptions));
+                    tvUses.setTypeface(typeface);
+                    tvUses.setText("• " + join("\n\n• ", useDescriptions));
                 }
 
                 groceryView.setOnLongClickListener(new View.OnLongClickListener() {
