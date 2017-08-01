@@ -1,5 +1,6 @@
 package joseph.com.mealplan;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
@@ -233,15 +234,20 @@ public class GroceryListFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Object item = getItem(position);
-
+            final Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/DINAlternate-Bold.ttf");
             if (item instanceof Aisle) {
+
+
                 TextView textView = new TextView(getContext());
+                textView.setTypeface(typeface);
+                textView.setTextSize(18);
                 textView.setText(((Aisle) item).getAisleName());
                 return textView;
             } else {
                 View groceryView = LayoutInflater.from(getContext()).inflate(R.layout.item_grocery, parent, false);
                 TextView tvGrocery = (TextView) groceryView.findViewById(R.id.tvGrocery);
                 final Grocery grocery = (Grocery) item;
+                tvGrocery.setTypeface(typeface);
                 tvGrocery.setText(grocery.getName());
 
                 final ExpandableRelativeLayout expandableLayout =
