@@ -64,7 +64,7 @@ public class MealPlanFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         lvMealPlan.setLayoutManager(new LinearLayoutManager(getContext()));
-        //lvMealPlan.setCanDragHorizontally(false);
+        lvMealPlan.setCanDragHorizontally(false);
         lvMealPlan.setDragListListener(new DragListView.DragListListenerAdapter() {
             /**
              * update realm
@@ -81,12 +81,7 @@ public class MealPlanFragment extends Fragment {
                         } else {
                             fromDay = getDayForIndex(fromPosition);
                         }
-                        if(toPosition == 0){
-                            getDayForIndex(toPosition).getMeals().add(meal);
-                        }
-                        else {
-                            getDayForIndex(toPosition).getMeals().add(meal);
-                        }
+                        getDayForIndex(toPosition).getMeals().add(meal);
                     }
                 });
             }
