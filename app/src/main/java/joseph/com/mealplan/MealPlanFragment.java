@@ -78,6 +78,7 @@ public class MealPlanFragment extends Fragment {
                               }
                           })
                           .show();
+
               }
             });
 
@@ -158,7 +159,12 @@ public class MealPlanFragment extends Fragment {
                             fromDay = getDayForIndex(adapter.getItemList(), fromPosition);
                         }
                         fromDay.getMeals().remove(meal);
-                        getDayForIndex(adapter.getItemList(), toPosition).getMeals().add(meal);
+                        if(toPosition == 0){
+                            getDayForIndex(adapter.getItemList(), 1).getMeals().add(meal);
+                        }
+                        else {
+                            getDayForIndex(adapter.getItemList(), toPosition).getMeals().add(meal);
+                        }
                     }
                 });
             }
