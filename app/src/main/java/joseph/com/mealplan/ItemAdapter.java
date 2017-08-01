@@ -25,6 +25,7 @@ public class ItemAdapter extends DragItemAdapter<MealRow, DragItemAdapter.ViewHo
         setItemList(list);
     }
 
+
     public interface MealPlanLongClickListener {
         public void longClicked(MealRow row);
     }

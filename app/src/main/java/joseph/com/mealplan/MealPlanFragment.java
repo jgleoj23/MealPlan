@@ -13,9 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
-import com.woxthebox.draglistview.DragItem;
 import com.woxthebox.draglistview.DragListView;
 
 import org.parceler.Parcels;
@@ -130,7 +128,7 @@ public class MealPlanFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meal_plan, container, false);
         ButterKnife.bind(this, view);
-        myDragItem = new MyDragItem();
+        myDragItem = new MyDragItem(getContext());
 
         lvMealPlan.setLayoutManager(new LinearLayoutManager(getContext()));
         lvMealPlan.setCanDragHorizontally(false);
@@ -141,7 +139,7 @@ public class MealPlanFragment extends Fragment {
 
             @Override
             public void onItemDragStarted(int position) {
-                myDragItem.recipeView.bind(((Recipe) adapter.getItemList().get(position).getData()));
+                myDragItem.getRecipeView().bind(((Recipe) adapter.getItemList().get(position).getData()));
             }
 
             /**
@@ -167,25 +165,6 @@ public class MealPlanFragment extends Fragment {
         });
 
         return view;
-    }
-
-    private class MyDragItem extends DragItem {git 
-        private RecipeView recipeView = new RecipeView(getContext());
-
-        private MyDragItem() {
-            super(getContext(), R.layout.drag);
-            recipeView.findViewById(R.id.cv).setBackgroundColor(getResources().getColor(R.color.list_item_background, null));
-        }
-
-        @Override
-        public void onBindDragView(View clickedView, View dragView) {
-            // I won't be able to add the recipe view wto the dragView if it already has a parent
-            ViewGroup parent = (ViewGroup) recipeView.getParent();
-            if (parent != null) {
-                parent.removeView(recipeView);
-            }
-            ((RelativeLayout) dragView.findViewById(R.id.drag)).addView(recipeView);
-        }
     }
 
     public void addRecipeWithDay(Recipe recipe, String dayName) {

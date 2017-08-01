@@ -1,5 +1,6 @@
 package joseph.com.mealplan;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
@@ -233,15 +234,21 @@ public class GroceryListFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Object item = getItem(position);
-
+            final Typeface typeface;
             if (item instanceof Aisle) {
-                TextView textView = new TextView(getContext());
-                textView.setText(((Aisle) item).getAisleName());
-                return textView;
+                typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/Lobster-Regular.ttf");
+                View aisleView = LayoutInflater.from(getContext()).inflate(R.layout.item_aisle, parent, false);
+                TextView tvAisle = (TextView) aisleView.findViewById(R.id.tvAisle);
+                tvAisle.setTypeface(typeface);
+                tvAisle.setText(((Aisle) item).getAisleName());
+                return aisleView;
+
             } else {
+                typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/DINAlternate-Bold.ttf");
                 View groceryView = LayoutInflater.from(getContext()).inflate(R.layout.item_grocery, parent, false);
                 TextView tvGrocery = (TextView) groceryView.findViewById(R.id.tvGrocery);
                 final Grocery grocery = (Grocery) item;
+                tvGrocery.setTypeface(typeface);
                 tvGrocery.setText(grocery.getName());
 
                 final ExpandableRelativeLayout expandableLayout =
@@ -265,7 +272,14 @@ public class GroceryListFragment extends Fragment {
                         return use.getUse();
                     }
                 }).toList();
-                tvUses.setText("-"+ join("\n-", useDescriptions));
+
+                if(useDescriptions.size() == 0){
+                    tvUses.setText("");
+                }
+                else {
+                    tvUses.setTypeface(typeface);
+                    tvUses.setText("• " + join("\n\n• ", useDescriptions));
+                }
 
                 groceryView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
