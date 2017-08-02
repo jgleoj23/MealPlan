@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="recipeTitle">#2a2d33</color>
     <color name="ingredients">#505050</color>
-    <color name="gray">#ebedf2</color>
-    <color name="list_item_background">#AACCCCCC</color>
+    <color name="gray">#eff0f4</color>
+    <color name="list_item_background">#aae2e2e2</color>
+    <color name="aisle">#000000</color>
 </resources>
