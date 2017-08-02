@@ -149,4 +149,12 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 });
         builder.create().show();
     }
+
+    public void removeFavorites(View view) {
+        Intent intent = new Intent("remove-favorite");
+        intent.putExtra("recipe", Parcels.wrap(Recipe.class, recipe));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        favorites.setVisibility(View.VISIBLE);
+        Toast.makeText(getApplicationContext(), "Recipe removed from favorites", Toast.LENGTH_SHORT).show();
+    }
 }

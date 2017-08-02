@@ -68,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
+                getFavoritesFragment().removeFavorite(recipe);
+            }
+        }, new IntentFilter("remove-favorite"));
+
+        broadcastManager.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
                 String day = intent.getStringExtra("day");
                 getMealPlanFragment().addRecipeWithDay(recipe, day);
                 viewPager.setCurrentItem(1);

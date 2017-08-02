@@ -62,7 +62,7 @@
             android:layout_toRightOf="@id/btMealPlan"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:onClick="addFavorites"
+            android:onClick="removeFavorites"
             android:background="@drawable/favorited"
             android:layout_marginLeft="15dp" />
 

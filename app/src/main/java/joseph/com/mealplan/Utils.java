@@ -67,7 +67,7 @@ public class Utils {
     }
 
     public static Day getDayForIndex(List<MealRow> list, int index) {
-        for (int i = index; i >= 0; i--) {
+        for (int i = index - 1; i >= 0; i--) {
             Object item = list.get(i).getData();
             if (item instanceof Day) {
                 return ((Day) item);

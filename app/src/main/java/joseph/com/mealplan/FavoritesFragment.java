@@ -122,6 +122,22 @@ public class FavoritesFragment extends Fragment {
         }
     }
 
+    public void removeFavorite(final Recipe recipe){
+        realm.beginTransaction();
+        for(Recipe recipe1 : favorites.getFavorites()){
+            if(recipe1.getTitle().equals(recipe.getTitle()) && recipe1.getTitle() != null){
+                favorites.getFavorites().remove(recipe1);
+                break;
+            }
+        }
+       // realm.insertOrUpdate(recipe);
+        realm.commitTransaction();
+
+        if (favoritesAdapter != null){
+            favoritesAdapter.notifyDataSetChanged();
+        }
+    }
+
 
 
     private class FavoritesAdapter extends ArrayAdapter<Recipe> {
