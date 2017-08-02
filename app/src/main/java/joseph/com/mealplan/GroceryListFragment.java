@@ -117,7 +117,7 @@ public class GroceryListFragment extends Fragment {
             for (final String ingredientName : nameArray) {
                 // Make it all lowercase so that it is case insensitive
                 if (grocery.getName().toLowerCase().contains(ingredientName.toLowerCase())) {
-                    final String useDescription = grocery.getName() + " for " + recipe.getTitle();
+                    final String useDescription = grocery.getName() + " for the " + recipe.getTitle();
                     final Grocery groceryForList = getOrAddGrocery(ingredientName);
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
