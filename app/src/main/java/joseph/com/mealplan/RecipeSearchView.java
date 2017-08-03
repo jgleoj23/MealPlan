@@ -42,6 +42,8 @@ public class RecipeSearchView extends RelativeLayout{
         Picasso.with(getContext())
                 .load(recipe.getImageUrl())
                 .fit().centerCrop()
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .into(ivPic);
 
         setOnClickListener(new View.OnClickListener() {

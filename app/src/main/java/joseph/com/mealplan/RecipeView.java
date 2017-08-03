@@ -50,6 +50,8 @@ public class RecipeView extends RelativeLayout {
         Picasso.with(getContext())
                 .load(recipe.getImageUrl())
                 .fit().centerCrop()
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .into(ivPic);
 
         favorites = realm.where(Favorites.class).findFirst();

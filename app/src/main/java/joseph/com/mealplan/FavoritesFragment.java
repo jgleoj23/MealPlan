@@ -164,6 +164,8 @@ public class FavoritesFragment extends Fragment {
             Picasso.with(getContext())
                         .load(recipe.getImageUrl())
                         .fit().centerCrop()
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
                         //.transform(new CircleTransform())
                         .into(ivPic);
 
