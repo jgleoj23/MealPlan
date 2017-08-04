@@ -57,14 +57,15 @@ public class SearchFragment extends Fragment {
         svQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                fetchRecipes(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(final String newText) {
-                if (newText.length() >= 3) {
+                /*if (newText.length() >= 3) {
                     fetchRecipes(newText);
-                }
+                }*/
 
                 return true;
             }
