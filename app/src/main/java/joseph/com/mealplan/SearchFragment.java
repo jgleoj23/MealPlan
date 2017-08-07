@@ -32,7 +32,7 @@ public class SearchFragment extends Fragment {
     public static List<Recipe> bad;
 
     private String TAG = getClass().getName();
-    private RecipeClient client;
+    private RecipeClient client = new RecipeClient();
 
     private ResultsAdapter resultsAdapter;
 
@@ -63,9 +63,9 @@ public class SearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(final String newText) {
-                /*if (newText.length() >= 3) {
-                    fetchRecipes(newText);
-                }*/
+//                if (newText.length() >= 3) {
+//
+//                }
 
                 return true;
             }
@@ -96,10 +96,9 @@ public class SearchFragment extends Fragment {
         }
     }
 
-
-
     private void fetchRecipes(final String query) {
-        client = new RecipeClient();
+        Log.i(TAG, "fetch");
+        client.cancelRequests();
         client.searchRecipes(query, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
