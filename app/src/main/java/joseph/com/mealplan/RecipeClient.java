@@ -34,4 +34,8 @@ public class RecipeClient {
         params.put("rId", recipeId);
         client.get(url, params, handler);
     }
+
+    public void cancelRequests() {
+        client.cancelAllRequests(true);
+    }
 }

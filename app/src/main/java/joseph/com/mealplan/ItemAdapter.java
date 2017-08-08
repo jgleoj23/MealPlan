@@ -40,7 +40,6 @@ public class ItemAdapter extends DragItemAdapter<MealRow, DragItemAdapter.ViewHo
                 return new RecipeHolder(new RecipeView(parent.getContext()));
         }
     }
-
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
