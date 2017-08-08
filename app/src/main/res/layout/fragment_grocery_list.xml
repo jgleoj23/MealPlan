@@ -22,7 +22,10 @@
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/btAdd"
         android:ems="10"
-        android:hint="Enter grocery item" />
+        android:hint="Enter grocery item"
+        android:textColorHint="#b0f1f1f1"
+        android:textColor="#ffffff"
+        android:textColorHighlight="#b0f1f1f1" />
 
     <Button
         android:id="@+id/btAdd"
@@ -30,7 +33,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:backgroundTint="#B1757D"
+        android:textColor="#ffffff"
         android:text="Add"
+        android:layout_margin="5dp"
         android:textAllCaps="false"
         tools:text="Add" />
 
