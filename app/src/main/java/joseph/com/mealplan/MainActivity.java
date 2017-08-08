@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_search_black_24dp);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_local_dining_black_24dp);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_shopping_basket_black_24dp);
-        tabLayout.getTabAt(3).setIcon(R.drawable.like);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_vector_heart_stroke);
     }
 
     public class MainPagerAdapter extends FragmentPagerAdapter {

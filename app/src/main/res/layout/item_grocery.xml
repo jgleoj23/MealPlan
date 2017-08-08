@@ -16,7 +16,7 @@
         android:lineSpacingExtra="14sp"
         android:text="Ingredients"
         android:textAlignment="textStart"
-        android:textColor="@android:color/background_dark"
+        android:textColor="#f2ffffff"
         android:textSize="18sp" />
 
     <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -34,6 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="asdf \ndasda"
+            android:padding="5dp"
+            android:textColor="#b0f1f1f1"
             android:textAppearance="@android:style/TextAppearance.Small" />
 
 

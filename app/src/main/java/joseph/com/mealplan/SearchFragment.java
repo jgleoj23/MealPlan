@@ -1,5 +1,6 @@
 package joseph.com.mealplan;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -53,6 +55,10 @@ public class SearchFragment extends Fragment {
         resultsAdapter = new ResultsAdapter();
         rvResults.setAdapter(resultsAdapter);
         rvResults.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        int id = svQuery.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = (TextView) svQuery.findViewById(id);
+        textView.setTextColor(Color.WHITE);
 
         svQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

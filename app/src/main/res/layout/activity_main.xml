@@ -9,7 +9,11 @@
         android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="fixed" />
+        android:background="#3AACBE"
+        app:tabMode="fixed"
+        app:tabTextColor="@android:color/white"
+        app:tabIndicatorColor="#3193a3"
+        app:tabSelectedTextColor="@color/dark_gray"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
