@@ -40,19 +40,12 @@ public class ItemAdapter extends DragItemAdapter<MealRow, DragItemAdapter.ViewHo
                 return new RecipeHolder(new RecipeView(parent.getContext()));
         }
     }
-    public int[] backgroundGenerate = {R.drawable.background_day2, R.drawable.background_day3};
-    public int counter = 0;
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         if (holder instanceof DayHolder) {
             String text = ((Day) mItemList.get(position).getData()).getName();
             ((DayHolder) holder).tvDay.setText(text);
-            ((DayHolder) holder).tvDay.setBackgroundResource(backgroundGenerate[counter]);
-            counter += 1;
-            if(counter == backgroundGenerate.length){
-                counter = 0;
-            }
             holder.itemView.setTag(mItemList.get(position));
         } else {
             ((RecipeHolder) holder).bind(position);
